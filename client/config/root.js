@@ -1,12 +1,19 @@
 import React from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
 
 import store from '../redux'
 
+import Main from '../components/main'
+
 const Root = () => {
   return (
     <Provider store={store}>
-      <div>This is Root</div>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={() => <Main />} />
+        </Switch>
+      </Router>
     </Provider>
   )
 }
