@@ -5,14 +5,23 @@ import { io } from 'socket.io-client'
 
 import rootReducer from './reducers'
 
-const initialState = {}
+const preloadedState = {
+  messages: {
+    messageHistory: [
+      {
+        name: 'Test user',
+        text: 'Test message'
+      }
+    ]
+  }
+}
 
 const middleware = [thunk]
 
 const composeFunc = process.env.NODE_ENV === 'development' ? composeWithDevTools : compose
 const composedEnhancers = composeFunc(applyMiddleware(...middleware))
 
-const store = createStore(rootReducer(), initialState, composedEnhancers)
+const store = createStore(rootReducer(), preloadedState, composedEnhancers)
 
 if (SOCKETS_ENABLE || false) {
   // eslint-disable-next-line

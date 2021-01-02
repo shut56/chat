@@ -1,12 +1,7 @@
 const SEND_MESSAGE = 'SEND_MESSAGE'
 
 const initialState = {
-  messageHistory: [
-    {
-      name: 'Test user',
-      text: 'Test message'
-    }
-  ]
+  messageHistory: []
 }
 
 export default (state = initialState, action) => {
