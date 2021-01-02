@@ -19,6 +19,11 @@ if (SOCKETS_ENABLE || false) {
   const socket = io(`${window.location.origin}`, {
     path: '/ws'
   })
+  console.log(store.getState())
+  socket.emit('newMessage', store.getState().messages.messageHistory)
+  socket.on('newMessage', (arg) => {
+    console.log(arg)
+  })
 }
 
 export default store

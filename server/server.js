@@ -14,10 +14,10 @@ const PORT = config.port
 server.use('/static', express.static(`${__dirname}/public`))
 
 server.use(express.json({ limit: '50kb' }))
-server.use((req, res, next) => {
-  console.log(`${req.method} ${req.url} from ${req.ip}`)
-  next()
-})
+// server.use((req, res, next) => {
+//   console.log(`${req.method} ${req.url} from ${req.ip}`)
+//   next()
+// })
 
 server.get('/', (req, res) => {
   res.send('Express server')
@@ -34,6 +34,10 @@ if (config.socketsEnabled) {
     socket.on('disconnect', () => {
       console.log(`Bye-bye ${socket.id}`)
     })
+    socket.on('newMessage', (arg) => {
+      console.log(arg)
+    })
+    socket.emit('newMessage', `New message for ${socket.id}`)
   })
 }
 
