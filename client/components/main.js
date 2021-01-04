@@ -1,19 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { sendMessage } from '../redux/reducers/messages'
+import { sendMessage, getMessageHistory, getCurrentMessage } from '../redux/reducers/messages'
 
 const Main = () => {
-  const [userMessage, setUserMessage] = useState('')
   const dispatch = useDispatch()
   const messageHistory = useSelector((store) => store.messages.messageHistory)
+  const userMessage = useSelector((store) => store.messages.userMessage)
 
   const Submit = () => {
     return () => {
       dispatch(sendMessage({ name: 'Test User', text: userMessage }))
-      setUserMessage('')
+      dispatch(getCurrentMessage(''))
     }
   }
+
+  const onChangeMessage = (msg) => {
+    return dispatch(getCurrentMessage(msg))
+  }
+
+  useEffect(() => {
+    dispatch(getMessageHistory())
+  }, [])
   return (
     <div>
       <ul id="messages">
@@ -24,7 +32,7 @@ const Main = () => {
         })}
       </ul>
       <form action="">
-        <input id="m" autoComplete="off" onChange={(e) => setUserMessage(e.target.value)} value={userMessage} />
+        <input id="m" autoComplete="off" onChange={(e) => onChangeMessage(e.target.value)} value={userMessage} />
         <button type="button" onClick={Submit()}>Send</button>
       </form>
     </div>

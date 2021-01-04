@@ -19,8 +19,14 @@ server.use(express.json({ limit: '50kb' }))
 //   next()
 // })
 
+let msgHist = []
+
 server.get('/', (req, res) => {
   res.send('Express server')
+})
+
+server.get('/api/history', (req, res) => {
+  res.json(msgHist)
 })
 
 if (config.socketsEnabled) {
@@ -31,13 +37,16 @@ if (config.socketsEnabled) {
 
   socketIO.on('connection', (socket) => {
     console.log(`Hello ${socket.id}`)
+    socketIO.to(socket.id).emit('messageHistory', msgHist)
+
+    socket.on('newMessage', (arg) => {
+      msgHist.push(arg)
+      socketIO.emit('messageHistory', msgHist)
+    })
+
     socket.on('disconnect', () => {
       console.log(`Bye-bye ${socket.id}`)
     })
-    socket.on('newMessage', (arg) => {
-      console.log(arg)
-    })
-    socket.emit('newMessage', `New message for ${socket.id}`)
   })
 }
 
