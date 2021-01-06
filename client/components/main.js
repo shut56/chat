@@ -1,40 +1,35 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { sendMessage, getMessageHistory, getCurrentMessage } from '../redux/reducers/messages'
+import LoginScreen from './login-screen'
+import ChatLine from './chat-line'
+
+import { getMessageHistory } from '../redux/reducers/messages'
 
 const Main = () => {
+  const [toggle, setToggle] = useState(true)
   const dispatch = useDispatch()
   const messageHistory = useSelector((store) => store.messages.messageHistory)
-  const userMessage = useSelector((store) => store.messages.userMessage)
-
-  const Submit = () => {
-    return () => {
-      dispatch(sendMessage({ name: 'Test User', text: userMessage }))
-      dispatch(getCurrentMessage(''))
-    }
-  }
-
-  const onChangeMessage = (msg) => {
-    return dispatch(getCurrentMessage(msg))
-  }
 
   useEffect(() => {
     dispatch(getMessageHistory())
   }, [])
   return (
     <div>
-      <ul id="messages">
-        {messageHistory.map((message, id) => {
-          return (
-            <li key={`${message.name}${id}`}>{`${message.name}: ${message.text}`}</li>
-          )
-        })}
-      </ul>
-      <form action="">
-        <input id="m" autoComplete="off" onChange={(e) => onChangeMessage(e.target.value)} value={userMessage} />
-        <button type="button" onClick={Submit()}>Send</button>
-      </form>
+      {toggle && <LoginScreen toggled={setToggle} />}
+      <div className="flex flex-col w-full">
+        <div className="font-bold">Pepe&apos;s Chat</div>
+        <div className="flex mx-2">
+          <ul id="messages">
+            {messageHistory.map((message, id) => {
+              return (
+                <li key={`${message.name}${id}`}>{`${message.name}: ${message.text}`}</li>
+              )
+            })}
+          </ul>
+        </div>
+        {!toggle && <ChatLine />}
+      </div>
     </div>
   )
 }

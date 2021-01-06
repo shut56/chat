@@ -3,10 +3,12 @@ import { io } from 'socket.io-client'
 const GET_MESSAGES = 'GET_MESSAGES'
 const SEND_MESSAGE = 'SEND_MESSAGE'
 const CURRENT_MESSAGE = 'CURRENT_MESSAGE'
+const SET_NICK_NAME = 'SET_NICK_NAME'
 
 const initialState = {
   messageHistory: [],
-  userMessage: ''
+  userMessage: '',
+  nickname: ''
 }
 
 export default (state = initialState, action) => {
@@ -15,7 +17,8 @@ export default (state = initialState, action) => {
     case SEND_MESSAGE: {
       return {
         ...state,
-        messageHistory: action.msgHistory
+        messageHistory: action.msgHistory,
+        userMessage: action.message
       }
     }
     case CURRENT_MESSAGE: {
@@ -24,13 +27,19 @@ export default (state = initialState, action) => {
         userMessage: action.message
       }
     }
+    case SET_NICK_NAME: {
+      return {
+        ...state,
+        nickname: action.name
+      }
+    }
     default:
       return state
   }
 }
 
 let socket
-if (SOCKETS_ENABLE || false) {
+if (SOCKETS_ENABLE) {
   // eslint-disable-next-line
   socket = io(`${window.location.origin}`, {
     path: '/ws'
@@ -48,15 +57,21 @@ export function getMessageHistory() {
   }
 }
 
-export function sendMessage(message) {
-  return (dispatch) => {
-    socket.emit('newMessage', message)
-    socket.on('messageHistory', (arg) => {
-      dispatch({
-        type: SEND_MESSAGE,
-        msgHistory: arg
+export function sendMessage() {
+  return (dispatch, getState) => {
+    const { userMessage, nickname } = getState().messages
+    const message = userMessage.trim()
+
+    if (message.length > 0) {
+      socket.emit('newMessage', { name: nickname, text: message })
+      socket.on('messageHistory', (arg) => {
+        dispatch({
+          type: SEND_MESSAGE,
+          msgHistory: arg,
+          message: ''
+        })
       })
-    })
+    }
   }
 }
 
@@ -65,4 +80,16 @@ export function getCurrentMessage(message) {
     type: CURRENT_MESSAGE,
     message
   })
+}
+
+export function setNickname(name) {
+  return (dispatch) => {
+    socket.emit('setName', name.trim() || 'User')
+    socket.on('setName', (userName) => {
+      dispatch({
+        type: SET_NICK_NAME,
+        name: userName
+      })
+    })
+  }
 }

@@ -20,6 +20,8 @@ server.use(express.json({ limit: '50kb' }))
 // })
 
 let msgHist = []
+let users = []
+let tag = 1
 
 server.get('/', (req, res) => {
   res.send('Express server')
@@ -37,6 +39,14 @@ if (config.socketsEnabled) {
 
   socketIO.on('connection', (socket) => {
     console.log(`Hello ${socket.id}`)
+
+    socket.on('setName', (name) => {
+      const nameWithTag = `${name}#${tag}`
+      tag += 1
+      users.push(nameWithTag)
+      socketIO.to(socket.id).emit('setName', nameWithTag)
+    })
+
     socketIO.to(socket.id).emit('messageHistory', msgHist)
 
     socket.on('newMessage', (arg) => {
