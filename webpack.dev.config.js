@@ -31,7 +31,9 @@ const config = {
       context: ['/api', '/ws'],
       target: `http://localhost:${PORT || 8080}`,
       ws: (SOCKETS_ENABLE === 'true')
-    }
+    },
+    publicPath: '/',
+    historyApiFallback: true
   },
   module: {
     rules: [

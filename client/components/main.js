@@ -13,7 +13,7 @@ const Main = () => {
 
   useEffect(() => {
     dispatch(getMessageHistory())
-  }, [])
+  }, [dispatch])
   return (
     <div>
       {toggle && <LoginScreen toggled={setToggle} />}

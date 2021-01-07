@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import store from '../redux'
 
 import Main from '../components/main'
+import Home from '../components/home'
 
 const Root = () => {
   return (
@@ -12,6 +13,7 @@ const Root = () => {
       <Router>
         <Switch>
           <Route exact path="/" component={() => <Main />} />
+          <Route exact path="/home" component={() => <Home />} />
         </Switch>
       </Router>
     </Provider>

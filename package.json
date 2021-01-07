@@ -1,6 +1,6 @@
 {
-  "name": "mern-boilerplate",
-  "version": "1.0.0",
+  "name": "mern-chat",
+  "version": "0.0.1",
   "main": "index.js",
   "author": "VitalyK",
   "license": "MIT",

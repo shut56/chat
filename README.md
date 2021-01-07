@@ -1,5 +1,5 @@
-# MERN boilerplate
-Boilerplate for pet-projects
+# MERN Chat
+Slack/Discord clone application.
 
 ## How to use it?
 Install modules

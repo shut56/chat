@@ -39,7 +39,7 @@ export default (state = initialState, action) => {
 }
 
 let socket
-if (SOCKETS_ENABLE) {
+if (SOCKETS_ENABLE === true) {
   // eslint-disable-next-line
   socket = io(`${window.location.origin}`, {
     path: '/ws'
