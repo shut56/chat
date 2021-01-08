@@ -8,7 +8,7 @@ import Applications from './applications'
 
 const Sidebar = () => {
   return (
-    <div className="bg-gray-700 text-gray-400 w-1/5 pb-6 hidden md:block">
+    <div className="bg-gray-700 text-gray-400 w-60 pb-6 overflow-y-auto h-full">
       <ServerBlock />
       <UserBlock />
       <Channels />

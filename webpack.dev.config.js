@@ -12,7 +12,7 @@ const config = {
   entry: './client/main.js',
   mode: 'development',
   output: {
-    filename: 'js/[name].bundle.js',
+    filename: 'assets/js/[name].bundle.js',
     path: resolve(__dirname, 'dist'),
     publicPath: '/'
   },
@@ -69,13 +69,17 @@ const config = {
       exclude: 'node_modules'
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/style.css'
+      filename: 'assets/css/style.css'
     }),
     new CopyWebpackPlugin({
       patterns: [
         {
           from: `${__dirname}/client/index.html`,
           to: 'index.html'
+        },
+        {
+          from: `${__dirname}/client/assets/images/*`,
+          to: 'assets/images/[name].[ext]'
         }
       ]
     }),
