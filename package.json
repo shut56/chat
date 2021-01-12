@@ -9,7 +9,8 @@
     "watch:server": "nodemon start.js",
     "watch:client": "webpack serve --config webpack.dev.config.js",
     "build:client": "rm -rf dist & webpack --config webpack.dev.config.js",
-    "lint": "eslint ./client/**/**.js ./server/**/**.js"
+    "lint": "eslint ./client/**/**.js ./server/**/**.js",
+    "start": "node start.js"
   },
   "dependencies": {
     "@babel/register": "^7.12.10",
