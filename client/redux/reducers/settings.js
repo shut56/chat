@@ -44,9 +44,10 @@ const updateListOfChannels = (channelsFromStore, channelId, channel) => {
 }
 
 export function saveChannel(name) {
+  const slicedName = name[name.length - 1] === '-' ? name.slice(0, name.length - 1) : name
   const newChannel = {
     id: nanoid(),
-    name: name || 'new-channel',
+    name: slicedName || 'new-channel',
     active: true
   }
   return (dispatch, getState) => {
@@ -62,10 +63,12 @@ export function saveChannel(name) {
 
 export function setNewChannelName(name = '') {
   return (dispatch) => {
-    if (/^(\w+[\w -]+\w+)$|(^\w*)$/gi.test(name)) {
+    const regEx = /^\w+([ -](?=\w)|\w*)*([ -]{1}|\w*)$|^\w*$/gi
+    if (regEx.test(name)) {
+      const clearName = name.toLowerCase().replace(/\s/g, '-')
       dispatch({
         type: NEW_NAME,
-        char: name.toLowerCase().replace(/\s/g, '-')
+        char: clearName
       })
     }
   }
