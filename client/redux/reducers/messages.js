@@ -8,7 +8,7 @@ const SET_NICK_NAME = 'SET_NICK_NAME'
 const initialState = {
   messageHistory: [],
   userMessage: '',
-  nickname: ''
+  nickname: 'Pepe'
 }
 
 export default (state = initialState, action) => {

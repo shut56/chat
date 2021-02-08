@@ -1,11 +1,28 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+
+import { getMessageHistory } from '../../redux/reducers/messages'
 
 import Message from './message'
 
 const MessageHistory = () => {
+  const dispatch = useDispatch()
+  const messageHistory = useSelector((store) => store.messages.messageHistory)
+
+  useEffect(() => {
+    dispatch(getMessageHistory())
+  }, [dispatch])
+
   return (
     <div id="message-history" className="px-6 py-4 overflow-y-auto h-full">
-      <Message />
+      {messageHistory.map((message, id) => {
+        return (
+          // <li key={`${message.name}${id}`}>{`${message.name}: ${message.text}`}</li>
+          <div key={`${message.name}${id}`}>
+            <Message message={message} />
+          </div>
+        )
+      })}
 
       {/* <!-- A message --> */}
       <div className="flex items-start mb-4">

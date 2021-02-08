@@ -21,6 +21,13 @@ server.use(express.json({ limit: '50kb' }))
 
 let msgHist = []
 let users = []
+let channels = [
+  {
+    "id": "test-id",
+    "name": "general",
+    "active": true
+  }
+]
 let tag = 1
 
 server.get('/', (req, res) => {
@@ -29,6 +36,10 @@ server.get('/', (req, res) => {
 
 server.get('/api/history', (req, res) => {
   res.json(msgHist)
+})
+
+server.get('/api/channels', (req, res) => {
+  res.json(channels)
 })
 
 if (config.socketsEnabled) {
@@ -50,9 +61,19 @@ if (config.socketsEnabled) {
     socketIO.to(socket.id).emit('messageHistory', msgHist)
 
     socket.on('newMessage', (arg) => {
+      console.log('New message!')
       msgHist.push(arg)
       socketIO.emit('messageHistory', msgHist)
     })
+
+    socket.on('addChannel', (channel) => {
+      console.log('New channel created')
+      channels = [...channels, { ...channel, active: false }]
+      console.log('Channels: ', channels)
+      socketIO.emit('channelList', channels)
+    })
+
+    socketIO.to(socket.id).emit('channelListForUser', channels)
 
     socket.on('disconnect', () => {
       console.log(`Bye-bye ${socket.id}`)

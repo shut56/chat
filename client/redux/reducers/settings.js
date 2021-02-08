@@ -1,15 +1,17 @@
 import { nanoid } from 'nanoid'
+import { io } from 'socket.io-client'
 
 const SAVE_CHANNEL = 'SAVE_CHANNEL'
 const NEW_NAME = 'NEW_NAME'
 const ACTIVE_CHANNEL_CHANGED = 'ACTIVE_CHANNEL_CHANGED'
+const GET_CHANNELS = 'GET_CHANNELS'
 
 const initialState = {
   channels: [],
   activeChannel: '',
   newChannelName: '',
   serverSettings: {
-    name: 'Server'
+    name: 'Pepe\'s Server'
   },
   userAmount: 0
 }
@@ -30,14 +32,28 @@ export default (state = initialState, action) => {
         activeChannel: action.channelId
       }
     }
+    case GET_CHANNELS: {
+      return {
+        ...state,
+        channels: action.channels,
+        activeChannel: action.channelId
+      }
+    }
     default: {
       return state
     }
   }
 }
 
-const updateListOfChannels = (channelsFromStore, channelId, channel) => {
-  const channelList = typeof channel === 'undefined' ? [...channelsFromStore] : [...channelsFromStore, channel]
+let socket
+if (SOCKETS_ENABLE === true) {
+  // eslint-disable-next-line
+  socket = io(`${window.location.origin}`, {
+    path: '/ws'
+  })
+}
+
+const updateListOfChannels = (channelList, channelId) => {
   return channelList.reduce((acc, rec) => {
     return [...acc, { ...rec, active: rec.id === channelId }]
   }, [])
@@ -50,13 +66,16 @@ export function saveChannel(name) {
     name: slicedName || 'new-channel',
     active: true
   }
-  return (dispatch, getState) => {
-    const store = getState()
-    const updatedChannels = updateListOfChannels(store.settings.channels, newChannel.id, newChannel)
-    dispatch({
-      type: SAVE_CHANNEL,
-      updatedChannels,
-      channelId: newChannel.id
+  return (dispatch) => {
+    socket.emit('addChannel', { ...newChannel })
+    socket.on('channelList', (channelList) => {
+      console.log('Message from server.', channelList)
+      const updatedChannels = updateListOfChannels(channelList, newChannel.id)
+      dispatch({
+        type: SAVE_CHANNEL,
+        updatedChannels,
+        channelId: newChannel.id
+      })
     })
   }
 }
@@ -82,6 +101,31 @@ export function changeActiveChannel(channelId) {
       type: ACTIVE_CHANNEL_CHANGED,
       updatedChannels,
       channelId
+    })
+  }
+}
+
+export function getChannels() {
+  return (dispatch, getStore) => {
+    const store = getStore()
+    socket.on('channelListForUser', (channelList) => {
+      const createdChannels = channelList.reduce((acc, rec) => {
+        return {
+          ...acc,
+          [rec.id]: {
+            name: rec.name,
+            // description: '',
+            userList: [],
+            channelMessages: []
+          }
+        }
+      }, {})
+      store.channels.channelList = createdChannels
+      dispatch({
+        type: GET_CHANNELS,
+        channels: channelList,
+        channelId: channelList[0]?.id || ''
+      })
     })
   }
 }

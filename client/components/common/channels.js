@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { createChannel } from '../../redux/reducers/secondary'
-import { changeActiveChannel } from '../../redux/reducers/settings'
+import { getChannels, changeActiveChannel } from '../../redux/reducers/settings'
 
 const Channels = () => {
   const dispatch = useDispatch()
@@ -12,6 +12,10 @@ const Channels = () => {
   const onClick = (dataset) => {
     dispatch(changeActiveChannel(dataset.key))
   }
+
+  useEffect(() => {
+    dispatch(getChannels())
+  }, [dispatch])
   return (
     <div>
       <div className="flex flex-row px-4 items-center font-bold">

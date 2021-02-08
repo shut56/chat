@@ -30,17 +30,18 @@ export function addNewChannel(chanObj) {
   return (dispatch, getState) => {
     const store = getState()
     const createdChannels = store.settings.channels.reduce((acc, rec) => {
+      console.log('rec.id', rec.id)
       return {
         ...acc,
         [rec.id]: {
           name: rec.name,
-          description: chanObj.description,
+          description: chanObj?.description || '',
           userList: [],
           channelMessages: []
         }
       }
     }, {})
-    console.log(createdChannels)
+    console.log('createdChannels: ', createdChannels)
     dispatch({
       type: ADD_NEW_CHANNEL,
       createdChannels
