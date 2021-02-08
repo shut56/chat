@@ -1,4 +1,4 @@
-const CREATE_CHANNEL = 'CREATE_CHANNEL'
+const FADE_FOR_WINDOWS = 'FADE_FOR_WINDOWS'
 
 const initialState = {
   blackScreen: false,
@@ -7,7 +7,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case CREATE_CHANNEL: {
+    case FADE_FOR_WINDOWS: {
       return {
         ...state,
         blackScreen: action.toggle,
@@ -20,9 +20,9 @@ export default (state = initialState, action) => {
   }
 }
 
-export function createChannel(toggle) {
+export function fade(toggle) {
   return ({
-    type: CREATE_CHANNEL,
+    type: FADE_FOR_WINDOWS,
     toggle
   })
 }

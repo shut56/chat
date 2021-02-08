@@ -21,13 +21,13 @@ server.use(express.json({ limit: '50kb' }))
 
 let msgHist = []
 let users = []
-let channels = [
-  {
-    "id": "test-id",
-    "name": "general",
-    "active": true
+let channels = {
+  'test-id': {
+    id: 'test-id',
+    name: 'general',
+    active: true
   }
-]
+}
 let tag = 1
 
 server.get('/', (req, res) => {
@@ -68,7 +68,7 @@ if (config.socketsEnabled) {
 
     socket.on('addChannel', (channel) => {
       console.log('New channel created')
-      channels = [...channels, { ...channel, active: false }]
+      channels = {...channels, [channel.id]: { ...channel }}
       console.log('Channels: ', channels)
       socketIO.emit('channelList', channels)
     })

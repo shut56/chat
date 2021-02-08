@@ -8,7 +8,7 @@ import BlackScreen from './common/black-screen'
 
 const Home = () => {
   const channelCreatorToggle = useSelector((s) => s.secondary.channelCreatorToggle)
-  const noChannels = useSelector((s) => s.settings.channels).length > 0
+  const noChannels = useSelector((s) => s.channels.activeChannel) !== ''
   return (
     <div className="flex bg-gray-700 h-screen w-full">
       {channelCreatorToggle && <BlackScreen />}

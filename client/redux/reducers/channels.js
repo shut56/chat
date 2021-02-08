@@ -1,23 +1,31 @@
-const ADD_NEW_CHANNEL = 'ADD_NEW_CHANNEL'
+import { nanoid } from 'nanoid'
+import { io } from 'socket.io-client'
+
+const SAVE_CHANNEL = 'SAVE_CHANNEL'
+const ACTIVE_CHANNEL_CHANGED = 'ACTIVE_CHANNEL_CHANGED'
+const GET_CHANNELS = 'GET_CHANNELS'
 
 const initialState = {
-  channelList: {}
+  channelList: {},
+  channels: [],
+  activeChannel: ''
 }
-
-// const message = {
-//   userId: 1,
-//   id: bnjJH31,
-//   text: '',
-//   time: '2021-01-01-16-00-00',
-//   meta: {}
-// }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case ADD_NEW_CHANNEL: {
+    case GET_CHANNELS: {
       return {
         ...state,
-        channelList: action.createdChannels
+        channelList: action.channelList,
+        activeChannel: action.channelId
+      }
+    }
+    case SAVE_CHANNEL:
+    case ACTIVE_CHANNEL_CHANGED: {
+      return {
+        ...state,
+        channelList: action.updatedChannelList,
+        activeChannel: action.channelId
       }
     }
     default: {
@@ -26,25 +34,66 @@ export default (state = initialState, action) => {
   }
 }
 
-export function addNewChannel(chanObj) {
+let socket
+if (SOCKETS_ENABLE === true) {
+  // eslint-disable-next-line
+  socket = io(`${window.location.origin}`, {
+    path: '/ws'
+  })
+}
+
+export function getChannels() {
+  return (dispatch) => {
+    socket.on('channelListForUser', (channelList) => {
+      dispatch({
+        type: GET_CHANNELS,
+        channelList,
+        channelId: 'test-id'
+      })
+    })
+  }
+}
+
+const updateListOfChannelsObj = (channelList, channelId) => {
+  return Object.keys(channelList).reduce((acc, rec) => {
+    return {
+      ...acc,
+      [rec]: { ...channelList[rec], active: channelList[rec].id === channelId }
+    }
+  }, {})
+}
+
+export function saveChannel(name, desc) {
+  const slicedName = name[name.length - 1] === '-' ? name.slice(0, name.length - 1) : name
+  const newChannel = {
+    id: nanoid(),
+    name: slicedName || 'new-channel',
+    description: desc || '',
+    userList: [],
+    channelMessages: []
+  }
+  return (dispatch) => {
+    socket.emit('addChannel', { ...newChannel })
+    socket.on('channelList', (channelList) => {
+      console.log('Message from server.', channelList)
+      const updatedChannelList = updateListOfChannelsObj(channelList, newChannel.id)
+      dispatch({
+        type: SAVE_CHANNEL,
+        updatedChannelList,
+        channelId: newChannel.id
+      })
+    })
+  }
+}
+
+export function changeActiveChannel(channelId) {
   return (dispatch, getState) => {
-    const store = getState()
-    const createdChannels = store.settings.channels.reduce((acc, rec) => {
-      console.log('rec.id', rec.id)
-      return {
-        ...acc,
-        [rec.id]: {
-          name: rec.name,
-          description: chanObj?.description || '',
-          userList: [],
-          channelMessages: []
-        }
-      }
-    }, {})
-    console.log('createdChannels: ', createdChannels)
+    const { channelList } = getState().channels
+    const updatedChannelList = updateListOfChannelsObj(channelList, channelId)
     dispatch({
-      type: ADD_NEW_CHANNEL,
-      createdChannels
+      type: ACTIVE_CHANNEL_CHANGED,
+      updatedChannelList,
+      channelId
     })
   }
 }

@@ -5,6 +5,14 @@ const SEND_MESSAGE = 'SEND_MESSAGE'
 const CURRENT_MESSAGE = 'CURRENT_MESSAGE'
 const SET_NICK_NAME = 'SET_NICK_NAME'
 
+// const message = {
+//   userId: 1,
+//   id: bnjJH31,
+//   text: '',
+//   time: '2021-01-01-16-00-00',
+//   meta: {}
+// }
+
 const initialState = {
   messageHistory: [],
   userMessage: '',
