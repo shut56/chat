@@ -1,8 +1,7 @@
 import { io } from 'socket.io-client'
 
-const GET_MESSAGES = 'GET_MESSAGES'
+export const GET_MESSAGES = 'GET_MESSAGES'
 const SEND_MESSAGE = 'SEND_MESSAGE'
-const CURRENT_MESSAGE = 'CURRENT_MESSAGE'
 const SET_NICK_NAME = 'SET_NICK_NAME'
 
 // const message = {
@@ -15,7 +14,6 @@ const SET_NICK_NAME = 'SET_NICK_NAME'
 
 const initialState = {
   messageHistory: [],
-  userMessage: '',
   nickname: 'Pepe'
 }
 
@@ -25,14 +23,7 @@ export default (state = initialState, action) => {
     case SEND_MESSAGE: {
       return {
         ...state,
-        messageHistory: action.msgHistory,
-        userMessage: action.message
-      }
-    }
-    case CURRENT_MESSAGE: {
-      return {
-        ...state,
-        userMessage: action.message
+        messageHistory: action.msgHistory
       }
     }
     case SET_NICK_NAME: {
@@ -54,40 +45,35 @@ if (SOCKETS_ENABLE === true) {
   })
 }
 
-export function getMessageHistory() {
+export function getMessageHistory(chan) {
   return (dispatch) => {
-    socket.on('messageHistory', (arg) => {
+    socket.emit('getMessageHistoryFromChannel', { channel: chan })
+    socket.on('messageHistory', (channelHistory) => {
+      console.log('getMessageHistory(chan)')
       dispatch({
         type: GET_MESSAGES,
-        msgHistory: arg
+        msgHistory: channelHistory
       })
     })
   }
 }
 
-export function sendMessage() {
+export function sendMessage(chan, usrMsg) {
   return (dispatch, getState) => {
-    const { userMessage, nickname } = getState().messages
-    const message = userMessage.trim()
+    const { nickname } = getState().messages
+    const message = usrMsg.trim()
 
     if (message.length > 0) {
-      socket.emit('newMessage', { name: nickname, text: message })
-      socket.on('messageHistory', (arg) => {
+      socket.emit('newMessage', { channel: chan, name: nickname, text: message })
+      socket.on('messageHistory', (channelHistory) => {
+        console.log('sendMessage(chan, usrMsg)')
         dispatch({
           type: SEND_MESSAGE,
-          msgHistory: arg,
-          message: ''
+          msgHistory: channelHistory
         })
       })
     }
   }
-}
-
-export function getCurrentMessage(message) {
-  return ({
-    type: CURRENT_MESSAGE,
-    message
-  })
 }
 
 export function setNickname(name) {

@@ -19,7 +19,9 @@ server.use(express.json({ limit: '50kb' }))
 //   next()
 // })
 
-let msgHist = []
+let msgHist = {
+  'test-id': []
+}
 let users = []
 let channels = {
   'test-id': {
@@ -49,6 +51,7 @@ if (config.socketsEnabled) {
   })
 
   socketIO.on('connection', (socket) => {
+    console.log('Connect', socket.id)
     console.log(`Hello ${socket.id}`)
 
     socket.on('setName', (name) => {
@@ -58,22 +61,29 @@ if (config.socketsEnabled) {
       socketIO.to(socket.id).emit('setName', nameWithTag)
     })
 
-    socketIO.to(socket.id).emit('messageHistory', msgHist)
+    socket.on('getMessageHistoryFromChannel', ({ channel }) => {
+      socketIO.to(socket.id).emit('messageHistory', msgHist[channel])
+    })
 
     socket.on('newMessage', (arg) => {
+      const { channel, name, text } = arg
       console.log('New message!')
-      msgHist.push(arg)
-      socketIO.emit('messageHistory', msgHist)
+      const time = new Date()
+      console.log(time)
+      msgHist[channel] = [...msgHist[channel], { name, text, time }]
+      socketIO.emit('messageHistory', msgHist[channel])
     })
 
     socket.on('addChannel', (channel) => {
       console.log('New channel created')
       channels = {...channels, [channel.id]: { ...channel }}
+      msgHist = {...msgHist, [channel.id]: [] }
       console.log('Channels: ', channels)
       socketIO.emit('channelList', channels)
     })
 
     socketIO.to(socket.id).emit('channelListForUser', channels)
+    console.log('Send history', socket.id)
 
     socket.on('disconnect', () => {
       console.log(`Bye-bye ${socket.id}`)

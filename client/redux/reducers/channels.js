@@ -1,6 +1,8 @@
 import { nanoid } from 'nanoid'
 import { io } from 'socket.io-client'
 
+import { GET_MESSAGES } from './messages'
+
 const SAVE_CHANNEL = 'SAVE_CHANNEL'
 const ACTIVE_CHANNEL_CHANGED = 'ACTIVE_CHANNEL_CHANGED'
 const GET_CHANNELS = 'GET_CHANNELS'
@@ -90,6 +92,13 @@ export function changeActiveChannel(channelId) {
   return (dispatch, getState) => {
     const { channelList } = getState().channels
     const updatedChannelList = updateListOfChannelsObj(channelList, channelId)
+    socket.emit('getMessageHistoryFromChannel', { channel: channelId })
+    socket.on('messageHistory', (arg) => {
+      dispatch({
+        type: GET_MESSAGES,
+        msgHistory: arg
+      })
+    })
     dispatch({
       type: ACTIVE_CHANNEL_CHANGED,
       updatedChannelList,

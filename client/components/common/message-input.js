@@ -1,24 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { sendMessage, getCurrentMessage } from '../../redux/reducers/messages'
+import { sendMessage } from '../../redux/reducers/messages'
 
 const MessageInput = () => {
   const dispatch = useDispatch()
-  const userMessage = useSelector((store) => store.messages.userMessage)
+  const [userMessage, setUserMessage] = useState('')
+  const { activeChannel } = useSelector((store) => store.channels)
   // const nickname = useSelector((store) => store.messages.nickname)
 
   const Submit = (key) => {
     if (key === 13) {
-      dispatch(sendMessage())
+      dispatch(sendMessage(activeChannel, userMessage))
+      setUserMessage('')
     }
-    return () => {
-      dispatch(sendMessage())
-    }
+    // return () => {
+    //   dispatch(sendMessage(activeChannel, userMessage))
+    //   setUserMessage('')
+    // }
   }
 
   const onChangeMessage = (msg) => {
-    return dispatch(getCurrentMessage(msg))
+    return setUserMessage(msg)
   }
 
   return (
