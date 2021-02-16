@@ -1,24 +1,30 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { setNickname } from '../redux/reducers/messages'
+import { updateLogin, updatePassword, signIn } from '../redux/reducers/auth'
 
-const LoginScreen = ({ toggled }) => {
+const LoginScreen = () => {
   const dispatch = useDispatch()
-  const [name, setName] = useState('')
-
-  const onClick = () => {
-    dispatch(setNickname(name))
-    toggled(false)
-  }
-
+  const { login, password } = useSelector((s) => s.auth)
   return (
-    <div className="bg-gray-200">
-      <div className="flex items-center justify-center h-screen">
-        <div className="flex flex-col bg-indigo-800 rounded-lg text-white font-bold p-4 items-center">
-          <div className="mb-2">Enter your name</div>
-          <input type="text" className="text-black my-2" onChange={(e) => setName(e.target.value)} value={name} />
-          <button type="button" className="border rounded mt-2 px-4 py-2" onClick={onClick}>Start</button>
+    <div className="flex justify-center bg-gray-800 text-gray-400 w-full h-screen">
+      <div className="bg-gray-700 shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col w-max self-center">
+        <div className="mb-4">
+          <label className="block text-sm font-bold mb-2" htmlFor="username">
+            Username
+          </label>
+          <input onChange={(e) => dispatch(updateLogin(e.target.value))} value={login} className="focus:outline-none shadow appearance-none border rounded w-full py-2 px-3 text-black" id="username" type="text" name="username" placeholder="Enter username..." />
+        </div>
+        <div className="mb-6">
+          <label className="block text-sm font-bold mb-2" htmlFor="password">
+            Password
+          </label>
+          <input onChange={(e) => dispatch(updatePassword(e.target.value))} value={password} className="focus:outline-none shadow appearance-none border border-red rounded w-full py-2 px-3 text-black mb-3" id="password" name="passowrd" type="password" placeholder="Enter password..." />
+        </div>
+        <div className="flex items-center justify-center">
+          <button onClick={() => dispatch(signIn())} className="bg-blue hover:bg-blue-dark text-gray-400 hover:text-white font-bold py-2 px-4 border rounded self-center" type="button">
+            Sign In
+          </button>
         </div>
       </div>
     </div>

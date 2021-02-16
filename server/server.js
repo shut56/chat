@@ -1,9 +1,10 @@
 import express from 'express'
 import http from 'http'
 import io from 'socket.io'
-import mongoose from 'mongoose'
+// import mongoose from 'mongoose'
 
 import config from './config'
+import mongooseService from './services/mongoose'
 import { userModel } from './mongodb/models'
 
 const server = express()
@@ -34,6 +35,11 @@ let tag = 1
 
 server.get('/', (req, res) => {
   res.send('Express server')
+})
+
+server.post('/api/v1/auth', (req, res) => {
+  console.log(req.body)
+  res.json({ token: 'OK' })
 })
 
 server.get('/api/history', (req, res) => {
@@ -93,7 +99,8 @@ if (config.socketsEnabled) {
 
 if (config.mongoEnabled) {
   console.log('MongoDB Enabled: ', config.mongoEnabled)
-  mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+  // mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+  mongooseService.connect()
 
   server.post('/api/v1/user', (req, res) => {
     const newUser = req.body
