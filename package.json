@@ -10,15 +10,19 @@
     "watch:client": "webpack serve --config webpack.dev.config.js",
     "build:client": "rm -rf dist & webpack --config webpack.dev.config.js",
     "lint": "eslint ./client/**/**.js ./server/**/**.js",
-    "start": "node start.js"
+    "start": "node --trace-deprecation start.js"
   },
   "dependencies": {
     "@babel/register": "^7.12.10",
     "axios": "^0.21.1",
+    "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.9",
     "nanoid": "^3.1.20",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
@@ -31,8 +35,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
+    "@babel/plugin-transform-runtime": "^7.12.15",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
+    "@babel/runtime": "^7.12.13",
     "autoprefixer": "^10.2.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",

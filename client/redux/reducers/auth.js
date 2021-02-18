@@ -5,7 +5,7 @@ const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
 const LOGIN = 'LOGIN'
 
 const initialState = {
-  login: '',
+  email: '',
   password: '',
   token: ''
 }
@@ -15,7 +15,7 @@ export default (state = initialState, action) => {
     case UPDATE_LOGIN: {
       return {
         ...state,
-        login: action.name
+        email: action.email
       }
     }
     case UPDATE_PASSWORD: {
@@ -27,7 +27,8 @@ export default (state = initialState, action) => {
     case LOGIN: {
       return {
         ...state,
-        token: action.token
+        token: action.token,
+        password: ''
       }
     }
     default: {
@@ -36,10 +37,10 @@ export default (state = initialState, action) => {
   }
 }
 
-export function updateLogin(name) {
+export function updateLogin(email) {
   return ({
     type: UPDATE_LOGIN,
-    name
+    email
   })
 }
 
@@ -52,12 +53,12 @@ export function updatePassword(pass) {
 
 export function signIn() {
   return (dispatch, getState) => {
-    const { login, password } = getState().auth
+    const { email, password } = getState().auth
     axios({
       url: '/api/v1/auth',
       method: 'post',
       data: {
-        login,
+        email,
         password
       }
     })

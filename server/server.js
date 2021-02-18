@@ -1,24 +1,28 @@
 import express from 'express'
 import http from 'http'
 import io from 'socket.io'
-// import mongoose from 'mongoose'
+import passport from 'passport'
+import jwt from 'jsonwebtoken'
 
 import config from './config'
 import mongooseService from './services/mongoose'
-import { userModel } from './mongodb/models'
+import passportJWT from './services/passport'
+import userModel from './mongodb/models'
 
 const server = express()
 const httpServer = http.createServer(server)
 
 const PORT = config.port
 
-server.use('/static', express.static(`${__dirname}/public`))
+const middleware = [
+  express.json({ limit: '100kb' }),
+  passport.initialize()
+]
 
-server.use(express.json({ limit: '50kb' }))
-// server.use((req, res, next) => {
-//   console.log(`${req.method} ${req.url} from ${req.ip}`)
-//   next()
-// })
+middleware.forEach((it) => server.use(it))
+
+server.use('/static', express.static(`${__dirname}/public`))
+passport.use('jwt', passportJWT)
 
 let msgHist = {
   'test-id': []
@@ -35,11 +39,6 @@ let tag = 1
 
 server.get('/', (req, res) => {
   res.send('Express server')
-})
-
-server.post('/api/v1/auth', (req, res) => {
-  console.log(req.body)
-  res.json({ token: 'OK' })
 })
 
 server.get('/api/history', (req, res) => {
@@ -99,13 +98,26 @@ if (config.socketsEnabled) {
 
 if (config.mongoEnabled) {
   console.log('MongoDB Enabled: ', config.mongoEnabled)
-  // mongoose.connect(config.mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   mongooseService.connect()
 
-  server.post('/api/v1/user', (req, res) => {
-    const newUser = req.body
-    userModel.create(newUser)
-    res.send('User added')
+  server.post('/api/v1/registration', (req, res) => {
+    userModel.create(req.body)
+    res.json({ registration: 'complete' })
+  })
+
+  server.post('/api/v1/auth', async (req, res) => {
+    console.log(req.body)
+    try {
+      const user = await userModel.findAndValidateUser(req.body)
+      const payload = { uid: user.id }
+      const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
+      user.password = undefined
+      console.log(`${user.email} logged`)
+      res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 })
+      res.json({ status: 'ok', token, user })
+    } catch (err) {
+      res.json({ status: 'error', error: `${err}` })
+    }
   })
 }
 
