@@ -5,7 +5,7 @@
   "author": "VitalyK",
   "license": "MIT",
   "scripts": {
-    "dev": "yarn run watch:server & yarn run watch:client",
+    "dev": "clear & yarn run watch:server & yarn run watch:client",
     "watch:server": "nodemon start.js",
     "watch:client": "webpack serve --config webpack.dev.config.js",
     "build:client": "rm -rf dist & webpack --config webpack.dev.config.js",
@@ -16,8 +16,11 @@
     "@babel/register": "^7.12.10",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
+    "connected-react-router": "^6.9.1",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "history": "4.10.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.9",
     "nanoid": "^3.1.20",
@@ -31,7 +34,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "socket.io": "^3.0.4",
-    "socket.io-client": "^3.0.4"
+    "socket.io-client": "^3.0.4",
+    "universal-cookie": "^4.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

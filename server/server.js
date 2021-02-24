@@ -1,5 +1,6 @@
 import express from 'express'
 import http from 'http'
+import cookieParser from 'cookie-parser'
 import io from 'socket.io'
 import passport from 'passport'
 import jwt from 'jsonwebtoken'
@@ -8,6 +9,7 @@ import config from './config'
 import mongooseService from './services/mongoose'
 import passportJWT from './services/passport'
 import userModel from './mongodb/models'
+import auth from './middleware/auth'
 
 const server = express()
 const httpServer = http.createServer(server)
@@ -16,13 +18,14 @@ const PORT = config.port
 
 const middleware = [
   express.json({ limit: '100kb' }),
+  cookieParser(),
   passport.initialize()
 ]
 
 middleware.forEach((it) => server.use(it))
 
 server.use('/static', express.static(`${__dirname}/public`))
-passport.use('jwt', passportJWT)
+passport.use('jwt', passportJWT.jwt)
 
 let msgHist = {
   'test-id': []
@@ -100,7 +103,7 @@ if (config.mongoEnabled) {
   console.log('MongoDB Enabled: ', config.mongoEnabled)
   mongooseService.connect()
 
-  server.post('/api/v1/registration', (req, res) => {
+  server.post('/api/v1/register', (req, res) => {
     userModel.create(req.body)
     res.json({ registration: 'complete' })
   })
@@ -119,7 +122,30 @@ if (config.mongoEnabled) {
       res.json({ status: 'error', error: `${err}` })
     }
   })
+
+  server.get('/api/v1/verify', async (req, res) => {
+    try {
+      const jwtUser = jwt.verify(req.cookies.token, config.secret)
+      const user = await userModel.findById(jwtUser.uid)
+      const payload = { uid: user.id }
+      const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
+      user.password = undefined
+      res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 })
+      res.json({ status: 'ok', token, user })
+    } catch (err) {
+      res.json({ status: 'error', error: `${err}` })
+    }
+  })
+
+  server.get('/api/v1/user-info', auth(['admin']), (req, res) => {
+    res.json({ status: 'user-info' })
+  })
 }
+
+server.use('/api/', (req, res) => {
+  res.status(404)
+  res.end()
+})
 
 httpServer.listen(PORT)
 

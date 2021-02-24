@@ -1,13 +1,18 @@
 import axios from 'axios'
+import Cookies from 'universal-cookie'
+import { history } from '..'
 
 const UPDATE_LOGIN = 'UPDATE_LOGIN'
 const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
 const LOGIN = 'LOGIN'
 
+const cookie = new Cookies()
+
 const initialState = {
   email: '',
   password: '',
-  token: ''
+  token: cookie.get('token'),
+  user: {}
 }
 
 export default (state = initialState, action) => {
@@ -28,6 +33,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         token: action.token,
+        user: action.user,
         password: ''
       }
     }
@@ -65,8 +71,32 @@ export function signIn() {
       .then(({ data }) => {
         dispatch({
           type: LOGIN,
-          token: data.token
+          token: data.token,
+          user: data.user
         })
+        history.push('/profile')
+      })
+  }
+}
+
+export function trySignIn() {
+  return (dispatch) => {
+    axios('/api/v1/verify')
+      .then(({ data }) => {
+        dispatch({
+          type: LOGIN,
+          token: data.token,
+          user: data.user
+        })
+      })
+  }
+}
+
+export function tryGetUserInfo() {
+  return () => {
+    axios('/api/v1/user-info')
+      .then(({ data }) => {
+        console.log(data)
       })
   }
 }
