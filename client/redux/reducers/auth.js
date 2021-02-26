@@ -79,6 +79,16 @@ export function signIn() {
   }
 }
 
+export function signOut() {
+  document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+  history.push('/')
+  return {
+    type: LOGIN,
+    token: '',
+    user: ''
+  }
+}
+
 export function trySignIn() {
   return (dispatch) => {
     axios('/api/v1/verify')

@@ -48,6 +48,7 @@ export function getChannels() {
   return (dispatch) => {
     console.log('This is getChannels')
     fetch('/api/history').then(() => console.log('Fetch to Server'))
+    socket.emit('iWantChannels')
     socket.on('channelListForUser', (channelList) => {
       console.log('Get channels from socket.io')
       dispatch({

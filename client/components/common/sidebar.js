@@ -1,6 +1,7 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
 
-import { history } from '../../redux'
+import { signOut } from '../../redux/reducers/auth'
 
 import ServerBlock from './server-block'
 import UserBlock from './user-block'
@@ -9,10 +10,7 @@ import DirectMessages from './direct-messages'
 import Applications from './applications'
 
 const Sidebar = () => {
-  const resetCookie = () => {
-    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT'
-    history.push('/')
-  }
+  const dispatch = useDispatch()
   return (
     <div className="bg-gray-700 text-gray-400 w-60 pb-6 overflow-y-auto h-full">
       <ServerBlock />
@@ -20,7 +18,7 @@ const Sidebar = () => {
       <ChannelsList />
       <DirectMessages />
       <Applications />
-      <button className="flex justify-center mx-4 rounded px-4 py-2 font-bold bg-red-900 text-white w-32" type="button" onClick={() => resetCookie()}>Exit</button>
+      <button className="flex justify-center mx-4 rounded px-4 py-2 font-bold bg-red-900 text-white w-32" type="button" onClick={() => dispatch(signOut())}>Exit</button>
     </div>
   )
 }
