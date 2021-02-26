@@ -91,7 +91,7 @@ if (config.socketsEnabled) {
     })
 
     socketIO.to(socket.id).emit('channelListForUser', channels)
-    console.log('Send history', socket.id)
+    console.log('Send channels & history', socket.id)
 
     socket.on('disconnect', () => {
       console.log(`Bye-bye ${socket.id}`)

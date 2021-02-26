@@ -7,7 +7,7 @@ import store, { history } from '../redux'
 
 import Startup from './startup'
 
-import Home from '../components/home'
+import Channels from '../components/channels'
 import LoginScreen from '../components/login-screen'
 import Main from '../components/main'
 import Profile from '../components/profile'
@@ -16,7 +16,7 @@ const OnlyAnonymousRoute = ({ component: Component, ...rest }) => {
   const { user, token } = useSelector((s) => s.auth)
   const func = (props) => {
     return !!user && !!token ? (
-      <Redirect to="/profile" />
+      <Redirect to="/channels" />
     ) : (
       <Component {...props} />
     )
@@ -44,8 +44,8 @@ const Root = () => {
           <Switch>
             <Route exact path="/" component={() => <Main />} />
             <OnlyAnonymousRoute exact path="/login" component={() => <LoginScreen />} />
+            <PrivateRoute exact path="/channels" component={() => <Channels />} />
             <PrivateRoute exact path="/profile" component={() => <Profile />} />
-            <Route exact path="/home" component={() => <Home />} />
           </Switch>
         </Startup>
       </ConnectedRouter>

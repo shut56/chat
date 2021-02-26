@@ -74,7 +74,7 @@ export function signIn() {
           token: data.token,
           user: data.user
         })
-        history.push('/profile')
+        history.push('/channels')
       })
   }
 }

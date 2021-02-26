@@ -6,7 +6,7 @@ import ChatContent from './common/chat-content'
 import ChannelCreator from './common/channel-creator'
 import BlackScreen from './common/black-screen'
 
-const Home = () => {
+const Channels = () => {
   const channelCreatorToggle = useSelector((s) => s.secondary.channelCreatorToggle)
   const noChannels = useSelector((s) => s.channels.activeChannel) !== ''
   return (
@@ -19,4 +19,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Channels
