@@ -62,18 +62,18 @@ if (config.socketsEnabled) {
     console.log('Connect', socket.id)
     console.log(`Hello ${socket.id}`)
 
-    socket.on('setName', (name) => {
+    socket.on('SET_NAME', (name) => {
       const nameWithTag = `${name}#${tag}`
       tag += 1
       users.push(nameWithTag)
       socketIO.to(socket.id).emit('setName', nameWithTag)
     })
 
-    socket.on('getMessageHistoryFromChannel', ({ channel }) => {
+    socket.on('GET_MESSAGE_HISTORY_FROM_CHANNEL', (channel) => {
       socketIO.to(socket.id).emit('messageHistory', msgHist[channel])
     })
 
-    socket.on('newMessage', (arg) => {
+    socket.on('SEND_NEW_MESSAGE', (arg) => {
       const { channel, name, text } = arg
       console.log('New message!')
       const time = new Date()
@@ -82,7 +82,7 @@ if (config.socketsEnabled) {
       socketIO.emit('messageHistory', msgHist[channel])
     })
 
-    socket.on('addChannel', (channel) => {
+    socket.on('ADD_NEW_CHANNEL', (channel) => {
       console.log('New channel created')
       channels = {...channels, [channel.id]: { ...channel }}
       msgHist = {...msgHist, [channel.id]: [] }
@@ -90,7 +90,7 @@ if (config.socketsEnabled) {
       socketIO.emit('channelList', channels)
     })
 
-    socket.on('iWantChannels', () => {
+    socket.on('GET_CHANNELS_FROM_SERVER', () => {
       socketIO.to(socket.id).emit('channelListForUser', channels)
       console.log('Send channels & history', socket.id)
     })

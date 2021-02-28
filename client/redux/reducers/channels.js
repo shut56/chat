@@ -1,11 +1,8 @@
 import { nanoid } from 'nanoid'
-import { io } from 'socket.io-client'
 
-import { GET_MESSAGES } from './messages'
-
-const SAVE_CHANNEL = 'SAVE_CHANNEL'
-const ACTIVE_CHANNEL_CHANGED = 'ACTIVE_CHANNEL_CHANGED'
-const GET_CHANNELS = 'GET_CHANNELS'
+export const SAVE_CHANNEL = 'SAVE_CHANNEL'
+export const ACTIVE_CHANNEL_CHANGED = 'ACTIVE_CHANNEL_CHANGED'
+export const GET_CHANNELS = 'GET_CHANNELS'
 
 const initialState = {
   channelList: {},
@@ -36,38 +33,23 @@ export default (state = initialState, action) => {
   }
 }
 
-let socket
-if (SOCKETS_ENABLE === true) {
-  // eslint-disable-next-line
-  socket = io(`${window.location.origin}`, {
-    path: '/ws'
-  })
-}
-
-export function getChannels() {
-  return (dispatch) => {
-    console.log('This is getChannels')
-    fetch('/api/history').then(() => console.log('Fetch to Server'))
-    socket.emit('iWantChannels')
-    socket.on('channelListForUser', (channelList) => {
-      console.log('Get channels from socket.io')
-      dispatch({
-        type: GET_CHANNELS,
-        channelList,
-        channelId: 'test-id'
-      })
-      console.log(channelList)
-    })
-  }
-}
-
-const updateListOfChannelsObj = (channelList, channelId) => {
+export const updateListOfChannelsObj = (channelList, channelId) => {
   return Object.keys(channelList).reduce((acc, rec) => {
     return {
       ...acc,
       [rec]: { ...channelList[rec], active: channelList[rec].id === channelId }
     }
   }, {})
+}
+
+export function getChannels() {
+  return (dispatch) => {
+    console.log('This is getChannels')
+    fetch('/api/history').then(() => console.log('Fetch to Server'))
+    dispatch({
+      type: 'GET_CHANNELS_FROM_SERVER'
+    })
+  }
 }
 
 export function saveChannel(name, desc) {
@@ -80,34 +62,25 @@ export function saveChannel(name, desc) {
     channelMessages: []
   }
   return (dispatch) => {
-    socket.emit('addChannel', { ...newChannel })
-    socket.on('channelList', (channelList) => {
-      console.log('Message from server.', channelList)
-      const updatedChannelList = updateListOfChannelsObj(channelList, newChannel.id)
-      dispatch({
-        type: SAVE_CHANNEL,
-        updatedChannelList,
-        channelId: newChannel.id
-      })
+    dispatch({
+      type: 'ADD_NEW_CHANNEL',
+      payload: { ...newChannel }
     })
   }
 }
 
-export function changeActiveChannel(channelId) {
+export function changeActiveChannel(channel) {
   return (dispatch, getState) => {
     const { channelList } = getState().channels
-    const updatedChannelList = updateListOfChannelsObj(channelList, channelId)
-    socket.emit('getMessageHistoryFromChannel', { channel: channelId })
-    socket.on('messageHistory', (arg) => {
-      dispatch({
-        type: GET_MESSAGES,
-        msgHistory: arg
-      })
+    const updatedChannelList = updateListOfChannelsObj(channelList, channel)
+    dispatch({
+      type: 'GET_MESSAGE_HISTORY_FROM_CHANNEL',
+      payload: channel
     })
     dispatch({
       type: ACTIVE_CHANNEL_CHANGED,
       updatedChannelList,
-      channelId
+      channelId: channel
     })
   }
 }

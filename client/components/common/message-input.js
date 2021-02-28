@@ -8,17 +8,12 @@ const MessageInput = () => {
   const [userMessage, setUserMessage] = useState('')
   const { activeChannel } = useSelector((store) => store.channels)
   const { name } = useSelector((s) => s.channels.channelList[activeChannel])
-  // const nickname = useSelector((store) => store.messages.nickname)
 
   const Submit = (key) => {
     if (key === 13) {
       dispatch(sendMessage(activeChannel, userMessage))
       setUserMessage('')
     }
-    // return () => {
-    //   dispatch(sendMessage(activeChannel, userMessage))
-    //   setUserMessage('')
-    // }
   }
 
   const onChangeMessage = (msg) => {
