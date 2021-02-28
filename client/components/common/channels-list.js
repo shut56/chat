@@ -5,7 +5,6 @@ import { fade } from '../../redux/reducers/secondary'
 import { getChannels, changeActiveChannel } from '../../redux/reducers/channels'
 
 const ChannelsList = () => {
-  console.log('Render Channel List')
   const dispatch = useDispatch()
   const { channelList } = useSelector((s) => s.channels)
   const isActive = (bool) => bool && 'bg-gray-600'
@@ -15,7 +14,6 @@ const ChannelsList = () => {
   }
 
   useEffect(() => {
-    console.log('Hello!')
     dispatch(getChannels())
     return () => {}
   }, [dispatch])

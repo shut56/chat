@@ -1,5 +1,4 @@
 export const GET_MESSAGES = 'GET_MESSAGES'
-export const SEND_MESSAGE = 'SEND_MESSAGE'
 export const SET_NICK_NAME = 'SET_NICK_NAME'
 
 const initialState = {
@@ -9,8 +8,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case GET_MESSAGES:
-    case SEND_MESSAGE: {
+    case GET_MESSAGES: {
       return {
         ...state,
         messageHistory: action.msgHistory

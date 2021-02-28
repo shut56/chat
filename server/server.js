@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import io from 'socket.io'
 import passport from 'passport'
 import jwt from 'jsonwebtoken'
+import { nanoid } from 'nanoid'
 
 import config from './config'
 import mongooseService from './services/mongoose'
@@ -59,40 +60,63 @@ if (config.socketsEnabled) {
   })
 
   socketIO.on('connection', (socket) => {
-    console.log('Connect', socket.id)
     console.log(`Hello ${socket.id}`)
 
-    socket.on('SET_NAME', (name) => {
-      const nameWithTag = `${name}#${tag}`
-      tag += 1
-      users.push(nameWithTag)
-      socketIO.to(socket.id).emit('setName', nameWithTag)
-    })
-
-    socket.on('GET_MESSAGE_HISTORY_FROM_CHANNEL', (channel) => {
-      socketIO.to(socket.id).emit('messageHistory', msgHist[channel])
-    })
-
-    socket.on('SEND_NEW_MESSAGE', (arg) => {
-      const { channel, name, text } = arg
-      console.log('New message!')
-      const time = new Date()
-      console.log(time)
-      msgHist[channel] = [...msgHist[channel], { name, text, time }]
-      socketIO.emit('messageHistory', msgHist[channel])
-    })
-
-    socket.on('ADD_NEW_CHANNEL', (channel) => {
-      console.log('New channel created')
-      channels = {...channels, [channel.id]: { ...channel }}
-      msgHist = {...msgHist, [channel.id]: [] }
-      console.log('Channels: ', channels)
-      socketIO.emit('channelList', channels)
-    })
-
-    socket.on('GET_CHANNELS_FROM_SERVER', () => {
-      socketIO.to(socket.id).emit('channelListForUser', channels)
-      console.log('Send channels & history', socket.id)
+    socket.on('SOCKET_SEND', (action) => {
+      switch (action.type) {
+        case 'GET_CHANNELS_FROM_SERVER': {
+          socketIO.to(socket.id).emit('SOCKET_IO', {
+            type: 'GET_CHANNELS_FROM_SERVER',
+            payload: channels
+          })
+          console.log('Send channels & history', socket.id)
+          break
+        }
+        case 'SET_NAME': {
+          const nameWithTag = `${action.payload.name}#${tag}`
+          tag += 1
+          users.push(nameWithTag)
+          socketIO.to(socket.id).emit('SOCKET_IO', {
+            type: 'SET_NAME',
+            payload: nameWithTag
+          })
+          break
+        }
+        case 'GET_MESSAGE_HISTORY_FROM_CHANNEL': {
+          socketIO.to(socket.id).emit('SOCKET_IO', {
+            type: 'GET_MESSAGE_HISTORY_FROM_CHANNEL',
+            payload: msgHist[action.payload]
+          })
+          break
+        }
+        case 'SEND_NEW_MESSAGE': {
+          const { channel, name, text } = action.payload
+          console.log('New message!')
+          const time = new Date()
+          console.log(time)
+          msgHist[channel] = [...msgHist[channel], { name, text, time }]
+          socketIO.emit('SOCKET_IO', {
+            type: 'SEND_NEW_MESSAGE',
+            payload: msgHist[channel]
+          })
+          break
+        }
+        case 'ADD_NEW_CHANNEL': {
+          const channel = { ...action.payload, id: nanoid() }
+          console.log('New channel created')
+          channels = { ...channels, [channel.id]: { ...channel } }
+          msgHist = { ...msgHist, [channel.id]: [] }
+          console.log('Channels: ', channels)
+          socketIO.emit('SOCKET_IO', {
+            type: 'ADD_NEW_CHANNEL',
+            payload: { channels, id: channel.id }
+          })
+          break
+        }
+        default: {
+          console.log('Client Message Received')
+        }
+      }
     })
 
     socket.on('disconnect', () => {

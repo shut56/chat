@@ -1,7 +1,6 @@
 import React from 'react'
 
 const Message = ({ message }) => {
-  console.log('NOW: ', message.time)
   const TIME = `${new Date(message.time).toLocaleTimeString()}`
   return (
     <div className="flex items-start mb-4">

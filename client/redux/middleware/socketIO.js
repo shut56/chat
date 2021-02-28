@@ -4,8 +4,16 @@ import {
   GET_CHANNELS, SAVE_CHANNEL, updateListOfChannelsObj
 } from '../reducers/channels'
 import {
-  GET_MESSAGES, SEND_MESSAGE, SET_NICK_NAME
+  GET_MESSAGES, // SET_NICK_NAME
 } from '../reducers/messages'
+
+const actionTypes = [
+  'GET_CHANNELS_FROM_SERVER',
+  'ADD_NEW_CHANNEL',
+  'GET_MESSAGE_HISTORY_FROM_CHANNEL',
+  'SEND_NEW_MESSAGE',
+  'SET_NAME'
+]
 
 const socketIOMiddleware = () => {
   console.log('- - - socketIOMiddleware is online! - - -')
@@ -15,74 +23,45 @@ const socketIOMiddleware = () => {
     socket = io(`${window.location.origin}`, { path: '/ws' })
     const { dispatch } = store
 
-    socket.on('messageHistory', (message) => {
-      dispatch({
-        type: 'SOCKET_MESSAGE_RECEIVED',
-        payload: message
-      })
-      console.log('Message Received')
-    })
-
-    return (next) => (action) => {
-      switch (action.type) {
+    socket.on('SOCKET_IO', (message) => {
+      console.log('getChannels', message)
+      switch (message.type) {
         case 'GET_CHANNELS_FROM_SERVER': {
-          socket.emit(action.type)
-          socket.on('channelListForUser', (channelList) => {
-            console.log('Get channels from socket.io')
-            dispatch({
-              type: GET_CHANNELS,
-              channelList,
-              channelId: 'test-id'
-            })
+          console.log('Get channels from socket.io')
+          dispatch({
+            type: GET_CHANNELS,
+            channelList: message.payload,
+            channelId: 'test-id'
+          })
+          break
+        }
+        case 'GET_MESSAGE_HISTORY_FROM_CHANNEL':
+        case 'SEND_NEW_MESSAGE': {
+          dispatch({
+            type: GET_MESSAGES,
+            msgHistory: message.payload
           })
           break
         }
         case 'ADD_NEW_CHANNEL': {
-          socket.emit(action.type, action.payload)
-          socket.on('channelList', (channelList) => {
-            console.log(action.payload)
-            const newChannel = action.payload
-            const updatedChannelList = updateListOfChannelsObj(channelList, newChannel.id)
-            dispatch({
-              type: SAVE_CHANNEL,
-              updatedChannelList,
-              channelId: newChannel.id
-            })
+          const { channels, id } = message.payload
+          const updatedChannelList = updateListOfChannelsObj(channels, id)
+          dispatch({
+            type: SAVE_CHANNEL,
+            updatedChannelList,
+            channelId: id
           })
           break
         }
-        case 'GET_MESSAGE_HISTORY_FROM_CHANNEL': {
-          socket.emit(action.type, action.payload)
-          socket.on('messageHistory', (arg) => {
-            dispatch({
-              type: GET_MESSAGES,
-              msgHistory: arg
-            })
-          })
-          break
+        default: {
+          console.log('Server Message Received')
         }
-        case 'SEND_NEW_MESSAGE': {
-          socket.emit(action.type, action.payload)
-          socket.on('messageHistory', (channelHistory) => {
-            dispatch({
-              type: SEND_MESSAGE,
-              msgHistory: channelHistory
-            })
-          })
-          break
-        }
-        case 'SET_NAME': {
-          socket.emit(action.type, action.payload)
-          socket.on('setName', (userName) => {
-            dispatch({
-              type: SET_NICK_NAME,
-              name: userName
-            })
-          })
-          break
-        }
-        default:
-          return next(action)
+      }
+    })
+
+    return (next) => (action) => {
+      if (actionTypes.includes(action.type)) {
+        socket.emit('SOCKET_SEND', action)
       }
       return next(action)
     }
