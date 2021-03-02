@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { createChannel } from '../../redux/reducers/secondary'
-import { setNewChannelName, saveChannel } from '../../redux/reducers/settings'
-import { addNewChannel } from '../../redux/reducers/channels'
+import { fade } from '../../redux/reducers/secondary'
+import { setNewChannelName } from '../../redux/reducers/settings'
+import { saveChannel } from '../../redux/reducers/channels'
 
 const ChannelCreator = () => {
   const dispatch = useDispatch()
@@ -12,11 +12,10 @@ const ChannelCreator = () => {
 
   const onClick = (e) => {
     if (e.target.id === 'create-btn') {
-      dispatch(saveChannel(newChannelName))
-      dispatch(addNewChannel({ description }))
+      dispatch(saveChannel(newChannelName, description))
     }
     dispatch(setNewChannelName())
-    dispatch(createChannel(false))
+    dispatch(fade(false))
   }
 
   return (

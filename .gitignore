@@ -9,3 +9,6 @@ dist
 
 # Yarn
 yarn-error.log
+
+# Public
+server/public

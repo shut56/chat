@@ -1,23 +1,28 @@
-const ADD_NEW_CHANNEL = 'ADD_NEW_CHANNEL'
+export const SAVE_CHANNEL = 'SAVE_CHANNEL'
+export const ACTIVE_CHANNEL_CHANGED = 'ACTIVE_CHANNEL_CHANGED'
+export const GET_CHANNELS = 'GET_CHANNELS'
 
 const initialState = {
-  channelList: {}
+  channelList: {},
+  channels: [],
+  activeChannel: ''
 }
-
-// const message = {
-//   userId: 1,
-//   id: bnjJH31,
-//   text: '',
-//   time: '2021-01-01-16-00-00',
-//   meta: {}
-// }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case ADD_NEW_CHANNEL: {
+    case GET_CHANNELS: {
       return {
         ...state,
-        channelList: action.createdChannels
+        channelList: action.channelList,
+        activeChannel: action.channelId
+      }
+    }
+    case SAVE_CHANNEL:
+    case ACTIVE_CHANNEL_CHANGED: {
+      return {
+        ...state,
+        channelList: action.updatedChannelList,
+        activeChannel: action.channelId
       }
     }
     default: {
@@ -26,24 +31,52 @@ export default (state = initialState, action) => {
   }
 }
 
-export function addNewChannel(chanObj) {
-  return (dispatch, getState) => {
-    const store = getState()
-    const createdChannels = store.settings.channels.reduce((acc, rec) => {
-      return {
-        ...acc,
-        [rec.id]: {
-          name: rec.name,
-          description: chanObj.description,
-          userList: [],
-          channelMessages: []
-        }
-      }
-    }, {})
-    console.log(createdChannels)
+export function getChannels() {
+  return (dispatch) => {
     dispatch({
-      type: ADD_NEW_CHANNEL,
-      createdChannels
+      type: 'GET_CHANNELS_FROM_SERVER',
+      payload: 'get channels'
+    })
+  }
+}
+
+export function saveChannel(name, desc) {
+  const slicedName = name[name.length - 1] === '-' ? name.slice(0, name.length - 1) : name
+  const newChannel = {
+    name: slicedName || 'new-channel',
+    description: desc || '',
+    userList: [],
+    channelMessages: []
+  }
+  return (dispatch) => {
+    dispatch({
+      type: 'ADD_NEW_CHANNEL',
+      payload: { ...newChannel }
+    })
+  }
+}
+
+export const updateListOfChannelsObj = (channelList, channelId) => {
+  return Object.keys(channelList).reduce((acc, rec) => {
+    return {
+      ...acc,
+      [rec]: { ...channelList[rec], active: channelList[rec].id === channelId }
+    }
+  }, {})
+}
+
+export function changeActiveChannel(channel) {
+  return (dispatch, getState) => {
+    const { channelList } = getState().channels
+    const updatedChannelList = updateListOfChannelsObj(channelList, channel)
+    dispatch({
+      type: 'GET_MESSAGE_HISTORY_FROM_CHANNEL',
+      payload: channel
+    })
+    dispatch({
+      type: ACTIVE_CHANNEL_CHANGED,
+      updatedChannelList,
+      channelId: channel
     })
   }
 }

@@ -1,35 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React from 'react'
 
-import LoginScreen from './login-screen'
-import ChatLine from './chat-line'
-
-import { getMessageHistory } from '../redux/reducers/messages'
+import { history } from '../redux'
 
 const Main = () => {
-  const [toggle, setToggle] = useState(true)
-  const dispatch = useDispatch()
-  const messageHistory = useSelector((store) => store.messages.messageHistory)
-
-  useEffect(() => {
-    dispatch(getMessageHistory())
-  }, [dispatch])
+  const enter = () => {
+    history.push('/channels')
+  }
   return (
     <div>
-      {toggle && <LoginScreen toggled={setToggle} />}
-      <div className="flex flex-col w-full">
-        <div className="font-bold">Pepe&apos;s Chat</div>
-        <div className="flex mx-2">
-          <ul id="messages">
-            {messageHistory.map((message, id) => {
-              return (
-                <li key={`${message.name}${id}`}>{`${message.name}: ${message.text}`}</li>
-              )
-            })}
-          </ul>
-        </div>
-        {!toggle && <ChatLine />}
-      </div>
+      <div className="px-4 mb-3 font-sans font-bold">This is Chat</div>
+      <button className="flex justify-center mx-4 rounded px-4 py-2 font-bold bg-red-900 text-white w-32" type="button" onClick={() => enter()}>Login</button>
     </div>
   )
 }
