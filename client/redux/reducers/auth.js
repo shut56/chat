@@ -5,6 +5,8 @@ import { history } from '..'
 const UPDATE_LOGIN = 'UPDATE_LOGIN'
 const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
 const LOGIN = 'LOGIN'
+const REGISTER = 'REGISTER'
+const SERVER_RESPONSE = 'SERVER_RESPONSE'
 
 const cookie = new Cookies()
 
@@ -12,7 +14,9 @@ const initialState = {
   email: '',
   password: '',
   token: cookie.get('token'),
-  user: {}
+  user: {},
+  register: false,
+  response: ''
 }
 
 export default (state = initialState, action) => {
@@ -37,6 +41,18 @@ export default (state = initialState, action) => {
         password: ''
       }
     }
+    case REGISTER: {
+      return {
+        ...state,
+        register: action.toggle
+      }
+    }
+    case SERVER_RESPONSE: {
+      return {
+        ...state,
+        response: action.payload
+      }
+    }
     default: {
       return state
     }
@@ -55,6 +71,41 @@ export function updatePassword(pass) {
     type: UPDATE_PASSWORD,
     pass
   })
+}
+
+export function signUp() {
+  return (dispatch, getState) => {
+    const { email, password } = getState().auth
+    axios({
+      url: '/api/v1/register',
+      method: 'post',
+      data: {
+        email,
+        password
+      }
+    })
+      .then(({ data }) => {
+        if (data.status === 'ok') {
+          history.push('/login')
+          dispatch({
+            type: REGISTER,
+            toggle: false
+          })
+          dispatch({
+            type: SERVER_RESPONSE,
+            payload: 'Registration is complete!\nYou can now log into your account.'
+          })
+        } else {
+          dispatch({
+            type: SERVER_RESPONSE,
+            payload: 'This email has already been registered.'
+          })
+        }
+      })
+      .catch((err) => {
+        throw new Error('Server unavailable', `${err}`)
+      })
+  }
 }
 
 export function signIn() {
@@ -109,4 +160,18 @@ export function tryGetUserInfo() {
         console.log(data)
       })
   }
+}
+
+export function doRegister(toggle) {
+  return ({
+    type: REGISTER,
+    toggle
+  })
+}
+
+export function clearResponse() {
+  return ({
+    type: SERVER_RESPONSE,
+    payload: ''
+  })
 }

@@ -43,7 +43,8 @@ const Root = () => {
         <Startup>
           <Switch>
             <Route exact path="/" component={() => <Main />} />
-            <OnlyAnonymousRoute exact path="/login" component={() => <LoginScreen />} />
+            <OnlyAnonymousRoute exact path="/register" component={() => <LoginScreen reg />} />
+            <OnlyAnonymousRoute exact path="/login" component={() => <LoginScreen reg={false} />} />
             <PrivateRoute exact path="/channels" component={() => <Channels />} />
             <PrivateRoute exact path="/profile" component={() => <Profile />} />
           </Switch>

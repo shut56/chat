@@ -129,9 +129,14 @@ if (config.mongoEnabled) {
   console.log('MongoDB Enabled: ', config.mongoEnabled)
   mongooseService.connect()
 
-  server.post('/api/v1/register', (req, res) => {
-    userModel.create(req.body)
-    res.json({ registration: 'complete' })
+  server.post('/api/v1/register', async (req, res) => {
+    console.log('New user: ', req.body)
+    try {
+      await userModel.create(req.body)
+      res.json({ status: 'ok' })
+    } catch (err) {
+      res.json({ status: 'error', error: `${err}` })
+    }
   })
 
   server.post('/api/v1/auth', async (req, res) => {
