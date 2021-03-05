@@ -10,13 +10,6 @@ import {
   GET_USERS
 } from '../reducers/users'
 
-const actionTypes = [
-  'ADD_NEW_CHANNEL',
-  'GET_MESSAGE_HISTORY_FROM_CHANNEL',
-  'SEND_NEW_MESSAGE',
-  'SET_NAME',
-]
-
 const socketIOMiddleware = () => {
   console.log('- - - socketIOMiddleware is online! - - -')
   let socket
@@ -38,14 +31,11 @@ const socketIOMiddleware = () => {
           })
           break
         }
-        case 'GET_MESSAGE_HISTORY_FROM_CHANNEL': {
-          break
-        }
         case 'users:list': {
-          const users = message.payload.map((uid) => ({ id: uid }))
+          console.log('Users:', message.payload)
           dispatch({
             type: GET_USERS,
-            users
+            users: message.payload || {}
           })
           break
         }
@@ -63,10 +53,6 @@ const socketIOMiddleware = () => {
     })
 
     return (next) => (action) => {
-      if (actionTypes.includes(action.type)) {
-        socket.emit('SOCKET_SEND', action)
-        return next(action)
-      }
       switch (action.type) {
         case 'users:get': {
           socket.emit('users:get', action)
@@ -81,6 +67,15 @@ const socketIOMiddleware = () => {
           socket.emit('channel:add', action.payload)
           break
         }
+        case 'channel:remove': {
+          console.log(`Remove ${action.payload.id} channel`)
+          socket.emit('channel:remove', action.payload)
+          break
+        }
+        case 'messages:get': {
+          socket.emit('messages:get', action.payload)
+          break
+        }
         case 'message:add': {
           console.log('New message ADDED!')
           socket.emit('message:add', action.payload)
@@ -90,15 +85,6 @@ const socketIOMiddleware = () => {
           return next(action)
         }
       }
-      // if (testActionTypes.includes(action.type)) {
-      //   socket.emit('users:get', action)
-      //   return next(action)
-      // }
-      // if (testActionTypes.includes(action.type)) {
-      //   console.log('DING-DING')
-      //   socket.emit('channels:get', action)
-      //   return next(action)
-      // }
       return next(action)
     }
   }

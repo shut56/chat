@@ -32,7 +32,7 @@ passport.use('jwt', passportJWT.jwt)
 let msgHist = {
   'test-id': []
 }
-let users = []
+
 let channels = [
   {
     id: 'test-id',
@@ -53,7 +53,6 @@ let channels = [
     active: false
   }
 ]
-let tag = 1
 
 server.get('/', (req, res) => {
   res.send('Express server')

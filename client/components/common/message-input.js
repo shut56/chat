@@ -7,7 +7,7 @@ const MessageInput = () => {
   const dispatch = useDispatch()
   const [userMessage, setUserMessage] = useState('')
   const { activeChannel } = useSelector((store) => store.channels)
-  const { name } = useSelector((s) => s.channels.channelList[activeChannel])
+  const name = useSelector((s) => s.channels?.channelList[activeChannel]?.name)
 
   const Submit = (key) => {
     if (key === 13) {

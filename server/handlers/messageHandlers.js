@@ -1,6 +1,20 @@
 import messageStoreModel from '../mongodb/models/messageStoreModel'
 
 module.exports = (io, socket) => {
+  const getMessages = async (payload) => {
+    try {
+      const messageHistory = await messageStoreModel.findOne({ channelId: payload.id })
+
+      socket.emit('SOCKET_IO', {
+        type: 'message:history',
+        payload: messageHistory.history
+      })
+      console.log('Сhannel list & history sent', socket.id)
+    } catch (err) {
+      console.log(`${err}`)
+    }
+  }
+
   const addMessage = async (payload) => {
     try {
       const messageHistory = await messageStoreModel.findOne({ channelId: payload.id })
@@ -26,5 +40,6 @@ module.exports = (io, socket) => {
     }
   }
 
-  socket.on('message:add', (messageObj) => addMessage(messageObj))
+  socket.on('messages:get', (messageObj) => getMessages(messageObj))
+  socket.on('message:add', (channelId) => addMessage(channelId))
 }

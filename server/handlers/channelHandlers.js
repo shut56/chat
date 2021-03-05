@@ -1,5 +1,6 @@
 import channelModel from '../mongodb/models/channelModel'
 import messageStoreModel from '../mongodb/models/messageStoreModel'
+import channels from '../../client/redux/reducers/channels'
 
 const arrayToObject = (arr) => {
   console.log('Array from DB: ', arr)
@@ -48,6 +49,23 @@ module.exports = (io, socket) => {
     }
   }
 
+  const removeChannel = async (channel) => {
+    console.log(channel)
+    try {
+      await channelModel.deleteOne({ _id: channel })
+      const channelList = await channelModel.find({})
+
+      socket.emit('SOCKET_IO', {
+        type: 'channel:list',
+        payload: arrayToObject(channelList)
+      })
+      console.log('Сhannel list sent', socket.id)
+    } catch (err) {
+      console.log(`${err}`)
+    }
+  }
+
   socket.on('channels:get', getChannels)
   socket.on('channel:add', (channelObj) => addChannel(channelObj))
+  socket.on('channel:remove', (payload) => removeChannel(payload.id))
 }

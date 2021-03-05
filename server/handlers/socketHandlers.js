@@ -1,4 +1,7 @@
-module.exports = (socketIO, socket, msgHist, channels) => {
+let tag = 1
+const users = []
+
+module.exports = (socketIO, socket, msgHist) => {
   socket.on('SOCKET_SEND', (action) => {
     console.log('action', action)
 
@@ -10,13 +13,6 @@ module.exports = (socketIO, socket, msgHist, channels) => {
         socketIO.to(socket.id).emit('SOCKET_IO', {
           type: 'SET_NAME',
           payload: nameWithTag
-        })
-        break
-      }
-      case 'GET_MESSAGE_HISTORY_FROM_CHANNEL': {
-        socketIO.to(socket.id).emit('SOCKET_IO', {
-          type: 'GET_MESSAGE_HISTORY_FROM_CHANNEL',
-          payload: msgHist[action.payload]
         })
         break
       }

@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux'
 
 const ChannelHeader = () => {
   const { activeChannel } = useSelector((s) => s.channels)
-  const { name, description } = useSelector((s) => s.channels.channelList[activeChannel])
+  const name = useSelector((s) => s.channels?.channelList[activeChannel]?.name)
+  const description = useSelector((s) => s.channels?.channelList[activeChannel]?.description)
   return (
     <div className="border-b border-gray-700 shadow flex px-6 py-2 items-center">
       <div className="flex flex-col">

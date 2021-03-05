@@ -1,7 +1,7 @@
 export const GET_USERS = 'GET_USERS'
 
 const initialState = {
-  userList: [{}]
+  userList: {}
 }
 
 // const user = {

@@ -2,15 +2,16 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { fade } from '../../redux/reducers/secondary'
-import { getChannels, changeActiveChannel } from '../../redux/reducers/channels'
+import { getChannels, changeActiveChannel, removeChannel } from '../../redux/reducers/channels'
 
 const ChannelsList = () => {
   const dispatch = useDispatch()
   const { channelList } = useSelector((s) => s.channels)
   const isActive = (bool) => bool && 'bg-gray-600'
 
-  const onClick = (dataset) => {
-    dispatch(changeActiveChannel(dataset.key))
+  const onClick = (key) => {
+    console.log('key', key)
+    dispatch(changeActiveChannel(key))
   }
 
   useEffect(() => {
@@ -26,7 +27,16 @@ const ChannelsList = () => {
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {Object.keys(channelList).map((chan) => {
           return (
-            <button type="button" onClick={(e) => onClick(e.target.dataset)} data-key={channelList[chan].id} className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(channelList[chan].active)}`} key={channelList[chan]._id}># {channelList[chan].name}</button>
+            <button
+              key={channelList[chan]._id}
+              type="button"
+              onClick={(e) => onClick(e.target.dataset.key)}
+              data-key={channelList[chan]._id}
+              className={`flex justify-between focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(channelList[chan].active)}`}
+            >
+              # {channelList[chan].name}
+              <button className="px-2 bg-gray-900 rounded-full" type="button" onClick={(e) => dispatch(removeChannel(e.target.parentNode.dataset.key))}>X</button>
+            </button>
           )
         })}
       </div>

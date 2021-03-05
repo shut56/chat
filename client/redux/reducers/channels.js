@@ -1,10 +1,10 @@
 export const SAVE_CHANNEL = 'SAVE_CHANNEL'
-export const ACTIVE_CHANNEL_CHANGED = 'ACTIVE_CHANNEL_CHANGED'
+export const ACTIVE_CHANNEL = 'ACTIVE_CHANNEL'
 export const GET_CHANNELS = 'GET_CHANNELS'
 
 const initialState = {
   channelList: {},
-  channels: [],
+  // channels: [],
   activeChannel: ''
 }
 
@@ -18,7 +18,7 @@ export default (state = initialState, action) => {
       }
     }
     case SAVE_CHANNEL:
-    case ACTIVE_CHANNEL_CHANGED: {
+    case ACTIVE_CHANNEL: {
       return {
         ...state,
         channelList: action.updatedChannelList,
@@ -51,10 +51,6 @@ export function saveChannel(name, desc) {
     channelMessages: []
   }
   return (dispatch) => {
-    // dispatch({
-    //   type: 'ADD_NEW_CHANNEL',
-    //   payload: { ...newChannel }
-    // })
     dispatch({
       type: 'channel:add',
       payload: { ...newChannel }
@@ -62,27 +58,38 @@ export function saveChannel(name, desc) {
   }
 }
 
-export const updateListOfChannelsObj = (channelList, channelId) => {
+export const updateListOfChannels = (channelList, channelId) => {
   return Object.keys(channelList).reduce((acc, rec) => {
     return {
       ...acc,
-      [rec]: { ...channelList[rec], active: channelList[rec].id === channelId }
+      [rec]: { ...channelList[rec], active: channelList[rec]._id === channelId }
     }
   }, {})
 }
 
-export function changeActiveChannel(channel) {
+export function changeActiveChannel(channelId) {
   return (dispatch, getState) => {
+    console.log(channelId)
     const { channelList } = getState().channels
-    const updatedChannelList = updateListOfChannelsObj(channelList, channel)
+    const updatedChannelList = updateListOfChannels(channelList, channelId)
     dispatch({
-      type: 'GET_MESSAGE_HISTORY_FROM_CHANNEL',
-      payload: channel
+      type: 'messages:get',
+      payload: { id: channelId }
     })
     dispatch({
-      type: ACTIVE_CHANNEL_CHANGED,
+      type: ACTIVE_CHANNEL,
       updatedChannelList,
-      channelId: channel
+      channelId
+    })
+  }
+}
+
+export function removeChannel(channelId) {
+  return (dispatch) => {
+    console.log(channelId)
+    dispatch({
+      type: 'channel:remove',
+      payload: { id: channelId }
     })
   }
 }

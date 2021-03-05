@@ -31,10 +31,6 @@ export function sendMessage(chan, usrMsg) {
     const message = usrMsg.trim()
 
     if (message.length > 0) {
-      // dispatch({
-      //   type: 'SEND_NEW_MESSAGE',
-      //   payload: { channel: chan, name: nickname, text: message }
-      // })
       dispatch({
         type: 'message:add',
         payload: { id: chan, message: { uid, text: message } }
