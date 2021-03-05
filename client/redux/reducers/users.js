@@ -1,3 +1,5 @@
+export const GET_USERS = 'GET_USERS'
+
 const initialState = {
   userList: [{}]
 }
@@ -12,11 +14,18 @@ const initialState = {
 //   _deletedAt: 0,
 //   _isBlocked: false,
 //   _blockedAt: 0,
-//   roles: ['user']
+//   roles: ['user'],
+//   channels: ['direct']
 // }
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case GET_USERS: {
+      return {
+        ...state,
+        userList: action.users
+      }
+    }
     default: {
       return state
     }

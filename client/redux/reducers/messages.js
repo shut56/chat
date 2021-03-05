@@ -27,13 +27,17 @@ export default (state = initialState, action) => {
 
 export function sendMessage(chan, usrMsg) {
   return (dispatch, getState) => {
-    const { nickname } = getState().messages
+    const { _id: uid } = getState().auth.user
     const message = usrMsg.trim()
 
     if (message.length > 0) {
+      // dispatch({
+      //   type: 'SEND_NEW_MESSAGE',
+      //   payload: { channel: chan, name: nickname, text: message }
+      // })
       dispatch({
-        type: 'SEND_NEW_MESSAGE',
-        payload: { channel: chan, name: nickname, text: message }
+        type: 'message:add',
+        payload: { id: chan, message: { uid, text: message } }
       })
     }
   }

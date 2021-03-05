@@ -14,7 +14,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         channelList: action.channelList,
-        activeChannel: action.channelId
+        activeChannel: action.channelId || ''
       }
     }
     case SAVE_CHANNEL:
@@ -34,8 +34,10 @@ export default (state = initialState, action) => {
 export function getChannels() {
   return (dispatch) => {
     dispatch({
-      type: 'GET_CHANNELS_FROM_SERVER',
-      payload: 'get channels'
+      type: 'users:get'
+    })
+    dispatch({
+      type: 'channels:get'
     })
   }
 }
@@ -49,8 +51,12 @@ export function saveChannel(name, desc) {
     channelMessages: []
   }
   return (dispatch) => {
+    // dispatch({
+    //   type: 'ADD_NEW_CHANNEL',
+    //   payload: { ...newChannel }
+    // })
     dispatch({
-      type: 'ADD_NEW_CHANNEL',
+      type: 'channel:add',
       payload: { ...newChannel }
     })
   }

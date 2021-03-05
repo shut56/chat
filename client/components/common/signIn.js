@@ -19,14 +19,14 @@ const SignIn = () => {
   }
   return (
     <div>
+      <div className="flex justify-center font-bold mb-2 text-lg text-white">
+        <span>Welcome!</span>
+      </div>
       <div className="mb-4">
-        <div className="flex justify-center font-bold mb-2 text-lg text-white">
-          <span>Welcome!</span>
-        </div>
-        <label className="block text-sm font-bold mb-2" htmlFor="username">
+        <label className="block text-sm font-bold mb-2" htmlFor="email">
           Email address
         </label>
-        <input onChange={(e) => dispatch(updateLogin(e.target.value))} value={email} className="focus:outline-none shadow appearance-none border rounded w-full py-2 px-3 text-black" id="username" type="text" name="username" placeholder="Enter email..." />
+        <input onChange={(e) => dispatch(updateLogin(e.target.value))} value={email} className="focus:outline-none shadow appearance-none border rounded w-full py-2 px-3 text-black" id="email" type="text" name="email" placeholder="Enter email..." />
       </div>
       <div className="mb-4">
         <label className="block text-sm font-bold mb-2" htmlFor="password">

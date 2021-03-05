@@ -4,6 +4,7 @@ import { history } from '..'
 
 const UPDATE_LOGIN = 'UPDATE_LOGIN'
 const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
+const UPDATE_NAME = 'UPDATE_NAME'
 const LOGIN = 'LOGIN'
 const REGISTER = 'REGISTER'
 const SERVER_RESPONSE = 'SERVER_RESPONSE'
@@ -33,6 +34,12 @@ export default (state = initialState, action) => {
         password: action.pass
       }
     }
+    case UPDATE_NAME: {
+      return {
+        ...state,
+        name: action.name
+      }
+    }
     case LOGIN: {
       return {
         ...state,
@@ -44,7 +51,8 @@ export default (state = initialState, action) => {
     case REGISTER: {
       return {
         ...state,
-        register: action.toggle
+        register: action.toggle,
+        name: undefined
       }
     }
     case SERVER_RESPONSE: {
@@ -73,15 +81,23 @@ export function updatePassword(pass) {
   })
 }
 
+export function updateName(name) {
+  return ({
+    type: UPDATE_NAME,
+    name
+  })
+}
+
 export function signUp() {
   return (dispatch, getState) => {
-    const { email, password } = getState().auth
+    const { email, password, name } = getState().auth
     axios({
       url: '/api/v1/register',
       method: 'post',
       data: {
         email,
-        password
+        password,
+        name
       }
     })
       .then(({ data }) => {
@@ -136,7 +152,7 @@ export function signOut() {
   return {
     type: LOGIN,
     token: '',
-    user: ''
+    user: {}
   }
 }
 

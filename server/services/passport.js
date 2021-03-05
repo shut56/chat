@@ -1,6 +1,6 @@
 import passportJWT from 'passport-jwt'
 
-import User from '../mongodb/models'
+import User from '../mongodb/models/userModel'
 import config from '../config'
 
 const cookieExtractor = (req) => {
