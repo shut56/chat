@@ -1,14 +1,8 @@
 import { io } from 'socket.io-client'
 
-import {
-  GET_CHANNELS
-} from '../reducers/channels'
-import {
-  GET_MESSAGES
-} from '../reducers/messages'
-import {
-  GET_USERS
-} from '../reducers/users'
+import { GET_CHANNELS } from '../reducers/channels'
+import { GET_MESSAGES } from '../reducers/messages'
+import { GET_USERS } from '../reducers/users'
 
 const socketIOMiddleware = () => {
   console.log('- - - socketIOMiddleware is online! - - -')
@@ -19,15 +13,16 @@ const socketIOMiddleware = () => {
     const { dispatch } = store
 
     socket.on('SOCKET_IO', (message) => {
-      console.log('getChannels', message)
+      console.log('Message from server', message)
       switch (message.type) {
         case 'channel:list': {
           console.log('Get channels from socket.io', message)
           const channelList = !message.payload.id ? message.payload : message.payload.channels
+          const activeId = message.payload.id || Object.keys(channelList)[0]
           dispatch({
             type: GET_CHANNELS,
             channelList,
-            channelId: message.payload.id || ''
+            channelId: activeId
           })
           break
         }
@@ -40,6 +35,7 @@ const socketIOMiddleware = () => {
           break
         }
         case 'message:history': {
+          console.log(message?.payload || [])
           dispatch({
             type: GET_MESSAGES,
             msgHistory: message?.payload || []
@@ -59,7 +55,7 @@ const socketIOMiddleware = () => {
           break
         }
         case 'channels:get': {
-          socket.emit('channels:get', action)
+          socket.emit('channels:get', action.payload)
           break
         }
         case 'channel:add': {

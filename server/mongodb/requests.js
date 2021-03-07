@@ -23,7 +23,9 @@ module.exports = (server) => {
       const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
       user.password = undefined
       console.log(`${user.email} logged`)
-      res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 })
+      res
+        .cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 })
+        .cookie('id', user.id, { maxAge: 1000 * 60 * 60 * 48 })
       res.json({ status: 'ok', token, user })
     } catch (err) {
       res.json({ status: 'error', error: `${err}` })
@@ -37,7 +39,9 @@ module.exports = (server) => {
       const payload = { uid: user.id }
       const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
       user.password = undefined
-      res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 })
+      res
+        .cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 })
+        .cookie('id', user.id, { maxAge: 1000 * 60 * 60 * 48 })
       res.json({ status: 'ok', token, user })
     } catch (err) {
       res.json({ status: 'error', error: `${err}` })

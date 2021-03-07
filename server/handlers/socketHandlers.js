@@ -1,7 +1,7 @@
 let tag = 1
 const users = []
 
-module.exports = (socketIO, socket, msgHist) => {
+module.exports = (socketIO, socket) => {
   socket.on('SOCKET_SEND', (action) => {
     console.log('action', action)
 

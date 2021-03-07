@@ -15,7 +15,9 @@ const initialState = {
   email: '',
   password: '',
   token: cookie.get('token'),
-  user: {},
+  user: {
+    _id: cookie.get('id')
+  },
   register: false,
   response: ''
 }

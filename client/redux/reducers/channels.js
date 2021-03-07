@@ -1,10 +1,10 @@
 export const SAVE_CHANNEL = 'SAVE_CHANNEL'
 export const ACTIVE_CHANNEL = 'ACTIVE_CHANNEL'
 export const GET_CHANNELS = 'GET_CHANNELS'
+const ACTIVE_CHANNEL_ID = 'ACTIVE_CHANNEL_ID'
 
 const initialState = {
   channelList: {},
-  // channels: [],
   activeChannel: ''
 }
 
@@ -14,14 +14,19 @@ export default (state = initialState, action) => {
       return {
         ...state,
         channelList: action.channelList,
-        activeChannel: action.channelId || ''
+        activeChannel: action.channelId || 'No active channel'
       }
     }
     case SAVE_CHANNEL:
     case ACTIVE_CHANNEL: {
       return {
         ...state,
-        channelList: action.updatedChannelList,
+        channelList: action.newActiveChannel
+      }
+    }
+    case ACTIVE_CHANNEL_ID: {
+      return {
+        ...state,
         activeChannel: action.channelId
       }
     }
@@ -31,13 +36,14 @@ export default (state = initialState, action) => {
   }
 }
 
-export function getChannels() {
+export function getChannels(uid) {
   return (dispatch) => {
     dispatch({
       type: 'users:get'
     })
     dispatch({
-      type: 'channels:get'
+      type: 'channels:get',
+      payload: { uid }
     })
   }
 }
@@ -58,38 +64,40 @@ export function saveChannel(name, desc) {
   }
 }
 
-export const updateListOfChannels = (channelList, channelId) => {
-  return Object.keys(channelList).reduce((acc, rec) => {
-    return {
-      ...acc,
-      [rec]: { ...channelList[rec], active: channelList[rec]._id === channelId }
-    }
-  }, {})
-}
-
-export function changeActiveChannel(channelId) {
-  return (dispatch, getState) => {
-    console.log(channelId)
-    const { channelList } = getState().channels
-    const updatedChannelList = updateListOfChannels(channelList, channelId)
+export function removeChannel(channelId) {
+  return (dispatch) => {
     dispatch({
-      type: 'messages:get',
+      type: 'channel:remove',
       payload: { id: channelId }
-    })
-    dispatch({
-      type: ACTIVE_CHANNEL,
-      updatedChannelList,
-      channelId
     })
   }
 }
 
-export function removeChannel(channelId) {
+export function changeActiveChannel(channelId) {
   return (dispatch) => {
-    console.log(channelId)
     dispatch({
-      type: 'channel:remove',
+      type: ACTIVE_CHANNEL_ID,
+      channelId
+    })
+    dispatch({
+      type: 'messages:get',
       payload: { id: channelId }
+    })
+  }
+}
+
+export function updateListOfChannels(channelId) {
+  return (dispatch, getState) => {
+    const { channelList } = getState().channels
+    const newActiveChannel = Object.keys(channelList).reduce((acc, rec) => {
+      return {
+        ...acc,
+        [rec]: { ...channelList[rec], active: channelList[rec]._id === channelId }
+      }
+    }, {})
+    return dispatch({
+      type: ACTIVE_CHANNEL,
+      newActiveChannel
     })
   }
 }

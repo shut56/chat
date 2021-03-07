@@ -9,7 +9,7 @@ module.exports = (io, socket) => {
         type: 'message:history',
         payload: messageHistory.history
       })
-      console.log('Сhannel list & history sent', socket.id)
+      console.log('History for channel sent', socket.id)
     } catch (err) {
       console.log(`${err}`)
     }
@@ -30,7 +30,7 @@ module.exports = (io, socket) => {
         }
       )
 
-      socket.emit('SOCKET_IO', {
+      io.emit('SOCKET_IO', {
         type: 'message:history',
         payload: updatedHistory
       })

@@ -2,11 +2,14 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { fade } from '../../redux/reducers/secondary'
-import { getChannels, changeActiveChannel, removeChannel } from '../../redux/reducers/channels'
+import {
+  getChannels, changeActiveChannel, removeChannel, updateListOfChannels
+} from '../../redux/reducers/channels'
 
 const ChannelsList = () => {
   const dispatch = useDispatch()
-  const { channelList } = useSelector((s) => s.channels)
+  const { channelList, activeChannel } = useSelector((s) => s.channels)
+  const uid = useSelector((s) => s.auth.user._id)
   const isActive = (bool) => bool && 'bg-gray-600'
 
   const onClick = (key) => {
@@ -15,9 +18,14 @@ const ChannelsList = () => {
   }
 
   useEffect(() => {
-    dispatch(getChannels())
+    dispatch(getChannels(uid))
     return () => {}
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch(updateListOfChannels(activeChannel))
+    return () => {}
+  }, [activeChannel])
   return (
     <div>
       <div className="flex flex-row px-4 items-center font-bold">
@@ -27,16 +35,16 @@ const ChannelsList = () => {
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {Object.keys(channelList).map((chan) => {
           return (
-            <button
-              key={channelList[chan]._id}
-              type="button"
-              onClick={(e) => onClick(e.target.dataset.key)}
-              data-key={channelList[chan]._id}
-              className={`flex justify-between focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(channelList[chan].active)}`}
-            >
-              # {channelList[chan].name}
-              <button className="px-2 bg-gray-900 rounded-full" type="button" onClick={(e) => dispatch(removeChannel(e.target.parentNode.dataset.key))}>X</button>
-            </button>
+            <div className="flex justify-between" key={channelList[chan]._id} data-key={channelList[chan]._id}>
+              <button
+                type="button"
+                onClick={(e) => onClick(e.target.parentNode.dataset.key)}
+                className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(channelList[chan].active)}`}
+              >
+                # {channelList[chan].name}
+              </button>
+              <button className="p-1 bg-gray-900 rounded-full" type="button" onClick={(e) => dispatch(removeChannel(e.target.parentNode.dataset.key))}>X</button>
+            </div>
           )
         })}
       </div>
