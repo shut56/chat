@@ -11,7 +11,7 @@ const Startup = (props) => {
       dispatch(trySignIn())
       dispatch(tryGetUserInfo())
     }
-  }, [dispatch, token])
+  }, [dispatch])
 
   return props.children
 }

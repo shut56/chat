@@ -10,7 +10,7 @@ const socketIOMiddleware = () => {
 
   return (store) => {
     socket = io(`${window.location.origin}`, { path: '/ws' })
-    const { dispatch } = store
+    const { dispatch, getState } = store
 
     socket.on('SOCKET_IO', (message) => {
       console.log('Message from server', message)
@@ -18,7 +18,7 @@ const socketIOMiddleware = () => {
         case 'channel:list': {
           console.log('Get channels from socket.io', message)
           const channelList = !message.payload.id ? message.payload : message.payload.channels
-          const activeId = message.payload.id || Object.keys(channelList)[0]
+          const activeId = message.payload.id || getState().channels.activeChannel
           dispatch({
             type: GET_CHANNELS,
             channelList,
@@ -35,10 +35,10 @@ const socketIOMiddleware = () => {
           break
         }
         case 'message:history': {
-          console.log(message?.payload || [])
+          const { messageHistory } = getState().messages
           dispatch({
             type: GET_MESSAGES,
-            msgHistory: message?.payload || []
+            msgHistory: { ...messageHistory, [message?.payload.channelId]: message?.payload.history } || {}
           })
           break
         }

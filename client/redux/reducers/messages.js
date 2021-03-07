@@ -2,8 +2,7 @@ export const GET_MESSAGES = 'GET_MESSAGES'
 export const SET_NICK_NAME = 'SET_NICK_NAME'
 
 const initialState = {
-  messageHistory: [],
-  nickname: 'Pepe'
+  messageHistory: {}
 }
 
 export default (state = initialState, action) => {
@@ -12,12 +11,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         messageHistory: action.msgHistory
-      }
-    }
-    case SET_NICK_NAME: {
-      return {
-        ...state,
-        nickname: action.name
       }
     }
     default:
@@ -36,14 +29,5 @@ export function sendMessage(chan, usrMsg) {
         payload: { id: chan, message: { uid, text: message } }
       })
     }
-  }
-}
-
-export function setNickname(name) {
-  return (dispatch) => {
-    dispatch({
-      type: 'SET_NAME',
-      payload: name.trim() || 'User'
-    })
   }
 }

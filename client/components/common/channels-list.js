@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { fade } from '../../redux/reducers/secondary'
 import {
-  getChannels, changeActiveChannel, removeChannel, updateListOfChannels
+  getChannels, changeActiveChannel, removeChannel
 } from '../../redux/reducers/channels'
 
 const ChannelsList = () => {
@@ -21,11 +21,6 @@ const ChannelsList = () => {
     dispatch(getChannels(uid))
     return () => {}
   }, [dispatch])
-
-  useEffect(() => {
-    dispatch(updateListOfChannels(activeChannel))
-    return () => {}
-  }, [activeChannel])
   return (
     <div>
       <div className="flex flex-row px-4 items-center font-bold">
@@ -39,7 +34,7 @@ const ChannelsList = () => {
               <button
                 type="button"
                 onClick={(e) => onClick(e.target.parentNode.dataset.key)}
-                className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(channelList[chan].active)}`}
+                className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(chan === activeChannel)}`}
               >
                 # {channelList[chan].name}
               </button>

@@ -23,7 +23,7 @@ module.exports = (io, socket) => {
       })
       io.to(socket.id).emit('SOCKET_IO', {
         type: 'message:history',
-        payload: [...messageHistory.history]
+        payload: { channelId, history: messageHistory.history }
       })
       console.log('Сhannel list & sent', socket.id)
     } catch (err) {
@@ -31,14 +31,20 @@ module.exports = (io, socket) => {
     }
   }
 
-  const removeChannel = async (channel) => {
+  const removeChannel = async ({ id: channel, fistChannelId: channelId }) => {
     try {
       await channelModel.deleteOne({ _id: channel })
       const channelList = await channelModel.find({})
+      await messageStoreModel.deleteOne({ channelId: channel })
+      const messageHistory = await messageStoreModel.findOne({ channelId })
 
       io.emit('SOCKET_IO', {
         type: 'channel:list',
         payload: arrayToObject(channelList)
+      })
+      io.to(socket.id).emit('SOCKET_IO', {
+        type: 'message:history',
+        payload: { channelId, history: messageHistory.history }
       })
       console.log('Сhannel removed', socket.id)
     } catch (err) {
@@ -66,7 +72,7 @@ module.exports = (io, socket) => {
       })
       io.to(socket.id).emit('SOCKET_IO', {
         type: 'message:history',
-        payload: [...messageHistory.history]
+        payload: { channelId, history: messageHistory.history }
       })
       socket.broadcast.emit('SOCKET_IO', {
         type: 'channel:list',
@@ -81,5 +87,5 @@ module.exports = (io, socket) => {
 
   socket.on('channels:get', (payload) => getChannels(payload))
   socket.on('channel:add', (payload) => addChannel(payload))
-  socket.on('channel:remove', (payload) => removeChannel(payload.id))
+  socket.on('channel:remove', (payload) => removeChannel(payload))
 }

@@ -1,5 +1,4 @@
 export const SAVE_CHANNEL = 'SAVE_CHANNEL'
-export const ACTIVE_CHANNEL = 'ACTIVE_CHANNEL'
 export const GET_CHANNELS = 'GET_CHANNELS'
 const ACTIVE_CHANNEL_ID = 'ACTIVE_CHANNEL_ID'
 
@@ -17,8 +16,7 @@ export default (state = initialState, action) => {
         activeChannel: action.channelId || 'No active channel'
       }
     }
-    case SAVE_CHANNEL:
-    case ACTIVE_CHANNEL: {
+    case SAVE_CHANNEL: {
       return {
         ...state,
         channelList: action.newActiveChannel
@@ -65,10 +63,15 @@ export function saveChannel(name, desc) {
 }
 
 export function removeChannel(channelId) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const fistChannelId = Object.keys(getState().channels.channelList)[0]
     dispatch({
       type: 'channel:remove',
-      payload: { id: channelId }
+      payload: { id: channelId, fistChannelId }
+    })
+    dispatch({
+      type: ACTIVE_CHANNEL_ID,
+      channelId: fistChannelId
     })
   }
 }
@@ -82,22 +85,6 @@ export function changeActiveChannel(channelId) {
     dispatch({
       type: 'messages:get',
       payload: { id: channelId }
-    })
-  }
-}
-
-export function updateListOfChannels(channelId) {
-  return (dispatch, getState) => {
-    const { channelList } = getState().channels
-    const newActiveChannel = Object.keys(channelList).reduce((acc, rec) => {
-      return {
-        ...acc,
-        [rec]: { ...channelList[rec], active: channelList[rec]._id === channelId }
-      }
-    }, {})
-    return dispatch({
-      type: ACTIVE_CHANNEL,
-      newActiveChannel
     })
   }
 }
