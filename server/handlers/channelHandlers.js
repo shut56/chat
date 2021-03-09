@@ -35,6 +35,7 @@ module.exports = (io, socket) => {
     try {
       await channelModel.deleteOne({ _id: channel })
       const channelList = await channelModel.find({})
+
       await messageStoreModel.deleteOne({ channelId: channel })
       const messageHistory = await messageStoreModel.findOne({ channelId })
 
@@ -63,8 +64,7 @@ module.exports = (io, socket) => {
 
       const channelId = channelList[channelList.length - 1]._id
 
-      await messageStoreModel.create({ channelId })
-      const messageHistory = await messageStoreModel.findOne({ channelId })
+      const messageHistory = await messageStoreModel.create({ channelId })
 
       io.to(socket.id).emit('SOCKET_IO', {
         type: 'channel:list',

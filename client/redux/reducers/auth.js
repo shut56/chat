@@ -143,6 +143,9 @@ export function signIn() {
           token: data.token,
           user: data.user
         })
+        dispatch({
+          type: 'socket:open'
+        })
         history.push('/channels')
       })
   }
@@ -151,10 +154,15 @@ export function signIn() {
 export function signOut() {
   document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT'
   history.push('/')
-  return {
-    type: LOGIN,
-    token: '',
-    user: {}
+  return (dispatch) => {
+    dispatch({
+      type: LOGIN,
+      token: '',
+      user: {}
+    })
+    dispatch({
+      type: 'socket:close'
+    })
   }
 }
 
@@ -166,6 +174,9 @@ export function trySignIn() {
           type: LOGIN,
           token: data.token,
           user: data.user
+        })
+        dispatch({
+          type: 'socket:open'
         })
       })
   }

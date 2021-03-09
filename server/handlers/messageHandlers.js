@@ -17,22 +17,48 @@ module.exports = (io, socket) => {
 
   const addMessage = async (payload) => {
     try {
-      const messageHistoryDB = await messageStoreModel.findOne({ channelId: payload.id })
       const time = new Date()
-      const updatedHistory = [...messageHistoryDB.history, { ...payload.message, time: time.toUTCString() }]
+      const newMessage = { ...payload.message, time: time.toUTCString() }
 
-      await messageStoreModel.updateOne(
+      const updatedHistory = await messageStoreModel.findOneAndUpdate(
         { channelId: `${payload.id}` },
-        { $set: { history: updatedHistory } },
+        { 
+          $addToSet: { history: newMessage }
+        },
         {
           'multi': false,
-          'upsert': false
+          'upsert': false,
+          'new': true
         }
       )
 
       io.emit('SOCKET_IO', {
         type: 'message:history',
-        payload: { channelId: payload.id, history: updatedHistory }
+        payload: { channelId: payload.id, history: updatedHistory.history }
+      })
+      console.log('History sent by', socket.id)
+    } catch (err) {
+      console.log(`${err}`)
+    }
+  }
+
+  const removeMessage = async (payload) => {
+    try {
+      const updatedHistory = await messageStoreModel.findOneAndUpdate(
+        { channelId: payload.channelId },
+        { 
+          $pull: { history: { _id: payload.messageId } }
+        },
+        {
+          'multi': false,
+          'upsert': false,
+          'new': true
+        }
+      )
+
+      io.emit('SOCKET_IO', {
+        type: 'message:history',
+        payload: { channelId: payload.channelId, history: updatedHistory.history }
       })
       console.log('History sent by', socket.id)
     } catch (err) {
@@ -42,4 +68,5 @@ module.exports = (io, socket) => {
 
   socket.on('messages:get', (messageObj) => getMessages(messageObj))
   socket.on('message:add', (channelId) => addMessage(channelId))
+  socket.on('message:remove', (payload) => removeMessage(payload))
 }

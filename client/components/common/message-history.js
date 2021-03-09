@@ -14,7 +14,7 @@ const MessageHistory = () => {
         const name = userList[message.uid]?.name || 'Some user'
         return (
           <div key={`${message._id}`}>
-            <Message message={message} name={name} />
+            <Message message={message} name={name} uid={message.uid} />
           </div>
         )
       })}

@@ -31,3 +31,10 @@ export function sendMessage(chan, usrMsg) {
     }
   }
 }
+
+export function removeMessage(chanId, msgId) {
+  return (dispatch) => dispatch({
+    type: 'message:remove',
+    payload: { channelId: chanId, messageId: msgId }
+  })
+}

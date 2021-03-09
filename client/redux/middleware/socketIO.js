@@ -9,11 +9,15 @@ const socketIOMiddleware = () => {
   let socket
 
   return (store) => {
-    socket = io(`${window.location.origin}`, { path: '/ws' })
+    socket = io(`${window.location.origin}`, {
+      path: '/ws',
+      autoConnect: false
+    })
     const { dispatch, getState } = store
 
     socket.on('SOCKET_IO', (message) => {
       console.log('Message from server', message)
+      console.log('ID: ', socket.id)
       switch (message.type) {
         case 'channel:list': {
           console.log('Get channels from socket.io', message)
@@ -34,6 +38,16 @@ const socketIOMiddleware = () => {
           })
           break
         }
+        case 'users:online': {
+          const { userList } = getState().users
+          const users = Object.keys(userList).reduce((acc, userId) => ({ ...acc, [userId]: { ...userList[userId], status: message.payload[userId] } }), {})
+          console.log(message.payload)
+          dispatch({
+            type: GET_USERS,
+            users: { ...users }
+          })
+          break
+        }
         case 'message:history': {
           const { messageHistory } = getState().messages
           dispatch({
@@ -50,6 +64,18 @@ const socketIOMiddleware = () => {
 
     return (next) => (action) => {
       switch (action.type) {
+        case 'user:online': {
+          socket.emit('user:online', action.payload)
+          break
+        }
+        case 'socket:open': {
+          socket.connect()
+          break
+        }
+        case 'socket:close': {
+          socket.disconnect()
+          break
+        }
         case 'users:get': {
           socket.emit('users:get', action)
           break
@@ -75,6 +101,11 @@ const socketIOMiddleware = () => {
         case 'message:add': {
           console.log('New message ADDED!')
           socket.emit('message:add', action.payload)
+          break
+        }
+        case 'message:remove': {
+          console.log('Message removed')
+          socket.emit('message:remove', action.payload)
           break
         }
         default: {

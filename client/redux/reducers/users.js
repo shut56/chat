@@ -31,3 +31,10 @@ export default (state = initialState, action) => {
     }
   }
 }
+
+export function getSocketId() {
+  return (dispatch, getState) => dispatch({
+    type: 'user:online',
+    payload: { id: getState().auth.user._id }
+  })
+}

@@ -12,6 +12,7 @@ import userHandlers from './handlers/userHandlers'
 import channelHandlers from './handlers/channelHandlers'
 import messageHandlers from './handlers/messageHandlers'
 import mongoRequests from './mongodb/requests'
+import { createSocket } from 'dgram'
 
 const server = express()
 const httpServer = http.createServer(server)
@@ -70,37 +71,32 @@ server.get('/api/users', (req, res) => {
   res.json(connectedUsers.users())
 })
 
-function isOnline() {
-  let users = {
-    'test-user-id': {
-      id: 'test-user-id',
-      email: 'test@test.com',
-      name: 'testUser',
-      soketId: 'test-user-socket-id'
-    }
-  }
-  return {
-    add(usr) {
-      const { id, email, name, channels } = usr
-      users[usr.id] = { id, email, name, channels }
-    },
-    remove(userId) {
-      delete users[userId]
-    },
-    users() {
-      return users
-    }
-  }
-}
-
-const connectedUsers = isOnline()
-
 if (config.mongoEnabled) {
   console.log('MongoDB Enabled: ', config.mongoEnabled)
   mongooseService.connect()
 
   mongoRequests(server)
 }
+
+function isOnline() {
+  let users = {
+    'test-user-socket-id': 'test-user-id'
+  }
+  return {
+    add(socketId, uid) {
+      users[socketId] = uid
+    },
+    remove(socketId) {
+      delete users[socketId]
+    },
+    users() {
+      const userList = Object.keys(users).reduce((acc, userSocketId) => ({ ...acc, [users[userSocketId]]: userSocketId }), {})
+      return userList
+    }
+  }
+}
+
+const connectedUsers = isOnline()
 
 if (config.socketsEnabled) {
   console.log('Sockets Enabled: ', config.socketsEnabled)
@@ -116,8 +112,23 @@ if (config.socketsEnabled) {
     messageHandlers(socketIO, socket)
     socketHandlers(socketIO, socket, msgHist, channels)
 
+    socket.on('user:online', ({ id }) => {
+      connectedUsers.add(socket.id, id)
+
+      socketIO.emit('SOCKET_IO', {
+        type: 'users:online',
+        payload: connectedUsers.users()
+      })
+    })
+
     socket.on('disconnect', () => {
       console.log(`Bye-bye ${socket.id}`)
+      connectedUsers.remove(socket.id)
+
+      socketIO.emit('SOCKET_IO', {
+        type: 'users:online',
+        payload: connectedUsers.users()
+      })
     })
   })
 }
