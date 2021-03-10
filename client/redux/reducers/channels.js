@@ -37,9 +37,6 @@ export default (state = initialState, action) => {
 export function getChannels(uid) {
   return (dispatch) => {
     dispatch({
-      type: 'users:get'
-    })
-    dispatch({
       type: 'channels:get',
       payload: { uid }
     })

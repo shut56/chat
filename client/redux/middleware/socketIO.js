@@ -1,8 +1,11 @@
 import { io } from 'socket.io-client'
 
+import { history } from '..'
+
 import { GET_CHANNELS } from '../reducers/channels'
 import { GET_MESSAGES } from '../reducers/messages'
 import { GET_USERS } from '../reducers/users'
+import { SERVER_RESPONSE, REGISTER } from '../reducers/auth'
 
 const socketIOMiddleware = () => {
   console.log('- - - socketIOMiddleware is online! - - -')
@@ -56,6 +59,23 @@ const socketIOMiddleware = () => {
           })
           break
         }
+        case 'server:response': {
+          console.log('This is Server Response')
+          dispatch({
+            type: SERVER_RESPONSE,
+            payload: message.payload
+          })
+          break
+        }
+        case 'register:complete': {
+          history.push('/login')
+          dispatch({
+            type: REGISTER,
+            toggle: false
+          })
+          socket.disconnect()
+          break
+        }
         default: {
           console.log('Server Message Received')
         }
@@ -64,8 +84,41 @@ const socketIOMiddleware = () => {
 
     return (next) => (action) => {
       switch (action.type) {
-        case 'user:online': {
+        case 'users:get': {
+          socket.emit('users:get', action.payload)
           socket.emit('user:online', action.payload)
+          break
+        }
+        case 'user:online': {
+          socket.emit(action.type, action.payload)
+          break
+        }
+        case 'user:register': {
+          socket.emit(action.type, action.payload)
+          break
+        }
+        case 'channels:get': {
+          socket.emit(action.type, action.payload)
+          break
+        }
+        case 'channel:add': {
+          socket.emit(action.type, action.payload)
+          break
+        }
+        case 'channel:remove': {
+          socket.emit(action.type, action.payload)
+          break
+        }
+        case 'messages:get': {
+          socket.emit(action.type, action.payload)
+          break
+        }
+        case 'message:add': {
+          socket.emit(action.type, action.payload)
+          break
+        }
+        case 'message:remove': {
+          socket.emit(action.type, action.payload)
           break
         }
         case 'socket:open': {
@@ -74,38 +127,6 @@ const socketIOMiddleware = () => {
         }
         case 'socket:close': {
           socket.disconnect()
-          break
-        }
-        case 'users:get': {
-          socket.emit('users:get', action)
-          break
-        }
-        case 'channels:get': {
-          socket.emit('channels:get', action.payload)
-          break
-        }
-        case 'channel:add': {
-          console.log('YES! This is Channel:ADD')
-          socket.emit('channel:add', action.payload)
-          break
-        }
-        case 'channel:remove': {
-          console.log(`Remove ${action.payload.id} channel`)
-          socket.emit('channel:remove', action.payload)
-          break
-        }
-        case 'messages:get': {
-          socket.emit('messages:get', action.payload)
-          break
-        }
-        case 'message:add': {
-          console.log('New message ADDED!')
-          socket.emit('message:add', action.payload)
-          break
-        }
-        case 'message:remove': {
-          console.log('Message removed')
-          socket.emit('message:remove', action.payload)
           break
         }
         default: {

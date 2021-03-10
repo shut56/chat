@@ -22,5 +22,34 @@ module.exports = (io, socket) => {
     }
   }
 
+  const setUser = async (body) => {
+    console.log('New user: ', body)
+    try {
+      await userModel.create(body)
+      const userList = await userModel.find({})
+
+      socket.emit('SOCKET_IO', {
+        type: 'server:response',
+        payload: 'Registration is complete!\nYou can now log into your account.'
+      })
+
+      socket.emit('SOCKET_IO', {
+        type: 'register:complete'
+      })
+
+      socket.broadcast.emit('SOCKET_IO', {
+        type: 'users:list',
+        payload: arrayToObject(userList)
+      })
+    } catch (err) {
+      console.log(`${err}`)
+      socket.emit('SOCKET_IO', {
+        type: 'server:response',
+        payload: 'This email has already been registered.'
+      })
+    }
+  }
+
   socket.on('users:get', getUsers)
+  socket.on('user:register', (payload) => setUser(payload))
 }

@@ -6,14 +6,15 @@ const UPDATE_LOGIN = 'UPDATE_LOGIN'
 const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
 const UPDATE_NAME = 'UPDATE_NAME'
 const LOGIN = 'LOGIN'
-const REGISTER = 'REGISTER'
-const SERVER_RESPONSE = 'SERVER_RESPONSE'
+export const REGISTER = 'REGISTER'
+export const SERVER_RESPONSE = 'SERVER_RESPONSE'
 
 const cookie = new Cookies()
 
 const initialState = {
   email: '',
   password: '',
+  name: '',
   token: cookie.get('token'),
   user: {
     _id: cookie.get('id')
@@ -54,7 +55,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         register: action.toggle,
-        name: undefined
+        name: ''
       }
     }
     case SERVER_RESPONSE: {
@@ -93,36 +94,48 @@ export function updateName(name) {
 export function signUp() {
   return (dispatch, getState) => {
     const { email, password, name } = getState().auth
-    axios({
-      url: '/api/v1/register',
-      method: 'post',
-      data: {
+    // axios({
+    //   url: '/api/v1/register',
+    //   method: 'post',
+    //   data: {
+    //     email,
+    //     password,
+    //     name
+    //   }
+    // })
+    //   .then(({ data }) => {
+    //     if (data.status === 'ok') {
+    //       history.push('/login')
+    //       dispatch({
+    //         type: REGISTER,
+    //         toggle: false
+    //       })
+    //       dispatch({
+    //         type: SERVER_RESPONSE,
+    //         payload: 'Registration is complete!\nYou can now log into your account.'
+    //       })
+    //     } else {
+    //       dispatch({
+    //         type: SERVER_RESPONSE,
+    //         payload: 'This email has already been registered.'
+    //       })
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     throw new Error('Server unavailable', `${err}`)
+    //   })
+
+    dispatch({
+      type: 'socket:open'
+    })
+    dispatch({
+      type: 'user:register',
+      payload: {
         email,
         password,
         name
       }
     })
-      .then(({ data }) => {
-        if (data.status === 'ok') {
-          history.push('/login')
-          dispatch({
-            type: REGISTER,
-            toggle: false
-          })
-          dispatch({
-            type: SERVER_RESPONSE,
-            payload: 'Registration is complete!\nYou can now log into your account.'
-          })
-        } else {
-          dispatch({
-            type: SERVER_RESPONSE,
-            payload: 'This email has already been registered.'
-          })
-        }
-      })
-      .catch((err) => {
-        throw new Error('Server unavailable', `${err}`)
-      })
   }
 }
 

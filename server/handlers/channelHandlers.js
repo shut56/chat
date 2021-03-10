@@ -13,19 +13,21 @@ module.exports = (io, socket) => {
   const getChannels = async ({ uid }) => {
     try {
       const channelList = await channelModel.find({})
-      const channelId = channelList.find((chan) => chan.userList.includes(uid))._id
+      const channelId = channelList.find((chan) => chan.userList.includes(uid))?._id
 
-      const messageHistory = await messageStoreModel.findOne({ channelId })
+      if (!!channelId) {
+        const messageHistory = await messageStoreModel.findOne({ channelId })
 
-      io.to(socket.id).emit('SOCKET_IO', {
-        type: 'channel:list',
-        payload: { channels: arrayToObject(channelList), id: channelId }
-      })
-      io.to(socket.id).emit('SOCKET_IO', {
-        type: 'message:history',
-        payload: { channelId, history: messageHistory.history }
-      })
-      console.log('Сhannel list & sent', socket.id)
+        io.to(socket.id).emit('SOCKET_IO', {
+          type: 'channel:list',
+          payload: { channels: arrayToObject(channelList), id: channelId }
+        })
+        io.to(socket.id).emit('SOCKET_IO', {
+          type: 'message:history',
+          payload: { channelId, history: messageHistory.history }
+        })
+        console.log('Сhannel list & sent', socket.id)
+      }
     } catch (err) {
       console.log(`${err}`)
     }

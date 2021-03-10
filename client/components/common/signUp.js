@@ -46,7 +46,7 @@ const SignUp = () => {
         </button>
       </div>
       <div className="mt-4">
-        Already Registered? <button type="button" className="text-white hover:underline" onClick={() => onClick()}>Sign in</button>
+        Already Registered? <button type="button" className="text-white hover:underline" onClick={onClick}>Sign in</button>
       </div>
     </div>
   )
