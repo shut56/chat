@@ -94,37 +94,6 @@ export function updateName(name) {
 export function signUp() {
   return (dispatch, getState) => {
     const { email, password, name } = getState().auth
-    // axios({
-    //   url: '/api/v1/register',
-    //   method: 'post',
-    //   data: {
-    //     email,
-    //     password,
-    //     name
-    //   }
-    // })
-    //   .then(({ data }) => {
-    //     if (data.status === 'ok') {
-    //       history.push('/login')
-    //       dispatch({
-    //         type: REGISTER,
-    //         toggle: false
-    //       })
-    //       dispatch({
-    //         type: SERVER_RESPONSE,
-    //         payload: 'Registration is complete!\nYou can now log into your account.'
-    //       })
-    //     } else {
-    //       dispatch({
-    //         type: SERVER_RESPONSE,
-    //         payload: 'This email has already been registered.'
-    //       })
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     throw new Error('Server unavailable', `${err}`)
-    //   })
-
     dispatch({
       type: 'socket:open'
     })

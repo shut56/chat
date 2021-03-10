@@ -42,12 +42,10 @@ const socketIOMiddleware = () => {
           break
         }
         case 'users:online': {
-          const { userList } = getState().users
-          const users = Object.keys(userList).reduce((acc, userId) => ({ ...acc, [userId]: { ...userList[userId], status: message.payload[userId] } }), {})
           console.log(message.payload)
           dispatch({
-            type: GET_USERS,
-            users: { ...users }
+            type: 'GET_USER_STATUS',
+            users: { ...message.payload }
           })
           break
         }
@@ -89,10 +87,10 @@ const socketIOMiddleware = () => {
           socket.emit('user:online', action.payload)
           break
         }
-        case 'user:online': {
-          socket.emit(action.type, action.payload)
-          break
-        }
+        // case 'user:online': {
+        //   socket.emit(action.type, action.payload)
+        //   break
+        // }
         case 'user:register': {
           socket.emit(action.type, action.payload)
           break

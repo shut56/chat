@@ -1,7 +1,9 @@
 export const GET_USERS = 'GET_USERS'
+const GET_USER_STATUS = 'GET_USER_STATUS'
 
 const initialState = {
-  userList: {}
+  userList: {},
+  userStatus: {}
 }
 
 // const user = {
@@ -24,6 +26,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userList: action.users
+      }
+    }
+    case GET_USER_STATUS: {
+      return {
+        ...state,
+        userStatus: action.users
       }
     }
     default: {
