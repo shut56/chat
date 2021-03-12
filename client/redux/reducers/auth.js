@@ -6,8 +6,9 @@ const UPDATE_LOGIN = 'UPDATE_LOGIN'
 const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
 const UPDATE_NAME = 'UPDATE_NAME'
 const LOGIN = 'LOGIN'
-export const REGISTER = 'REGISTER'
-export const SERVER_RESPONSE = 'SERVER_RESPONSE'
+const REGISTER = 'REGISTER'
+const SERVER_RESPONSE = 'SERVER_RESPONSE'
+export const SAVE_NAME = 'SAVE_NAME'
 
 const cookie = new Cookies()
 
@@ -62,6 +63,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         response: action.payload
+      }
+    }
+    case SAVE_NAME: {
+      return {
+        ...state,
+        user: { ...state.user, name: action.payload.name }
       }
     }
     default: {

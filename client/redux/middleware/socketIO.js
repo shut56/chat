@@ -2,10 +2,10 @@ import { io } from 'socket.io-client'
 
 import { history } from '..'
 
-import { GET_CHANNELS } from '../reducers/channels'
-import { GET_MESSAGES } from '../reducers/messages'
-import { GET_USERS } from '../reducers/users'
-import { SERVER_RESPONSE, REGISTER } from '../reducers/auth'
+// import { 'GET_CHANNELS' } from '../reducers/channels'
+// import { 'GET_MESSAGES' } from '../reducers/messages'
+// import { 'GET_USERS' } from '../reducers/users'
+// import { 'SERVER_RESPONSE', REGISTER } from '../reducers/auth'
 
 const socketIOMiddleware = () => {
   console.log('- - - socketIOMiddleware is online! - - -')
@@ -27,7 +27,7 @@ const socketIOMiddleware = () => {
           const channelList = !message.payload.id ? message.payload : message.payload.channels
           const activeId = message.payload.id || getState().channels.activeChannel
           dispatch({
-            type: GET_CHANNELS,
+            type: 'GET_CHANNELS',
             channelList,
             channelId: activeId
           })
@@ -36,7 +36,7 @@ const socketIOMiddleware = () => {
         case 'users:list': {
           console.log('Users:', message.payload)
           dispatch({
-            type: GET_USERS,
+            type: 'GET_USERS',
             users: message.payload || {}
           })
           break
@@ -52,7 +52,7 @@ const socketIOMiddleware = () => {
         case 'message:history': {
           const { messageHistory } = getState().messages
           dispatch({
-            type: GET_MESSAGES,
+            type: 'GET_MESSAGES',
             msgHistory: { ...messageHistory, [message?.payload.channelId]: message?.payload.history } || {}
           })
           break
@@ -60,7 +60,7 @@ const socketIOMiddleware = () => {
         case 'server:response': {
           console.log('This is Server Response')
           dispatch({
-            type: SERVER_RESPONSE,
+            type: 'SERVER_RESPONSE',
             payload: message.payload
           })
           break
@@ -68,7 +68,7 @@ const socketIOMiddleware = () => {
         case 'register:complete': {
           history.push('/login')
           dispatch({
-            type: REGISTER,
+            type: 'REGISTER',
             toggle: false
           })
           socket.disconnect()
@@ -85,6 +85,10 @@ const socketIOMiddleware = () => {
         case 'users:get': {
           socket.emit('users:get', action.payload)
           socket.emit('user:online', action.payload)
+          break
+        }
+        case 'user:name': {
+          socket.emit('user:name', action.payload)
           break
         }
         // case 'user:online': {

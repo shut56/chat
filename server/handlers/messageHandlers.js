@@ -22,7 +22,7 @@ module.exports = (io, socket) => {
 
       const updatedHistory = await messageStoreModel.findOneAndUpdate(
         { channelId: `${payload.id}` },
-        { 
+        {
           $addToSet: { history: newMessage }
         },
         {
@@ -46,7 +46,7 @@ module.exports = (io, socket) => {
     try {
       const updatedHistory = await messageStoreModel.findOneAndUpdate(
         { channelId: payload.channelId },
-        { 
+        {
           $pull: { history: { _id: payload.messageId } }
         },
         {

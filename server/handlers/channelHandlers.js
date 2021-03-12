@@ -15,7 +15,7 @@ module.exports = (io, socket) => {
       const channelList = await channelModel.find({})
       const channelId = channelList.find((chan) => chan.userList.includes(uid))?._id
 
-      if (!!channelId) {
+      if (channelId) {
         const messageHistory = await messageStoreModel.findOne({ channelId })
 
         io.to(socket.id).emit('SOCKET_IO', {

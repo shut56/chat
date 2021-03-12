@@ -50,6 +50,31 @@ module.exports = (io, socket) => {
     }
   }
 
+  const changeUserName = async ({ id, name }) => {
+    try {
+      await userModel.updateOne(
+        { _id: id },
+        {
+          $set: { name }
+        },
+        {
+          'multi': false,
+          'upsert': false,
+          'new': true
+        }
+      )
+      const userList = await userModel.find({})
+
+      io.emit('SOCKET_IO', {
+        type: 'users:list',
+        payload: arrayToObject(userList)
+      })
+    } catch (err) {
+      console.log(`${err}`)
+    }
+  }
+
   socket.on('users:get', getUsers)
   socket.on('user:register', (payload) => setUser(payload))
+  socket.on('user:name', (payload) => changeUserName(payload))
 }
