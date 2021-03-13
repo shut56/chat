@@ -9,6 +9,8 @@ const MyAccount = () => {
   const { name, email, _id } = useSelector((s) => s.auth.user)
   const userName = useSelector((s) => s.auth.name)
 
+  const maxLength = 50
+
   useEffect(() => {
     dispatch(updateName(name))
   }, [name])
@@ -17,11 +19,11 @@ const MyAccount = () => {
       <div className="flex flex-row py-2 font-bold">My Account</div>
       <div className="flex flex-col p-2 rounded bg-gray-700">
         <div id="name" className="flex py-1 justify-between items-center">
-          <div className="flex flex-col">
-            <span className="font-semibold text-gray-400 select-none">Your name:</span>
-            <input onChange={(e) => dispatch(updateName(e.target.value))} className="font-semibold focus:outline-none bg-gray-700" placeholder="Enter your name..." value={userName} />
+          <div className="flex flex-col w-full">
+            <span className="font-semibold text-gray-400 select-none">{`Your name (maximum ${maxLength} symbols):`}</span>
+            <input onChange={(e) => dispatch(updateName(e.target.value))} className="font-semibold focus:outline-none bg-gray-700" placeholder="Enter your name..." maxLength={maxLength} value={userName} />
           </div>
-          {name === userName || <button onClick={() => dispatch(changeName(_id, userName))} type="button" className="focus:outline-none hover:bg-gray-800 rounded bg-gray-600 font-semibold px-2 py-1">Change</button>}
+          {name === userName || <button onClick={() => dispatch(changeName(_id, userName))} type="button" className="focus:outline-none hover:bg-gray-800 rounded bg-gray-600 font-semibold px-2 py-1" placeholder="Enter your email...">Change</button>}
         </div>
         <div id="email" className="flex py-1 justify-between items-center">
           <div className="flex flex-col">

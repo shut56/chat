@@ -16,13 +16,17 @@ const Sidebar = () => {
     dispatch(signOut())
   }
   return (
-    <div className="bg-gray-700 text-gray-400 w-60 pb-6 overflow-y-auto h-full">
-      <ServerBlock />
-      <UserBlock />
-      <ChannelsList />
-      <DirectMessages />
-      <Applications />
-      <button className="flex justify-center mx-4 rounded px-4 py-2 font-bold bg-red-900 text-white w-32" type="button" onClick={logOut}>Exit</button>
+    <div className="flex flex-shrink-0 flex-col bg-gray-700 text-gray-400 w-52">
+      <div className="top-0">
+        <ServerBlock />
+        <UserBlock />
+      </div>
+      <div className="overflow-y-auto h-full">
+        <ChannelsList />
+        <DirectMessages />
+        <Applications />
+      </div>
+      <button className="mb-2 bottom-0 flex justify-center mx-4 rounded px-4 py-2 font-bold bg-red-900 text-white w-32" type="button" onClick={logOut}>Exit</button>
     </div>
   )
 }

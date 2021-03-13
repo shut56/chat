@@ -15,7 +15,7 @@ const Channels = () => {
 
   dispatch(getSocketId())
   return (
-    <div className="flex bg-gray-700 h-screen w-full">
+    <div className="flex bg-gray-700 h-screen w-screen">
       {channelCreatorToggle && <BlackScreen />}
       {channelCreatorToggle && <ChannelCreator />}
       <Sidebar />

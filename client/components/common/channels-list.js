@@ -22,9 +22,9 @@ const ChannelsList = () => {
     return () => {}
   }, [dispatch])
   return (
-    <div>
-      <div className="flex flex-row px-4 items-center font-bold">
-        <div className="flex-grow">Channels</div>
+    <div className="m-0">
+      <div className="flex flex-row px-4 items-center font-bold justify-between">
+        <div>Channels</div>
         <button type="button" className="text-xl font-bold mb-1 hover:text-white" onClick={() => dispatch(fade(true))}>+</button>
       </div>
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">

@@ -8,7 +8,7 @@ const UserBlock = () => {
 
   return (
     <div>
-      <button type="button" onClick={() => history.push('/profile')} className="focus:outline-none hover:bg-gray-900 flex items-center mb-6 px-4 py-2 bg-gray-800 text-white select-none w-full">
+      <button type="button" onClick={() => history.push('/profile')} className="focus:outline-none hover:bg-gray-900 flex items-center px-4 py-2 bg-gray-800 text-white select-none w-full">
         <span className="bg-yellow-300 rounded-full block w-2 h-2 mr-2">&#8194;</span>
         <div className="text-gray-100">{name || 'User'}</div>
       </button>

@@ -1,10 +1,12 @@
 const NEW_NAME = 'NEW_NAME'
+const SAVE_SCROLL_POINT = 'SAVE_SCROLL_POINT'
 
 const initialState = {
   newChannelName: '',
   serverSettings: {
     name: 'Pepe\'s Server'
   },
+  scrollPoints: {},
   userAmount: 0
 }
 
@@ -14,6 +16,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         newChannelName: action.char
+      }
+    }
+    case SAVE_SCROLL_POINT: {
+      return {
+        ...state,
+        scrollPoints: action.payload
       }
     }
     default: {
@@ -32,5 +40,15 @@ export function setNewChannelName(name = '') {
         char: clearName
       })
     }
+  }
+}
+
+export function saveScrollPoint(channelId, pos) {
+  return (dispatch, getState) => {
+    const { scrollPoints } = getState().settings
+    dispatch({
+      type: SAVE_SCROLL_POINT,
+      payload: { ...scrollPoints, [channelId]: pos }
+    })
   }
 }

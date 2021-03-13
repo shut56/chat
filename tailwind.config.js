@@ -15,6 +15,12 @@ module.exports = {
       },
       animation: {
         'emersion': 'emersion 200ms ease-in 1'
+      },
+      maxWidth: {
+        '1': '10rem'
+      },
+      minWidth: {
+        '1': '10rem'
       }
     },
   },
