@@ -1,8 +1,10 @@
 const FADE_FOR_WINDOWS = 'FADE_FOR_WINDOWS'
+export const ADMIN_RIGHTS = 'ADMIN_RIGHTS'
 
 const initialState = {
   blackScreen: false,
-  channelCreatorToggle: false
+  channelCreatorToggle: false,
+  isAdmin: false
 }
 
 export default (state = initialState, action) => {
@@ -12,6 +14,12 @@ export default (state = initialState, action) => {
         ...state,
         blackScreen: action.toggle,
         channelCreatorToggle: action.toggle
+      }
+    }
+    case ADMIN_RIGHTS: {
+      return {
+        ...state,
+        isAdmin: action.rights
       }
     }
     default: {

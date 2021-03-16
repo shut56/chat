@@ -7,6 +7,7 @@ const Message = ({ message, name, uid }) => {
   const dispatch = useDispatch()
   const userId = useSelector((s) => s.auth.user?._id)
   const channelId = useSelector((s) => s.channels?.activeChannel)
+  const { isAdmin } = useSelector((s) => s.secondary)
   const TIME = `${new Date(message.time).toLocaleTimeString()}`
 
   const removeButton = (bool) => {
@@ -24,7 +25,7 @@ const Message = ({ message, name, uid }) => {
           <span className="flex-shrink-0 font-bold mr-2">{name}</span>
           <span className="flex-shrink-0 text-gray-400 text-xs mb-2">{TIME}</span>
           <div className="flex-grow" />
-          {removeButton(userId === uid)}
+          {removeButton(userId === uid || isAdmin)}
         </div>
         <p className="text-gray-300 pt-1">{message.text}</p>
       </div>

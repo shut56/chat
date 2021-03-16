@@ -7,8 +7,9 @@ import auth from '../middleware/auth'
 module.exports = (server) => {
   server.post('/api/v1/register', async (req, res) => {
     console.log('New user: ', req.body)
+    const { password, email, name } = req.body
     try {
-      await userModel.create(req.body)
+      await userModel.create({ password, email, name })
       res.json({ status: 'ok' })
     } catch (err) {
       res.json({ status: 'error', error: `${err}` })
@@ -49,6 +50,6 @@ module.exports = (server) => {
   })
 
   server.get('/api/v1/user-info', auth(['admin']), (req, res) => {
-    res.json({ status: 'user-info' })
+    res.json({ status: 'admin' })
   })
 }

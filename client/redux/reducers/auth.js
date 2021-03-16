@@ -2,6 +2,8 @@ import axios from 'axios'
 import Cookies from 'universal-cookie'
 import { history } from '..'
 
+import { ADMIN_RIGHTS } from './secondary'
+
 const UPDATE_LOGIN = 'UPDATE_LOGIN'
 const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
 const UPDATE_NAME = 'UPDATE_NAME'
@@ -132,6 +134,12 @@ export function signIn() {
           token: data.token,
           user: data.user
         })
+        if (data.user.role.includes('admin')) {
+          dispatch({
+            type: ADMIN_RIGHTS,
+            rights: true
+          })
+        }
         dispatch({
           type: 'socket:open'
         })
@@ -167,6 +175,12 @@ export function trySignIn() {
         dispatch({
           type: 'socket:open'
         })
+        if (data.user.role.includes('admin')) {
+          dispatch({
+            type: ADMIN_RIGHTS,
+            rights: true
+          })
+        }
       })
   }
 }

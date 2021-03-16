@@ -7,7 +7,7 @@ const ChannelHeader = () => {
   const description = useSelector((s) => s.channels?.channelList[activeChannel]?.description)
   return (
     <div className="flex items-center p-2 border-b border-gray-700 shadow h-14 w-full">
-      <div className="flex items-center">
+      <div className="flex flex-1 min-w-0 items-center">
         <div className="text-lg font-bold pr-2 truncate"># {name}</div>
       </div>
       <div className="flex flex-1 min-w-0">

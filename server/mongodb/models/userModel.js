@@ -19,9 +19,9 @@ const userSchema = new mongoose.Schema({
     type: [String],
     default: ['user']
   },
-  channels: {
-    type: [String],
-    // default: ['test-id-HELLO']
+  origin: {
+    type: String,
+    default: 'first'
   }
 }, {
   timestamps: true

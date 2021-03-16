@@ -7,12 +7,11 @@ import passport from 'passport'
 import config from './config'
 import mongooseService from './services/mongoose'
 import passportJWT from './services/passport'
-import socketHandlers from './handlers/socketHandlers'
 import userHandlers from './handlers/userHandlers'
 import channelHandlers from './handlers/channelHandlers'
 import messageHandlers from './handlers/messageHandlers'
 import mongoRequests from './mongodb/requests'
-import { createSocket } from 'dgram'
+import userModel from './mongodb/models/userModel'
 
 const server = express()
 const httpServer = http.createServer(server)
@@ -20,7 +19,7 @@ const httpServer = http.createServer(server)
 const PORT = config.port
 
 const middleware = [
-  express.json({ limit: '100kb' }),
+  express.json({ limit: '50kb' }),
   cookieParser(),
   passport.initialize()
 ]
@@ -29,31 +28,6 @@ middleware.forEach((it) => server.use(it))
 
 server.use('/static', express.static(`${__dirname}/public`))
 passport.use('jwt', passportJWT.jwt)
-
-let msgHist = {
-  'test-id': []
-}
-
-let channels = [
-  {
-    id: 'test-id',
-    name: 'general',
-    userList: [],
-    active: true
-  },
-  {
-    id: 'test-2',
-    name: 'pepe-chill',
-    userList: [],
-    active: false
-  },
-  {
-    id: 'test-3',
-    name: '​froggy_swamp',
-    userList: [],
-    active: false
-  }
-]
 
 server.get('/', (req, res) => {
   res.send('Express server')
@@ -71,9 +45,27 @@ server.get('/api/users', (req, res) => {
   res.json(connectedUsers.users())
 })
 
+const originAdmin = async () => {
+  const res = await userModel.findOne({ origin: 'first' }).exec()
+  if (res == null) {
+    console.log('No one origin admin...')
+    await userModel.create({ 
+      name: 'Admin',
+      email: 'admin@admin',
+      password: 'admin',
+      role: ['admin'],
+      origin: 'first'
+    })
+    console.log('Admin created')
+  } else {
+    console.log('Admin is here!')
+  }
+}
+
 if (config.mongoEnabled) {
   console.log('MongoDB Enabled: ', config.mongoEnabled)
   mongooseService.connect()
+  originAdmin()
 
   mongoRequests(server)
 }
@@ -110,7 +102,6 @@ if (config.socketsEnabled) {
     userHandlers(socketIO, socket)
     channelHandlers(socketIO, socket)
     messageHandlers(socketIO, socket)
-    socketHandlers(socketIO, socket, msgHist, channels)
 
     socket.on('user:online', ({ id }) => {
       connectedUsers.add(socket.id, id)

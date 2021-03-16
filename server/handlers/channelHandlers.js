@@ -10,10 +10,18 @@ const arrayToObject = (arr) => {
 }
 
 module.exports = (io, socket) => {
-  const getChannels = async ({ uid }) => {
+  const getChannels = async ({ uid, admin }) => {
     try {
       const channelList = await channelModel.find({})
-      const channelId = channelList.find((chan) => chan.userList.includes(uid))?._id
+      // console.log(channelList)
+      let channelId = channelList.find((chan) => chan.userList.includes(uid))?._id
+
+      if (admin) {
+        channelId = channelList[0]._id
+        console.log('Admin ID: ', channelId)
+      }
+
+      console.log('ID: ', channelList[0]?._id)
 
       if (channelId) {
         const messageHistory = await messageStoreModel.findOne({ channelId })
@@ -34,6 +42,7 @@ module.exports = (io, socket) => {
   }
 
   const removeChannel = async ({ id: channel, fistChannelId: channelId }) => {
+    console.log('REMOVE: ', { id: channel, fistChannelId: channelId })
     try {
       await channelModel.deleteOne({ _id: channel })
       const channelList = await channelModel.find({})

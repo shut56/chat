@@ -2,11 +2,6 @@ import { io } from 'socket.io-client'
 
 import { history } from '..'
 
-// import { 'GET_CHANNELS' } from '../reducers/channels'
-// import { 'GET_MESSAGES' } from '../reducers/messages'
-// import { 'GET_USERS' } from '../reducers/users'
-// import { 'SERVER_RESPONSE', REGISTER } from '../reducers/auth'
-
 const socketIOMiddleware = () => {
   console.log('- - - socketIOMiddleware is online! - - -')
   let socket
@@ -34,7 +29,7 @@ const socketIOMiddleware = () => {
           break
         }
         case 'users:list': {
-          console.log('Users:', message.payload)
+          // console.log('Users:', message.payload)
           dispatch({
             type: 'GET_USERS',
             users: message.payload || {}
@@ -42,7 +37,7 @@ const socketIOMiddleware = () => {
           break
         }
         case 'users:online': {
-          console.log(message.payload)
+          // console.log(message.payload)
           dispatch({
             type: 'GET_USER_STATUS',
             users: { ...message.payload }
@@ -91,10 +86,6 @@ const socketIOMiddleware = () => {
           socket.emit('user:name', action.payload)
           break
         }
-        // case 'user:online': {
-        //   socket.emit(action.type, action.payload)
-        //   break
-        // }
         case 'user:register': {
           socket.emit(action.type, action.payload)
           break
