@@ -45,21 +45,26 @@ server.get('/api/users', (req, res) => {
   res.json(connectedUsers.users())
 })
 
+let adminList = []
+
 const originAdmin = async () => {
-  const res = await userModel.findOne({ origin: 'first' }).exec()
-  if (res == null) {
+  const admins = await userModel.find({ role: ['admin'] })
+  const res = admins.find((admin) => admin.origin === 'first' )
+  if (typeof res === 'undefined') {
     console.log('No one origin admin...')
-    await userModel.create({ 
+    const firstAdmin = await userModel.create({
       name: 'Admin',
-      email: 'admin@admin',
+      email: 'admin2@admin',
       password: 'admin',
       role: ['admin'],
       origin: 'first'
     })
     console.log('Admin created')
+    adminList = [firstAdmin._id.toString()]
   } else {
     console.log('Admin is here!')
   }
+  adminList = [...adminList, ...admins.map((admin) => admin._id.toString())]
 }
 
 if (config.mongoEnabled) {
@@ -100,7 +105,7 @@ if (config.socketsEnabled) {
     console.log(`Hello ${socket.id}`)
 
     userHandlers(socketIO, socket)
-    channelHandlers(socketIO, socket)
+    channelHandlers(socketIO, socket, adminList)
     messageHandlers(socketIO, socket)
 
     socket.on('user:online', ({ id }) => {

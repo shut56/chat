@@ -2,33 +2,35 @@ import channelModel from '../mongodb/models/channelModel'
 import messageStoreModel from '../mongodb/models/messageStoreModel'
 import userModel from '../mongodb/models/userModel'
 
-const arrayToObject = (arr) => {
-  // console.log('Array from DB: ', arr)
+const arrayToObject = (channelList, uid, isAdmin) => {
+  let arr = channelList
+  console.log('Array from DB: ', arr, uid, isAdmin)
+  if (!isAdmin) {
+    arr = arr.filter((chan) => chan.userList.includes(uid))
+  }
   return arr.reduce((acc, chan) => {
     return { ...acc, [chan._id]: chan }
   }, {})
 }
 
-module.exports = (io, socket) => {
-  const getChannels = async ({ uid, admin }) => {
+module.exports = (io, socket, adminList) => {
+  const getChannels = async ({ uid }) => {
     try {
       const channelList = await channelModel.find({})
-      // console.log(channelList)
-      let channelId = channelList.find((chan) => chan.userList.includes(uid))?._id
-
-      if (admin) {
-        channelId = channelList[0]._id
-        console.log('Admin ID: ', channelId)
-      }
-
+      console.log('channelList', channelList)
+      const channelId = channelList.find((chan) => chan.userList.includes(uid))?._id || channelList[0]?._id
+      console.log('channelId', channelId)
       console.log('ID: ', channelList[0]?._id)
+      console.log('UID: ', uid)
+      console.log('Admins: ', adminList)
+      console.log('Is Admin? ', adminList.includes(uid))
 
-      if (channelId) {
+      if (channelId || adminList.includes(uid)) {
         const messageHistory = await messageStoreModel.findOne({ channelId })
 
         io.to(socket.id).emit('SOCKET_IO', {
           type: 'channel:list',
-          payload: { channels: arrayToObject(channelList), id: channelId }
+          payload: { channels: arrayToObject(channelList, uid, adminList.includes(uid)), id: channelId }
         })
         io.to(socket.id).emit('SOCKET_IO', {
           type: 'message:history',
@@ -41,7 +43,7 @@ module.exports = (io, socket) => {
     }
   }
 
-  const removeChannel = async ({ id: channel, fistChannelId: channelId }) => {
+  const removeChannel = async ({ id: channel, fistChannelId: channelId, uid }) => {
     console.log('REMOVE: ', { id: channel, fistChannelId: channelId })
     try {
       await channelModel.deleteOne({ _id: channel })
@@ -52,7 +54,7 @@ module.exports = (io, socket) => {
 
       io.emit('SOCKET_IO', {
         type: 'channel:list',
-        payload: arrayToObject(channelList)
+        payload: arrayToObject(channelList, uid, adminList.includes(uid))
       })
       io.to(socket.id).emit('SOCKET_IO', {
         type: 'message:history',
@@ -64,7 +66,7 @@ module.exports = (io, socket) => {
     }
   }
 
-  const addChannel = async (channel) => {
+  const addChannel = async ({ channel, uid }) => {
     // console.log('Add Channel: ', channel)
     try {
       const userList = await userModel.find({})
@@ -79,7 +81,7 @@ module.exports = (io, socket) => {
 
       io.to(socket.id).emit('SOCKET_IO', {
         type: 'channel:list',
-        payload: { channels: arrayToObject(channelList), id: channelId }
+        payload: { channels: arrayToObject(channelList, uid, adminList.includes(uid)), id: channelId }
       })
       io.to(socket.id).emit('SOCKET_IO', {
         type: 'message:history',
@@ -87,7 +89,7 @@ module.exports = (io, socket) => {
       })
       socket.broadcast.emit('SOCKET_IO', {
         type: 'channel:list',
-        payload: arrayToObject(channelList)
+        payload: arrayToObject(channelList, uid, adminList.includes(uid))
       })
 
       console.log('Сhannel list sent', socket.id)

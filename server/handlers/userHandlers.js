@@ -3,7 +3,7 @@ import userModel from '../mongodb/models/userModel'
 const arrayToObject = (arr) => {
   // console.log('Array from DB: ', arr)
   return arr.reduce((acc, user) => {
-    return { ...acc, [user._id]: { id: user._id, name: user.name } }
+    return { ...acc, [user._id]: { id: user._id, name: user.name, role: user.role } }
   }, {})
 }
 

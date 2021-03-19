@@ -51,10 +51,11 @@ export function saveChannel(name, desc) {
     userList: [],
     channelMessages: []
   }
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const uid = getState().auth.user?._id
     dispatch({
       type: 'channel:add',
-      payload: { ...newChannel }
+      payload: { channel: newChannel, uid }
     })
   }
 }
@@ -62,9 +63,10 @@ export function saveChannel(name, desc) {
 export function removeChannel(channelId) {
   return (dispatch, getState) => {
     const fistChannelId = Object.keys(getState().channels.channelList)[0]
+    const uid = getState().auth.user?._id
     dispatch({
       type: 'channel:remove',
-      payload: { id: channelId, fistChannelId }
+      payload: { id: channelId, fistChannelId, uid }
     })
     dispatch({
       type: ACTIVE_CHANNEL_ID,
