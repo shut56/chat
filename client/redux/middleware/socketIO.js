@@ -1,10 +1,28 @@
 import { io } from 'socket.io-client'
 
 import { history } from '..'
+// import messages from '../reducers/messages'
 
 const socketIOMiddleware = () => {
   console.log('- - - socketIOMiddleware is online! - - -')
   let socket
+
+  function reducedChannels(channelList, uid, role) {
+    return Object
+      .keys(channelList)
+      .reduce((acc, chan) => {
+        if (role.includes('admin') || channelList[chan]?.userList.includes(uid)) {
+          return { ...acc, [chan]: { ...channelList[chan] } }
+        }
+        return acc
+      }, {})
+  }
+
+  function checkUserChannel(channelList, uid) {
+    return Object
+      .keys(channelList)
+      .find((chanId) => channelList[chanId].userList.includes(uid))
+  }
 
   return (store) => {
     socket = io(`${window.location.origin}`, {
@@ -16,15 +34,38 @@ const socketIOMiddleware = () => {
     socket.on('SOCKET_IO', (message) => {
       console.log('Message from server', message)
       console.log('ID: ', socket.id)
+      const { _id: uid, role } = getState().auth.user
+      console.log('UserDATA: ', uid, role)
+
       switch (message.type) {
         case 'channel:list': {
           console.log('Get channels from socket.io', message)
-          const channelList = !message.payload.id ? message.payload : message.payload.channels
-          const activeId = message.payload.id || getState().channels.activeChannel
+          const channelList = reducedChannels(message.payload.channels, uid, role)
+
+          console.log('COMPARE: ', message.payload?.trigger, getState().channels.activeChannel)
+          console.log('FIRST ID: ', checkUserChannel(channelList, uid))
+
+          let activeId = checkUserChannel(channelList, uid)
+
+          if (message.payload?.id) {
+            console.log('NEW CHAN ID: ', message.payload?.id)
+            activeId = message.payload.id
+          } else if (getState().channels.activeChannel !== '') {
+            activeId = getState().channels.activeChannel
+
+            if (message.payload?.trigger === activeId) {
+              activeId = checkUserChannel(channelList, uid)
+            }
+          }
+
           dispatch({
             type: 'GET_CHANNELS',
             channelList,
             channelId: activeId
+          })
+          dispatch({
+            type: 'messages:get',
+            payload: { id: activeId }
           })
           break
         }

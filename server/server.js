@@ -65,6 +65,7 @@ const originAdmin = async () => {
     console.log('Admin is here!')
   }
   adminList = [...adminList, ...admins.map((admin) => admin._id.toString())]
+  console.log('Admins: ', adminList)
 }
 
 if (config.mongoEnabled) {
@@ -105,7 +106,7 @@ if (config.socketsEnabled) {
     console.log(`Hello ${socket.id}`)
 
     userHandlers(socketIO, socket)
-    channelHandlers(socketIO, socket, adminList)
+    channelHandlers(socketIO, socket)
     messageHandlers(socketIO, socket)
 
     socket.on('user:online', ({ id }) => {

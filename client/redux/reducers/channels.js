@@ -13,7 +13,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         channelList: action.channelList,
-        activeChannel: action.channelId || 'No active channel'
+        activeChannel: action.channelId
       }
     }
     case SAVE_CHANNEL: {
@@ -62,15 +62,10 @@ export function saveChannel(name, desc) {
 
 export function removeChannel(channelId) {
   return (dispatch, getState) => {
-    const fistChannelId = Object.keys(getState().channels.channelList)[0]
     const uid = getState().auth.user?._id
     dispatch({
       type: 'channel:remove',
-      payload: { id: channelId, fistChannelId, uid }
-    })
-    dispatch({
-      type: ACTIVE_CHANNEL_ID,
-      channelId: fistChannelId
+      payload: { id: channelId, uid }
     })
   }
 }

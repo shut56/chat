@@ -2,6 +2,7 @@ import messageStoreModel from '../mongodb/models/messageStoreModel'
 
 module.exports = (io, socket) => {
   const getMessages = async (payload) => {
+    socket.join(payload.id)
     try {
       const messageHistory = await messageStoreModel.findOne({ channelId: payload.id })
 
