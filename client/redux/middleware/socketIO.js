@@ -143,6 +143,10 @@ const socketIOMiddleware = () => {
           socket.emit(action.type, action.payload)
           break
         }
+        case 'channel:edit': {
+          socket.emit(action.type, action.payload)
+          break
+        }
         case 'messages:get': {
           socket.emit(action.type, action.payload)
           break

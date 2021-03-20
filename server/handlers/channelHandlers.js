@@ -83,7 +83,35 @@ module.exports = (io, socket) => {
     }
   }
 
+  const editChannel = async ({ channel, uid }) => {
+    console.log('Edit Channel: ', { channel, uid })
+    try {
+      await channelModel.updateOne(
+        { _id: channel.id },
+        {
+          $set: { ...channel }
+        },
+        {
+          'multi': false,
+          'upsert': false,
+          'new': true
+        }
+      )
+      const channelList = await channelModel.find({})
+
+      io.emit('SOCKET_IO', {
+        type: 'channel:list',
+        payload: { channels: arrayToObject(channelList) }
+      })
+
+      console.log('Сhannel removed', socket.id)
+    } catch (err) {
+      console.log(`${err}`)
+    }
+  }
+
   socket.on('channels:get', (payload) => getChannels(payload))
   socket.on('channel:add', (payload) => addChannel(payload))
   socket.on('channel:remove', (payload) => removeChannel(payload))
+  socket.on('channel:edit', (payload) => editChannel(payload))
 }

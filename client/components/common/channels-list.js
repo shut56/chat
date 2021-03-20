@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { fade } from '../../redux/reducers/secondary'
+import { openWindow } from '../../redux/reducers/secondary'
 import {
-  getChannels, changeActiveChannel, removeChannel
+  getChannels, changeActiveChannel, settingsChannel // removeChannel
 } from '../../redux/reducers/channels'
 
 const ChannelsList = () => {
@@ -18,10 +18,17 @@ const ChannelsList = () => {
     dispatch(changeActiveChannel(key))
   }
 
+  const editButton = (id) => {
+    dispatch(settingsChannel(id))
+    dispatch(openWindow(true, 'edit'))
+  }
+
   const removeButton = (id) => {
+    console.log(id)
     return (
       <div className="flex flex-col">
-        <button className="focus:outline-none p-1 bg-gray-900 text-xs rounded-full w-6 h-6" type="button" onClick={() => dispatch(removeChannel(id))}>X</button>
+        {/* <button className="focus:outline-none p-1 bg-gray-900 text-xs rounded-full w-6 h-6" type="button" onClick={() => dispatch(removeChannel(id))}>X</button> */}
+        <button type="button" className="text-xs font-bold mb-1 hover:text-white" onClick={() => editButton(id)}>Edit</button>
         <div className="flex-auto" />
       </div>
     )
@@ -36,7 +43,7 @@ const ChannelsList = () => {
     <div className="m-0">
       <div className="flex flex-row px-4 items-center font-bold justify-between">
         <div>Channels</div>
-        {isAdmin && <button type="button" className="text-xl font-bold mb-1 hover:text-white" onClick={() => dispatch(fade(true))}>+</button>}
+        {isAdmin && <button type="button" className="text-xl font-bold mb-1 hover:text-white" onClick={() => dispatch(openWindow(true, 'create'))}>+</button>}
       </div>
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {Object.keys(channelList).map((chan) => {
