@@ -18,6 +18,15 @@ const ProfileMenu = () => {
 
   return (
     <div className="bg-gray-700 text-gray-400 w-60 pb-6 overflow-y-auto h-full">
+      <div className="flex justify-center mt-4">
+        <button
+          type="button"
+          onClick={() => history.go(-1)}
+          className="focus:outline-none hover:bg-gray-800 rounded bg-gray-600 font-semibold px-2 py-1 text-white"
+        >
+          Back
+        </button>
+      </div>
       <div className="flex flex-row py-2 justify-center font-bold">
         User Settings
       </div>
@@ -36,7 +45,6 @@ const ProfileMenu = () => {
           )
         })}
       </div>
-      <button type="button" onClick={() => history.go(-1)} className="flex justify-center mx-4 rounded px-4 py-2 font-bold bg-red-900 text-white w-32">Exit</button>
     </div>
   )
 }

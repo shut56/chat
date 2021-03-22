@@ -19,10 +19,10 @@ const Message = ({ message, name, uid }) => {
 
   return (
     <div className="flex items-start mb-4 hover:bg-gray-700 rounded-sm">
-      <img src="/assets/images/default.gif" className="w-10 h-10 rounded-full mr-3" alt="User avatar" />
+      {/* <img src="/assets/images/default.gif" className="w-10 h-10 rounded-full mr-3" alt="User avatar" /> */}
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow static">
-          <span className="flex-shrink-0 font-bold mr-2">{name}</span>
+          <span className="flex-shrink-0 font-semibold mr-2">{name}</span>
           <span className="flex-shrink-0 text-gray-400 text-xs mb-2">{TIME}</span>
           <div className="flex-grow" />
           {removeButton(userId === uid || isAdmin)}
