@@ -44,7 +44,7 @@ const DirectMessages = () => {
         {
           userSort(Object.keys(userList)).map((uid) => {
             return (
-              <button type="button" key={`${uid}`} className="flex items-center px-4 mb-2 select-none text-gray-100">
+              <button type="button" key={uid} className="flex items-center px-4 mb-2 select-none text-gray-100">
                 <span className={`${isOnline(!!userStatus[uid])} rounded-full block w-2 h-2 mr-2`}>&#8194;</span>
                 {isMe(uid)}
               </button>

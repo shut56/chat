@@ -26,11 +26,15 @@ module.exports = (io, socket) => {
     }
   }
 
-  const addChannel = async ({ channel, uid }) => {
-    console.log('Add Channel: ', { channel, uid })
+  const addChannel = async ({ channel, uid, privateChannel }) => {
+    console.log('Add Channel: ', { channel, uid, privateChannel })
     try {
-      const userList = await userModel.find({})
-      const mappedUserList = userList.map((user) => user._id)
+      let mappedUserList = []
+
+      if (!privateChannel) {
+        const userList = await userModel.find({})
+        mappedUserList = userList.map((user) => user._id)
+      }
 
       const newChannel = await channelModel.create({ ...channel, userList: mappedUserList })
       const channelList = await channelModel.find({})

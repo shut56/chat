@@ -94,11 +94,17 @@ const socketIOMiddleware = () => {
           break
         }
         case 'server:response': {
-          console.log('This is Server Response')
+          console.log('This is Server Response', message.payload)
           dispatch({
             type: 'SERVER_RESPONSE',
             payload: message.payload
           })
+          if (message.payload.data?.email) {
+            dispatch({
+              type: 'SAVE_EMAIL',
+              payload: { email: message.payload.data?.email }
+            })
+          }
           break
         }
         case 'register:complete': {
@@ -128,6 +134,10 @@ const socketIOMiddleware = () => {
           break
         }
         case 'user:register': {
+          socket.emit(action.type, action.payload)
+          break
+        }
+        case 'user:data': {
           socket.emit(action.type, action.payload)
           break
         }

@@ -90,6 +90,9 @@ function isOnline() {
     users() {
       const userList = Object.keys(users).reduce((acc, userSocketId) => ({ ...acc, [users[userSocketId]]: userSocketId }), {})
       return userList
+    },
+    getUser(socketId) {
+      return users[socketId]
     }
   }
 }
@@ -105,7 +108,7 @@ if (config.socketsEnabled) {
   socketIO.on('connection', (socket) => {
     console.log(`Hello ${socket.id}`)
 
-    userHandlers(socketIO, socket)
+    userHandlers(socketIO, socket, connectedUsers)
     channelHandlers(socketIO, socket)
     messageHandlers(socketIO, socket)
 

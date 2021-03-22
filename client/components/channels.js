@@ -9,8 +9,7 @@ import { getSocketId } from '../redux/reducers/users'
 
 const Channels = () => {
   const dispatch = useDispatch()
-  const channelCreatorToggle = useSelector((s) => s.secondary.channelCreatorToggle)
-  const channelSettingsToggle = useSelector((s) => s.secondary.channelSettingsToggle)
+  const { channelCreatorToggle, channelSettingsToggle } = useSelector((s) => s.secondary)
   const noChannels = useSelector((s) => s.channels.activeChannel) !== ''
 
   dispatch(getSocketId())

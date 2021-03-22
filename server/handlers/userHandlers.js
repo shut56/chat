@@ -7,7 +7,21 @@ const arrayToObject = (arr) => {
   }, {})
 }
 
-module.exports = (io, socket) => {
+const errorHandler = (type, err) => {
+  if (typeof err.code !== 'undefined') {
+    switch (err.code.toString()) {
+      case '11000': {
+        return `Error: This ${type} is already in taken`
+      }
+      default: {
+        return 'Something wrong'
+      }
+    }
+  }
+  return `${err}`
+}
+
+module.exports = (io, socket, connectedUsers) => {
   const getUsers = async () => {
     console.log('User Handler')
     try {
@@ -30,7 +44,10 @@ module.exports = (io, socket) => {
 
       socket.emit('SOCKET_IO', {
         type: 'server:response',
-        payload: 'Registration is complete!\nYou can now log into your account.'
+        payload: {
+          status: 'ok',
+          text: 'Registration is complete!\nYou can now log into your account.'
+        }
       })
 
       socket.emit('SOCKET_IO', {
@@ -42,10 +59,14 @@ module.exports = (io, socket) => {
         payload: arrayToObject(userList)
       })
     } catch (err) {
-      console.log(`${err}`)
+      console.log(`User ${socket.id} - ${err}`)
+      const errorText = errorHandler('email', err)
       socket.emit('SOCKET_IO', {
         type: 'server:response',
-        payload: 'This email has already been registered.'
+        payload: {
+          status: 'error',
+          text: errorText
+        }
       })
     }
   }
@@ -59,8 +80,7 @@ module.exports = (io, socket) => {
         },
         {
           'multi': false,
-          'upsert': false,
-          'new': true
+          'upsert': false
         }
       )
       const userList = await userModel.find({})
@@ -74,7 +94,38 @@ module.exports = (io, socket) => {
     }
   }
 
+  const changeUserData = async ({ password, newData }) => {
+    const uid = connectedUsers.getUser(socket.id)
+    try {
+      const newEmail = await userModel.findAndChangeUserData({ uid, password, newData })
+
+      console.log('User data changed')
+
+      socket.emit('SOCKET_IO', {
+        type: 'server:response',
+        payload: {
+          status: 'ok',
+          text: 'Saved!',
+          data: {
+            email: newEmail
+          }
+        }
+      })
+    } catch (err) {
+      console.log(`User ${socket.id} - ${err}`)
+      const errorText = errorHandler(newData.type, err)
+      socket.emit('SOCKET_IO', {
+        type: 'server:response',
+        payload: {
+          status: 'error',
+          text: errorText
+        }
+      })
+    }
+  }
+
   socket.on('users:get', getUsers)
   socket.on('user:register', (payload) => setUser(payload))
   socket.on('user:name', (payload) => changeUserName(payload))
+  socket.on('user:data', (payload) => changeUserData(payload))
 }

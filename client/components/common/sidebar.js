@@ -1,7 +1,8 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 
-import { signOut, clearResponse } from '../../redux/reducers/auth'
+import { signOut } from '../../redux/reducers/auth'
+import { clearResponse } from '../../redux/reducers/userSettings'
 
 import ServerBlock from './server-block'
 import UserBlock from './user-block'

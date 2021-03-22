@@ -9,8 +9,8 @@ const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
 const UPDATE_NAME = 'UPDATE_NAME'
 const LOGIN = 'LOGIN'
 const REGISTER = 'REGISTER'
-const SERVER_RESPONSE = 'SERVER_RESPONSE'
 export const SAVE_NAME = 'SAVE_NAME'
+const SAVE_EMAIL = 'SAVE_EMAIL'
 
 const cookie = new Cookies()
 
@@ -22,8 +22,7 @@ const initialState = {
   user: {
     _id: cookie.get('id')
   },
-  register: false,
-  response: ''
+  register: false
 }
 
 export default (state = initialState, action) => {
@@ -61,16 +60,16 @@ export default (state = initialState, action) => {
         name: ''
       }
     }
-    case SERVER_RESPONSE: {
-      return {
-        ...state,
-        response: action.payload
-      }
-    }
     case SAVE_NAME: {
       return {
         ...state,
         user: { ...state.user, name: action.payload.name }
+      }
+    }
+    case SAVE_EMAIL: {
+      return {
+        ...state,
+        user: { ...state.user, email: action.payload.email }
       }
     }
     default: {
@@ -198,12 +197,5 @@ export function doRegister(toggle) {
   return ({
     type: REGISTER,
     toggle
-  })
-}
-
-export function clearResponse() {
-  return ({
-    type: SERVER_RESPONSE,
-    payload: ''
   })
 }

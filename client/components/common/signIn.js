@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { history } from '../../redux'
 import {
-  updateLogin, updatePassword, signIn, doRegister, clearResponse
+  updateLogin, updatePassword, signIn, doRegister
 } from '../../redux/reducers/auth'
+import { clearResponse } from '../../redux/reducers/userSettings'
 
 const SignIn = () => {
   const dispatch = useDispatch()

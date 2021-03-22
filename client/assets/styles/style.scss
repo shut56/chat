@@ -24,3 +24,16 @@
   background-color: rgba(31, 41, 55, var(--tw-bg-opacity));
   border-radius: 0.375rem;
 }
+
+/* CHECKBOX TOGGLE SWITCH */
+/* @apply rules for documentation, these do not work as inline style */
+.toggle-checkbox:checked {
+  // @apply right-0;
+  // @apply border-green-400;
+  right: 0;
+  border-color: #68D391;
+}
+.toggle-checkbox:checked + .toggle-label {
+  // @apply bg-green-400;
+  background-color: #68D391;
+}

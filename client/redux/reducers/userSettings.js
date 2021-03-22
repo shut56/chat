@@ -1,5 +1,6 @@
 import { SAVE_NAME } from './auth'
 
+const SERVER_RESPONSE = 'SERVER_RESPONSE'
 const MY_ACCOUNT = 'MY_ACCOUNT'
 const ACTIVE_ITEM = 'ACTIVE_ITEM'
 
@@ -18,7 +19,8 @@ const initialState = {
       popUp: false
     }
   },
-  activeItem: 'myAccount'
+  activeItem: 'myAccount',
+  response: {}
 }
 
 export default (state = initialState, action) => {
@@ -33,6 +35,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         activeItem: action.itemId
+      }
+    }
+    case SERVER_RESPONSE: {
+      return {
+        ...state,
+        response: action.payload
       }
     }
     default: {
@@ -50,6 +58,13 @@ export function changeActiveItem(itemId) {
   }
 }
 
+export function clearResponse() {
+  return ({
+    type: SERVER_RESPONSE,
+    payload: {}
+  })
+}
+
 export function changeName(uid, name) {
   return (dispatch) => {
     dispatch({
@@ -59,6 +74,15 @@ export function changeName(uid, name) {
     dispatch({
       type: 'user:name',
       payload: { id: uid, name }
+    })
+  }
+}
+
+export function changeData(password, newData) {
+  return (dispatch) => {
+    dispatch({
+      type: 'user:data',
+      payload: { password, newData }
     })
   }
 }

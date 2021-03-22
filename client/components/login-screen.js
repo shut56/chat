@@ -9,7 +9,8 @@ import { doRegister } from '../redux/reducers/auth'
 
 const LoginScreen = ({ reg }) => {
   const dispatch = useDispatch()
-  const { register, response } = useSelector((s) => s.auth)
+  const { register } = useSelector((s) => s.auth)
+  const { response } = useSelector((s) => s.userSettings)
 
   useEffect(() => {
     dispatch(doRegister(reg))

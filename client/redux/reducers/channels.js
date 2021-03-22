@@ -59,7 +59,7 @@ export function getChannels(uid) {
   }
 }
 
-export function addChannel(name, desc) {
+export function addChannel(name, desc, privateChannel) {
   const slicedName = name[name.length - 1] === '-' ? name.slice(0, name.length - 1) : name
   const newChannel = {
     name: slicedName || 'new-channel',
@@ -71,7 +71,7 @@ export function addChannel(name, desc) {
     const uid = getState().auth.user?._id
     dispatch({
       type: 'channel:add',
-      payload: { channel: newChannel, uid }
+      payload: { channel: newChannel, uid, privateChannel }
     })
   }
 }
