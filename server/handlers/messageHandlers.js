@@ -68,6 +68,6 @@ module.exports = (io, socket) => {
   }
 
   socket.on('messages:get', (messageObj) => getMessages(messageObj))
-  socket.on('message:add', (channelId) => addMessage(channelId))
+  socket.on('message:add', (payload) => addMessage(payload))
   socket.on('message:remove', (payload) => removeMessage(payload))
 }
