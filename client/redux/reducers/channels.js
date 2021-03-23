@@ -1,11 +1,13 @@
 export const SAVE_CHANNEL = 'SAVE_CHANNEL'
 export const GET_CHANNELS = 'GET_CHANNELS'
+const GET_DIRECT = 'GET_DIRECT'
 const ACTIVE_CHANNEL_ID = 'ACTIVE_CHANNEL_ID'
 const SETTINGS_CHANNEL_ID = 'SETTINGS_CHANNEL_ID'
 const CHANNEL_ACCESS = 'CHANNEL_ACCESS'
 
 const initialState = {
   channelList: {},
+  directList: {},
   activeChannel: '',
   settingsForChannel: '',
   temporaryRights: []
@@ -18,6 +20,12 @@ export default (state = initialState, action) => {
         ...state,
         channelList: action.channelList,
         activeChannel: action.channelId
+      }
+    }
+    case GET_DIRECT: {
+      return {
+        ...state,
+        directList: action.directList
       }
     }
     case SAVE_CHANNEL: {

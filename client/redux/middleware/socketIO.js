@@ -24,6 +24,12 @@ const socketIOMiddleware = () => {
       .find((chanId) => channelList[chanId].userList.includes(uid))
   }
 
+  function generateDirectChannels(userList, myId) {
+    return Object.keys(userList).reduce((acc, uid) => {
+      return { ...acc, [uid]: { userList: [myId, uid] } }
+    }, {})
+  }
+
   return (store) => {
     socket = io(`${window.location.origin}`, {
       path: '/ws',
@@ -71,9 +77,14 @@ const socketIOMiddleware = () => {
         }
         case 'users:list': {
           // console.log('Users:', message.payload)
+          const myId = getState().auth.user?._id
           dispatch({
             type: 'GET_USERS',
             users: message.payload || {}
+          })
+          dispatch({
+            type: 'GET_DIRECT',
+            directList: generateDirectChannels(message.payload || {}, myId)
           })
           break
         }
