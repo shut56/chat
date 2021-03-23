@@ -17,7 +17,9 @@ const MyAccount = () => {
   }
 
   useEffect(() => {
-    dispatch(updateName(name))
+    if (typeof name !== 'undefined') {
+      dispatch(updateName(name))
+    }
   }, [name])
   return (
     <div className="flex flex-col px-2">

@@ -12,13 +12,24 @@ const Message = ({ message, name, uid }) => {
 
   const removeButton = (bool) => {
     if (bool) {
-      return <button onClick={(e) => dispatch(removeMessage(channelId, e.target.dataset.key))} data-key={message._id} type="button" className="flex-shrink-0 bg-gray-900 rounded-full p-1">x</button>
+      return (
+        <div className="flex flex-col">
+          <button
+            onClick={() => dispatch(removeMessage(channelId, message._id))}
+            type="button"
+            className="flex-shrink-0 flex justify-center items-center bg-gray-900 rounded-full text-xs p-1 w-4 h-4"
+          >
+            X
+          </button>
+          <div className="flex-auto" />
+        </div>
+      )
     }
     return undefined
   }
 
   return (
-    <div className="flex items-start mb-4 hover:bg-gray-700 rounded-sm">
+    <div className="flex items-start hover:bg-gray-700 rounded px-2 py-1">
       {/* <img src="/assets/images/default.gif" className="w-10 h-10 rounded-full mr-3" alt="User avatar" /> */}
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow static">
@@ -27,7 +38,7 @@ const Message = ({ message, name, uid }) => {
           <div className="flex-grow" />
           {removeButton(userId === uid || isAdmin)}
         </div>
-        <p className="text-gray-300 pt-1">{message.text}</p>
+        <p className="text-gray-300">{message.text}</p>
       </div>
     </div>
   )

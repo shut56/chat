@@ -26,7 +26,7 @@ const MessageHistory = () => {
   }, [channelId])
 
   return (
-    <div onScroll={onScroll} id="message-history" className="px-4 py-4 overflow-y-auto h-full" ref={myRef}>
+    <div onScroll={onScroll} id="message-history" className="p-2 overflow-y-auto h-full" ref={myRef}>
       {channelMessageHistory.map((message) => {
         const name = userList[message.uid]?.name || 'Some user'
         return (

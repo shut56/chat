@@ -1,9 +1,19 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+
+import { changeActiveChannel } from '../../redux/reducers/channels'
 
 const DirectMessages = () => {
+  const dispatch = useDispatch()
+  const { activeChannel } = useSelector((s) => s.channels)
   const { userList, userStatus } = useSelector((s) => s.users)
   const { _id } = useSelector((s) => s.auth.user)
+  const isActive = (bool) => bool && 'bg-gray-600'
+
+  const onClick = (key) => {
+    console.log('User Key: ', key)
+    dispatch(changeActiveChannel(key))
+  }
 
   const isOnline = (bool) => {
     if (bool) {
@@ -40,11 +50,17 @@ const DirectMessages = () => {
   return (
     <div>
       <div className="px-4 mb-3 font-sans font-bold">Direct Messages</div>
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {
           userSort(Object.keys(userList)).map((uid) => {
+            // console.log('Current UID: ', uid)
             return (
-              <button type="button" key={uid} className="flex items-center px-4 mb-2 select-none text-gray-100">
+              <button
+                type="button"
+                key={uid}
+                className={`focus:outline-none flex items-center px-2 py-1 my-0.5 rounded-md select-none text-gray-100 hover:bg-gray-600 ${isActive(uid === activeChannel)}`}
+                onClick={() => onClick(uid)}
+              >
                 <span className={`${isOnline(!!userStatus[uid])} rounded-full block w-2 h-2 mr-2`}>&#8194;</span>
                 {isMe(uid)}
               </button>

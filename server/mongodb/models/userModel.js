@@ -68,6 +68,7 @@ userSchema.statics = {
     return user
   },
   async findAndChangeUserData({ uid, password, newData }) {
+    console.log('userModel.js', { uid, password, newData })
     const user = await this.findOne({ _id: uid }).exec()
 
     const isPassword = await user.passwordMatches(password)

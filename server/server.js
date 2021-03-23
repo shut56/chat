@@ -113,6 +113,7 @@ if (config.socketsEnabled) {
     messageHandlers(socketIO, socket)
 
     socket.on('user:online', ({ id }) => {
+      console.log('server.js - user:online', { id })
       connectedUsers.add(socket.id, id)
 
       socketIO.emit('SOCKET_IO', {

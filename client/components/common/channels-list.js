@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { openWindow } from '../../redux/reducers/secondary'
 import {
-  getChannels, changeActiveChannel, settingsChannel // removeChannel
+  getChannels, changeActiveChannel, settingsChannel
 } from '../../redux/reducers/channels'
 
 const ChannelsList = () => {
@@ -18,17 +18,16 @@ const ChannelsList = () => {
     dispatch(changeActiveChannel(key))
   }
 
-  const editButton = (id) => {
+  const onClickEditButton = (id) => {
     dispatch(settingsChannel(id))
     dispatch(openWindow(true, 'edit'))
   }
 
-  const removeButton = (id) => {
+  const editButton = (id) => {
     console.log(id)
     return (
       <div className="flex flex-col">
-        {/* <button className="focus:outline-none p-1 bg-gray-900 text-xs rounded-full w-6 h-6" type="button" onClick={() => dispatch(removeChannel(id))}>X</button> */}
-        <button type="button" className="text-xs font-bold mb-1 hover:text-white" onClick={() => editButton(id)}>Edit</button>
+        <button type="button" className="text-xs font-bold mb-1 hover:text-white" onClick={() => onClickEditButton(id)}>Edit</button>
         <div className="flex-auto" />
       </div>
     )
@@ -48,15 +47,15 @@ const ChannelsList = () => {
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {Object.keys(channelList).map((chan) => {
           return (
-            <div className="flex justify-between" key={channelList[chan]._id} data-key={channelList[chan]._id}>
+            <div className="flex justify-between" key={chan}>
               <button
                 type="button"
-                onClick={(e) => onClick(e.target.parentNode.dataset.key)}
-                className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(chan === activeChannel)}`}
+                onClick={() => onClick(chan)}
+                className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full text-left select-none ${isActive(chan === activeChannel)}`}
               >
                 # {channelList[chan].name}
               </button>
-              {isAdmin && removeButton(channelList[chan]._id)}
+              {isAdmin && editButton(channelList[chan]._id)}
             </div>
           )
         })}

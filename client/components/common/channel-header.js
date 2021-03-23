@@ -8,7 +8,7 @@ const ChannelHeader = () => {
   return (
     <div className="flex items-center p-2 border-b border-gray-700 shadow h-14 w-full">
       <div className="flex flex-1 min-w-0 items-center">
-        <div className="text-lg font-bold pr-2 truncate"># {name}</div>
+        <div className="text-lg font-semibold pr-2 truncate"># {name}</div>
       </div>
       <div className="flex flex-1 min-w-0">
         {description && (
@@ -17,7 +17,7 @@ const ChannelHeader = () => {
           </div>
         )}
       </div>
-      <div className="flex flex-shrink-0 ">
+      <div className="flex flex-shrink-0">
         <input type="search" placeholder="Search" className="focus:outline-none rounded-lg bg-gray-800 p-2" />
       </div>
     </div>

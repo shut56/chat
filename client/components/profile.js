@@ -14,7 +14,7 @@ const Profile = () => {
     <div className="flex bg-gray-700 h-screen w-full">
       {updateEmailToggle && <UserDataChange email="email" />}
       {updatePassowordToggle && <UserDataChange password="password" />}
-      {response && <ServerResponse />}
+      {response?.text && <ServerResponse />}
       <ProfileMenu />
       <ProfileSettings />
     </div>

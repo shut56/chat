@@ -35,7 +35,7 @@ const socketIOMiddleware = () => {
       console.log('Message from server', message)
       console.log('ID: ', socket.id)
       const { _id: uid, role } = getState().auth.user
-      console.log('UserDATA: ', uid, role)
+      console.log('User ID and Role: ', uid, role)
 
       switch (message.type) {
         case 'channel:list': {
