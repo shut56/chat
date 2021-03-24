@@ -1,19 +1,22 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { history } from '../../redux'
-import { changeActiveItem } from '../../redux/reducers/userSettings'
+import { history } from '../../../redux'
+import { changeActiveItem } from '../../../redux/reducers/settings'
 
 const ProfileMenu = () => {
   const dispatch = useDispatch()
   const { menuItems } = useSelector((s) => s.userSettings)
-  const { activeItem } = useSelector((s) => s.userSettings)
-
+  const { activeMenuItem } = useSelector((s) => s.settings)
   const isActive = (bool) => bool && 'bg-gray-600'
 
   const onClick = (key) => {
     console.log('key', key)
     dispatch(changeActiveItem(key))
+  }
+
+  if (!activeMenuItem) {
+    dispatch(changeActiveItem(Object.keys(menuItems)[0]))
   }
 
   return (
@@ -33,11 +36,11 @@ const ProfileMenu = () => {
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {Object.keys(menuItems).map((item) => {
           return (
-            <div className="flex justify-between" key={item} data-key={item}>
+            <div className="flex justify-between" key={item}>
               <button
                 type="button"
-                onClick={(e) => onClick(e.target.parentNode.dataset.key)}
-                className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(item === activeItem)}`}
+                onClick={() => onClick(item)}
+                className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(item === activeMenuItem)}`}
               >
                 {menuItems[item].name}
               </button>

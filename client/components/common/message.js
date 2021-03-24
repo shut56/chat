@@ -38,7 +38,7 @@ const Message = ({ message, name, uid }) => {
           <div className="flex-grow" />
           {removeButton(userId === uid || isAdmin)}
         </div>
-        <p className="text-gray-300">{message.text}</p>
+        <p className="text-gray-300 pl-2">{message.text}</p>
       </div>
     </div>
   )

@@ -94,12 +94,13 @@ export function removeChannel(channelId) {
   }
 }
 
-export function editChannel(id, name, desc) {
+export function editChannel(id, name, desc, rights) {
   const slicedName = name[name.length - 1] === '-' ? name.slice(0, name.length - 1) : name
   const newChannel = {
     id,
     name: slicedName || 'new-channel',
-    description: desc || ''
+    description: desc || '',
+    access: rights
   }
   return (dispatch, getState) => {
     const uid = getState().auth.user?._id

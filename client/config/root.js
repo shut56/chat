@@ -11,6 +11,7 @@ import Channels from '../components/channels'
 import LoginScreen from '../components/login-screen'
 import Main from '../components/main'
 import Profile from '../components/profile'
+import ChannelSettings from '../components/channel'
 
 const OnlyAnonymousRoute = ({ component: Component, ...rest }) => {
   const { user, token } = useSelector((s) => s.auth)
@@ -47,6 +48,7 @@ const Root = () => {
             <OnlyAnonymousRoute exact path="/login" component={() => <LoginScreen reg={false} />} />
             <PrivateRoute exact path="/channels" component={() => <Channels />} />
             <PrivateRoute exact path="/profile" component={() => <Profile />} />
+            <PrivateRoute exact path="/channel-settings" component={() => <ChannelSettings />} />
           </Switch>
         </Startup>
       </ConnectedRouter>

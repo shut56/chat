@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Sidebar from './common/sidebar'
 import ChatContent from './common/chat-content'
 import ChannelCreator from './common/channel-creator'
-import ChannelSettings from './common/channel-settings'
+import ChannelSettings from './channel'
 // import { getSocketId } from '../redux/reducers/users'
 
 const Channels = () => {

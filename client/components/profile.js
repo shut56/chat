@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 
 import ServerResponse from './common/server-response'
 
-import ProfileMenu from './common/profile-menu'
-import ProfileSettings from './common/profile-settings'
+import ProfileMenu from './common/profile-settings/profile-menu'
+import ProfileSettings from './common/profile-settings/profile-settings'
 import UserDataChange from './common/profile-settings/user-data-change'
 
 const Profile = () => {

@@ -10,6 +10,11 @@ const channelSchema = new mongoose.Schema({
   },
   userList: {
     type: [String]
+  },
+  access: {
+    type: String,
+    enum: ['Neither', 'All', 'Some users'],
+    required: true
   }
 }, {
   timestamps: true

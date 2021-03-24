@@ -1,11 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import MyAccount from './profile-settings/my-account'
-import Notifications from './profile-settings/notifications'
+import MyAccount from './my-account'
+import Notifications from './notifications'
 
 const ProfileSettings = () => {
-  const { activeItem } = useSelector((s) => s.userSettings)
+  const { activeMenuItem } = useSelector((s) => s.settings)
 
   const activeSettingsItem = (id) => {
     switch (id) {
@@ -19,7 +19,7 @@ const ProfileSettings = () => {
   }
   return (
     <div className="flex flex-col bg-gray-600 text-gray-100 w-full">
-      {activeSettingsItem(activeItem)}
+      {activeSettingsItem(activeMenuItem)}
     </div>
   )
 }

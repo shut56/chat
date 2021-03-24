@@ -1,6 +1,5 @@
 import channelModel from '../mongodb/models/channelModel'
 import messageStoreModel from '../mongodb/models/messageStoreModel'
-import userModel from '../mongodb/models/userModel'
 
 const arrayToObject = (arr) => {
   // console.log('Array from DB: ', arr)
@@ -29,14 +28,13 @@ module.exports = (io, socket) => {
   const addChannel = async ({ channel, uid, privateChannel }) => {
     console.log('Add Channel: ', { channel, uid, privateChannel })
     try {
-      let mappedUserList = []
+      let access = 'All'
 
-      if (!privateChannel) {
-        const userList = await userModel.find({})
-        mappedUserList = userList.map((user) => user._id)
+      if (privateChannel) {
+        access = 'Neither'
       }
 
-      const newChannel = await channelModel.create({ ...channel, userList: mappedUserList })
+      const newChannel = await channelModel.create({ ...channel, access })
       const channelList = await channelModel.find({})
 
       const channelId = newChannel._id
@@ -108,7 +106,7 @@ module.exports = (io, socket) => {
         payload: { channels: arrayToObject(channelList) }
       })
 
-      console.log('Сhannel removed', socket.id)
+      console.log(`Сhannel ${channel} edited`, socket.id)
     } catch (err) {
       console.log(`${err}`)
     }

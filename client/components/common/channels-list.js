@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { history } from '../../redux'
 import { openWindow } from '../../redux/reducers/secondary'
 import {
   getChannels, changeActiveChannel, settingsChannel
@@ -20,7 +21,7 @@ const ChannelsList = () => {
 
   const onClickEditButton = (id) => {
     dispatch(settingsChannel(id))
-    dispatch(openWindow(true, 'edit'))
+    history.push('/channel-settings')
   }
 
   const editButton = (id) => {

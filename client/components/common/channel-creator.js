@@ -3,20 +3,20 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import BlackScreen from './black-screen'
 import { openWindow } from '../../redux/reducers/secondary'
-import { setNewChannelName } from '../../redux/reducers/settings'
+import { setNewChannelName, setNewChannelDescription } from '../../redux/reducers/settings'
 import { addChannel } from '../../redux/reducers/channels'
 
 const ChannelCreator = () => {
   const dispatch = useDispatch()
-  const [description, setDescription] = useState('')
   const [privateChannel, setPrivateChannel] = useState(false)
-  const newChannelName = useSelector((s) => s.settings.newChannelName)
+  const { newChannelName, newChannelDescription } = useSelector((s) => s.settings)
 
   const onClick = (e) => {
     if (e.target.id === 'create-btn') {
-      dispatch(addChannel(newChannelName, description, privateChannel))
+      dispatch(addChannel(newChannelName, newChannelDescription, privateChannel))
     }
     dispatch(setNewChannelName())
+    dispatch(setNewChannelDescription())
     dispatch(openWindow(false))
   }
 
@@ -33,7 +33,7 @@ const ChannelCreator = () => {
             </div>
             <div className="flex my-2">
               <div className="mr-2">Description:</div>
-              <input type="text" className="flex-grow border rounded-sm bg-gray-800 pl-2" placeholder="Some words about the channel..." onChange={(e) => setDescription(e.target.value)} value={description} />
+              <input type="text" className="flex-grow border rounded-sm bg-gray-800 pl-2" placeholder="Some words about the channel..." onChange={(e) => dispatch(setNewChannelDescription(e.target.value))} value={newChannelDescription} />
             </div>
             <div className="flex my-2">
               <div className="mr-2">Private channel:</div>

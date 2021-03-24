@@ -2,24 +2,20 @@ import { SAVE_NAME } from './auth'
 
 const SERVER_RESPONSE = 'SERVER_RESPONSE'
 const MY_ACCOUNT = 'MY_ACCOUNT'
-const ACTIVE_ITEM = 'ACTIVE_ITEM'
 
 const initialState = {
   menuItems: {
     myAccount: {
-      toggle: true,
       name: 'My Account',
       userName: '',
       email: '',
       password: ''
     },
     notifications: {
-      toggle: false,
       name: 'Notifications',
       popUp: false
     }
   },
-  activeItem: 'myAccount',
   response: {}
 }
 
@@ -31,12 +27,6 @@ export default (state = initialState, action) => {
         myAccount: action.payload
       }
     }
-    case ACTIVE_ITEM: {
-      return {
-        ...state,
-        activeItem: action.itemId
-      }
-    }
     case SERVER_RESPONSE: {
       return {
         ...state,
@@ -46,15 +36,6 @@ export default (state = initialState, action) => {
     default: {
       return state
     }
-  }
-}
-
-export function changeActiveItem(itemId) {
-  return (dispatch) => {
-    dispatch({
-      type: ACTIVE_ITEM,
-      itemId
-    })
   }
 }
 

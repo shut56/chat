@@ -1,41 +1,49 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import BlackScreen from './black-screen'
-import { openWindow } from '../../redux/reducers/secondary'
-import { setNewChannelName } from '../../redux/reducers/settings'
-import {
-  editChannel, setAccess, removeChannel, setTempRights
-} from '../../redux/reducers/channels'
+import { history } from '../../../redux'
 
-const ChannelSettings = () => {
+import { setNewChannelName, setNewChannelDescription } from '../../../redux/reducers/settings'
+import { removeChannel } from '../../../redux/reducers/channels'
+
+const Main = () => {
   const dispatch = useDispatch()
-  const { settingsForChannel, temporaryRights } = useSelector((s) => s.channels)
+  const { settingsForChannel } = useSelector((s) => s.channels)
+  const { newChannelName, newChannelDescription } = useSelector((s) => s.settings)
   const channelName = useSelector((s) => s.channels.channelList[settingsForChannel]?.name)
   const channelDesc = useSelector((s) => s.channels.channelList[settingsForChannel]?.description)
-  const allUsers = useSelector((s) => s.users.userList)
-  const [name, setName] = useState(channelName)
-  const [description, setDescription] = useState(channelDesc)
 
-  const usersWithoutAccess = Object.keys(allUsers).filter((uid) => !temporaryRights.includes(uid) && !allUsers[uid]?.role.includes('admin'))
-
-  const onClick = (e) => {
-    if (e.target.id === 'save-btn') {
-      dispatch(editChannel(settingsForChannel, name, description))
-    }
-    if (e.target.id === 'remove-btn') {
-      dispatch(removeChannel(settingsForChannel))
-    }
+  const removeButton = () => {
+    history.go(-1)
+    dispatch(removeChannel(settingsForChannel))
     dispatch(setNewChannelName())
-    dispatch(openWindow(false))
+    dispatch(setNewChannelDescription())
   }
+  return (
+    <div className="flex flex-col p-4 justify-center max-h-full">
+      <div className="flex justify-center font-semibold text-lg select-none mb-2">{`Edit channel ${channelName}`}</div>
+      <div className="flex flex-1 my-2">
+        <div className="mr-2 select-none">Name:</div>
+        <input type="text" className="flex-grow p-1 rounded bg-gray-800 pl-2 truncate" placeholder={channelName} onChange={(e) => dispatch(setNewChannelName(e.target.value))} value={newChannelName} />
+      </div>
+      <div className="flex my-2">
+        <div className="mr-2 select-none">Description:</div>
+        <input type="text" className="flex-grow p-1 rounded bg-gray-800 pl-2" placeholder={channelDesc} onChange={(e) => dispatch(setNewChannelDescription(e.target.value))} value={newChannelDescription} />
+      </div>
+      <div className="flex justify-center items-center mt-2">
+        <button id="remove-btn" type="button" className="focus:outline-none hover:bg-red-600 mx-4 py-1 px-4 rounded-md bg-red-900" onClick={removeButton}>Remove</button>
+      </div>
+    </div>
+  )
+}
 
-  useEffect(() => {
-    dispatch(setTempRights(settingsForChannel))
-  }, [settingsForChannel])
+export default Main
+
+/*
+const ChannelSettings = () => {
+
   return (
     <div>
-      <BlackScreen />
       <div className="fixed flex items-center justify-center text-white w-full h-screen z-10 py-4">
         <div className="flex flex-col w-96 h-auto rounded-md bg-gray-800 z-20 max-h-screen">
           <div className="flex flex-col p-4 justify-center max-h-full">
@@ -129,3 +137,5 @@ const ChannelSettings = () => {
 }
 
 export default ChannelSettings
+
+*/

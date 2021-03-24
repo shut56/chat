@@ -7,11 +7,11 @@ const socketIOMiddleware = () => {
   console.log('- - - socketIOMiddleware is online! - - -')
   let socket
 
-  function reducedChannels(channelList, uid, role) {
+  function settingAccessRights(channelList, uid, role) {
     return Object
       .keys(channelList)
       .reduce((acc, chan) => {
-        if (role.includes('admin') || channelList[chan]?.userList.includes(uid)) {
+        if (role.includes('admin') || channelList[chan]?.access === 'All' || channelList[chan]?.userList.includes(uid)) {
           return { ...acc, [chan]: { ...channelList[chan] } }
         }
         return acc
@@ -21,7 +21,7 @@ const socketIOMiddleware = () => {
   function checkUserChannel(channelList, uid) {
     return Object
       .keys(channelList)
-      .find((chanId) => channelList[chanId].userList.includes(uid))
+      .find((chan) => channelList[chan]?.access === 'All' || channelList[chan].userList.includes(uid))
   }
 
   function generateDirectChannels(userList, myId) {
@@ -46,7 +46,7 @@ const socketIOMiddleware = () => {
       switch (message.type) {
         case 'channel:list': {
           console.log('Get channels from socket.io', message)
-          const channelList = reducedChannels(message.payload.channels, uid, role)
+          const channelList = settingAccessRights(message.payload.channels, uid, role)
 
           console.log('COMPARE: ', message.payload?.trigger, getState().channels.activeChannel)
           console.log('FIRST ID: ', checkUserChannel(channelList, uid))
