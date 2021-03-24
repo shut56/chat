@@ -6,7 +6,6 @@ const CLOSE_WINDOWS = 'CLOSE_WINDOWS'
 export const ADMIN_RIGHTS = 'ADMIN_RIGHTS'
 
 const initialState = {
-  blackScreen: false,
   channelCreatorToggle: false,
   channelSettingsToggle: false,
   updateEmailToggle: false,
@@ -88,7 +87,7 @@ export function openWindow(toggle, type) {
       })
     }
     default: {
-      console.log('Unknown type')
+      console.log('Close')
       return ({
         type: CLOSE_WINDOWS
       })

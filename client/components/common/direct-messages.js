@@ -49,7 +49,7 @@ const DirectMessages = () => {
 
   return (
     <div>
-      <div className="px-4 mb-3 font-sans font-bold">Direct Messages</div>
+      <div className="px-4 font-sans font-bold h-8">Direct Messages</div>
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {
           userSort(Object.keys(userList)).map((uid) => {
@@ -58,7 +58,7 @@ const DirectMessages = () => {
               <button
                 type="button"
                 key={uid}
-                className={`focus:outline-none flex items-center px-2 py-1 my-0.5 rounded-md select-none text-gray-100 hover:bg-gray-600 ${isActive(uid === activeChannel)}`}
+                className={`focus:outline-none flex items-center px-2 py-0.5 my-0.5 rounded-md select-none text-gray-100 hover:bg-gray-600 ${isActive(uid === activeChannel)}`}
                 onClick={() => onClick(uid)}
               >
                 <span className={`${isOnline(!!userStatus[uid])} rounded-full block w-2 h-2 mr-2`}>&#8194;</span>

@@ -41,9 +41,9 @@ const ChannelsList = () => {
   }, [dispatch, uid])
   return (
     <div className="m-0">
-      <div className="flex flex-row px-4 items-center font-bold justify-between">
+      <div className="flex flex-row px-4 items-center font-bold justify-between h-8">
         <div>Channels</div>
-        {isAdmin && <button type="button" className="text-xl font-bold mb-1 hover:text-white" onClick={() => dispatch(openWindow(true, 'create'))}>+</button>}
+        {isAdmin && <button type="button" className="focus:outline-none text-xl font-bold mb-1 hover:text-white px-1" onClick={() => dispatch(openWindow(true, 'create'))}>+</button>}
       </div>
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {Object.keys(channelList).map((chan) => {

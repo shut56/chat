@@ -1,23 +1,19 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import Sidebar from './common/sidebar'
 import ChatContent from './common/chat-content'
 import ChannelCreator from './common/channel-creator'
-import ChannelSettings from './channel'
-// import { getSocketId } from '../redux/reducers/users'
+import BlackScreen from './common/black-screen'
 
 const Channels = () => {
-  const dispatch = useDispatch()
-  const { channelCreatorToggle, channelSettingsToggle } = useSelector((s) => s.secondary)
+  const { channelCreatorToggle } = useSelector((s) => s.secondary)
   const noChannels = useSelector((s) => s.channels.activeChannel) !== ''
 
-  // dispatch(getSocketId())
-  console.log('Check channels.js', dispatch?.id)
   return (
     <div className="flex bg-gray-700 h-screen w-screen">
+      {channelCreatorToggle && <BlackScreen />}
       {channelCreatorToggle && <ChannelCreator />}
-      {channelSettingsToggle && <ChannelSettings />}
       <Sidebar />
       {noChannels && <ChatContent />}
     </div>
