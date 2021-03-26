@@ -3,6 +3,7 @@ import Cookies from 'universal-cookie'
 import { history } from '..'
 
 import { ADMIN_RIGHTS } from './secondary'
+import { ALERT } from './userSettings'
 
 const UPDATE_LOGIN = 'UPDATE_LOGIN'
 const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
@@ -102,17 +103,37 @@ export function updateName(name) {
 export function signUp() {
   return (dispatch, getState) => {
     const { email, password, name } = getState().auth
-    dispatch({
-      type: 'socket:open'
-    })
-    dispatch({
-      type: 'user:register',
-      payload: {
-        email,
-        password,
-        name
-      }
-    })
+
+    const emailChecker = (mail) => {
+      const emailLowCase = mail.toLowerCase()
+      const regExp = /^[a-z0-9.]+@[a-z0-9.]+$/gi
+      // ^[a-z0-9.]+@[a-z0-9.]+\.[a-z0-9.]+$
+      // /^\w+([ -](?=\w)|\w*)*([ -]{1}|\w*)$|^\w*$/gi
+      // Advandced RegExp for Email: ^[a-z0-9]+(\.(?=[a-z0-9])[a-z0-9]+)+@[a-z0-9]+(\.(?=[a-z0-9])[a-z0-9]+)+$
+      return regExp.test(emailLowCase)
+    }
+
+    if (emailChecker(email)) {
+      dispatch({
+        type: 'socket:open'
+      })
+      dispatch({
+        type: 'user:register',
+        payload: {
+          email,
+          password,
+          name
+        }
+      })
+    } else {
+      dispatch({
+        type: ALERT,
+        payload: {
+          status: 'error',
+          text: 'Invalid email'
+        }
+      })
+    }
   }
 }
 

@@ -18,6 +18,7 @@ const errorHandler = (type, err) => {
       }
     }
   }
+  // console.log(err)
   return `${err}`
 }
 

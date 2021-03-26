@@ -1,6 +1,6 @@
 import { SAVE_NAME } from './auth'
 
-const SERVER_RESPONSE = 'SERVER_RESPONSE'
+export const ALERT = 'ALERT'
 const MY_ACCOUNT = 'MY_ACCOUNT'
 
 const initialState = {
@@ -27,7 +27,7 @@ export default (state = initialState, action) => {
         myAccount: action.payload
       }
     }
-    case SERVER_RESPONSE: {
+    case ALERT: {
       return {
         ...state,
         response: action.payload
@@ -41,7 +41,7 @@ export default (state = initialState, action) => {
 
 export function clearResponse() {
   return ({
-    type: SERVER_RESPONSE,
+    type: ALERT,
     payload: {}
   })
 }

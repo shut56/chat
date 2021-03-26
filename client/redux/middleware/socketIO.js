@@ -107,7 +107,7 @@ const socketIOMiddleware = () => {
         case 'server:response': {
           console.log('This is Server Response', message.payload)
           dispatch({
-            type: 'SERVER_RESPONSE',
+            type: 'ALERT',
             payload: message.payload
           })
           if (message.payload.data?.email) {
