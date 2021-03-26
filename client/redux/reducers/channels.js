@@ -134,11 +134,13 @@ export function settingsChannel(id) {
 
 export function setTempRights(chanId) {
   return (dispatch, getState) => {
-    const { userList } = getState().channels.channelList[chanId]
-    dispatch({
-      type: CHANNEL_ACCESS,
-      payload: [...userList]
-    })
+    const userList = getState().channels.channelList[chanId]?.userList
+    if (userList) {
+      dispatch({
+        type: CHANNEL_ACCESS,
+        payload: [...userList]
+      })
+    }
   }
 }
 

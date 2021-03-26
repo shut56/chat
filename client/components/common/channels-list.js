@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { history } from '../../redux'
-import { openWindow } from '../../redux/reducers/secondary'
+import { openWindow, setPopUpActive } from '../../redux/reducers/secondary'
 import {
   getChannels, changeActiveChannel, settingsChannel
 } from '../../redux/reducers/channels'
@@ -28,7 +28,13 @@ const ChannelsList = () => {
     console.log(id)
     return (
       <div className="flex flex-col">
-        <button type="button" className="text-xs font-bold mb-1 hover:text-white" onClick={() => onClickEditButton(id)}>Edit</button>
+        <button
+          type="button"
+          className="text-xs font-bold mb-1 hover:text-white"
+          onClick={() => onClickEditButton(id)}
+        >
+          Edit
+        </button>
         <div className="flex-auto" />
       </div>
     )
@@ -43,7 +49,18 @@ const ChannelsList = () => {
     <div className="m-0">
       <div className="flex flex-row px-4 items-center font-bold justify-between h-8">
         <div>Channels</div>
-        {isAdmin && <button type="button" className="focus:outline-none text-xl font-bold mb-1 hover:text-white px-1" onClick={() => dispatch(openWindow(true, 'create'))}>+</button>}
+        {isAdmin && (
+          <button
+            type="button"
+            className="focus:outline-none text-xl font-bold mb-1 hover:text-white px-1"
+            onClick={() => {
+              dispatch(openWindow(true, 'create'))
+              dispatch(setPopUpActive(true))
+            }}
+          >
+            +
+          </button>
+        )}
       </div>
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {Object.keys(channelList).map((chan) => {

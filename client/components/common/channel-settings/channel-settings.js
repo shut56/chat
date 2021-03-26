@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
+import { history } from '../../../redux'
+
 import Main from './cs-main'
 import Rights from './cs-rights'
 
@@ -10,7 +12,7 @@ import { setTempRights } from '../../../redux/reducers/channels'
 const ChannelSettings = () => {
   const dispatch = useDispatch()
   const { activeMenuItem } = useSelector((s) => s.settings)
-  const { settingsForChannel } = useSelector((s) => s.channels)
+  const settingsForChannel = useSelector((s) => s.channels.settingsForChannel)
   const channelName = useSelector((s) => s.channels.channelList[settingsForChannel]?.name)
   const channelDesc = useSelector((s) => s.channels.channelList[settingsForChannel]?.description)
 
@@ -26,6 +28,9 @@ const ChannelSettings = () => {
   }
 
   useEffect(() => {
+    if (!settingsForChannel) {
+      history.push('/channels')
+    }
     dispatch(setNewChannelName(channelName))
     dispatch(setNewChannelDescription(channelDesc))
     dispatch(setTempRights(settingsForChannel))

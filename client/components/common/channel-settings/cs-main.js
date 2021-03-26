@@ -1,10 +1,11 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { history } from '../../../redux'
+// import { history } from '../../../redux'
 
+import { openWindow, setPopUpActive } from '../../../redux/reducers/secondary'
 import { setNewChannelName, setNewChannelDescription } from '../../../redux/reducers/settings'
-import { removeChannel } from '../../../redux/reducers/channels'
+// import { removeChannel } from '../../../redux/reducers/channels'
 
 const Main = () => {
   const dispatch = useDispatch()
@@ -14,10 +15,12 @@ const Main = () => {
   const channelDesc = useSelector((s) => s.channels.channelList[settingsForChannel]?.description)
 
   const removeButton = () => {
-    history.go(-1)
-    dispatch(removeChannel(settingsForChannel))
-    dispatch(setNewChannelName())
-    dispatch(setNewChannelDescription())
+    dispatch(setPopUpActive(true))
+    dispatch(openWindow(true, 'removeChannel'))
+    // history.go(-1)
+    // dispatch(removeChannel(settingsForChannel))
+    // dispatch(setNewChannelName())
+    // dispatch(setNewChannelDescription())
   }
   return (
     <div className="flex flex-col p-4 justify-center max-h-full">

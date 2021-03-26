@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { changeName } from '../../../redux/reducers/userSettings'
 import { updateName } from '../../../redux/reducers/auth'
-import { openWindow } from '../../../redux/reducers/secondary'
+import { openWindow, setPopUpActive } from '../../../redux/reducers/secondary'
 
 const MyAccount = () => {
   const dispatch = useDispatch()
@@ -14,6 +14,7 @@ const MyAccount = () => {
 
   const onClick = (type) => {
     dispatch(openWindow(true, type))
+    dispatch(setPopUpActive(true))
   }
 
   useEffect(() => {

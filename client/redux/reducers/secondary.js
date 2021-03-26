@@ -1,16 +1,23 @@
+export const ADMIN_RIGHTS = 'ADMIN_RIGHTS'
 const CHANNEL_CREATOR_ON = 'CHANNEL_CREATOR_ON'
 const CHANNEL_SETTINGS_ON = 'CHANNEL_SETTINGS_ON'
 const UPDATE_EMAIL_ON = 'UPDATE_EMAIL_ON'
 const UPDATE_PASSWORD_ON = 'UPDATE_PASSWORD_ON'
+const REMOVE_MESSAGE = 'REMOVE_MESSAGE'
+const REMOVE_CHANNEL = 'REMOVE_CHANNEL'
 const CLOSE_WINDOWS = 'CLOSE_WINDOWS'
-export const ADMIN_RIGHTS = 'ADMIN_RIGHTS'
+const POP_UP = 'POP_UP'
 
 const initialState = {
+  isAdmin: false,
   channelCreatorToggle: false,
   channelSettingsToggle: false,
   updateEmailToggle: false,
   updatePassowordToggle: false,
-  isAdmin: false
+  removeMessageToggle: false,
+  removeChannelToggle: false,
+  popUpActive: false,
+  temp: {}
 }
 
 export default (state = initialState, action) => {
@@ -39,10 +46,29 @@ export default (state = initialState, action) => {
         updatePassowordToggle: action.toggle
       }
     }
+    case REMOVE_MESSAGE: {
+      return {
+        ...state,
+        removeMessageToggle: action.toggle,
+        temp: action.payload
+      }
+    }
+    case REMOVE_CHANNEL: {
+      return {
+        ...state,
+        removeChannelToggle: action.toggle
+      }
+    }
     case ADMIN_RIGHTS: {
       return {
         ...state,
         isAdmin: action.rights
+      }
+    }
+    case POP_UP: {
+      return {
+        ...state,
+        popUpActive: action.active
       }
     }
     case CLOSE_WINDOWS: {
@@ -51,7 +77,8 @@ export default (state = initialState, action) => {
         channelCreatorToggle: false,
         channelSettingsToggle: false,
         updateEmailToggle: false,
-        updatePassowordToggle: false
+        updatePassowordToggle: false,
+        temp: {}
       }
     }
     default: {
@@ -60,7 +87,7 @@ export default (state = initialState, action) => {
   }
 }
 
-export function openWindow(toggle, type) {
+export function openWindow(toggle, type, payload) {
   switch (type) {
     case 'create': {
       return ({
@@ -86,6 +113,19 @@ export function openWindow(toggle, type) {
         toggle
       })
     }
+    case 'removeMessage': {
+      return ({
+        type: REMOVE_MESSAGE,
+        toggle,
+        payload
+      })
+    }
+    case 'removeChannel': {
+      return ({
+        type: REMOVE_CHANNEL,
+        toggle
+      })
+    }
     default: {
       console.log('Close')
       return ({
@@ -93,4 +133,11 @@ export function openWindow(toggle, type) {
       })
     }
   }
+}
+
+export function setPopUpActive(active) {
+  return ({
+    type: POP_UP,
+    active
+  })
 }
