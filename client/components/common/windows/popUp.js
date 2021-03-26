@@ -1,10 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import BlackScreen from '../black-screen'
-import ChannelCreator from '../channel-creator'
-import UserDataChange from '../profile-settings/user-data-change'
-import Warning from '../warning'
+import BlackScreen from './black-screen'
+import ChannelCreator from './channel-creator'
+import UserDataChange from './user-data-change'
+import Warning from './warning'
 
 const PopUp = () => {
   const {

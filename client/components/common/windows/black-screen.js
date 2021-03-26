@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 
-import { openWindow, setPopUpActive } from '../../redux/reducers/secondary'
+import { openWindow, setPopUpActive } from '../../../redux/reducers/secondary'
 
 const BlackScreen = ({ children }) => {
   const dispatch = useDispatch()

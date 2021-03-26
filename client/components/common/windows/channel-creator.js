@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { openWindow, setPopUpActive } from '../../redux/reducers/secondary'
-import { setNewChannelName, setNewChannelDescription } from '../../redux/reducers/settings'
-import { addChannel } from '../../redux/reducers/channels'
+import { openWindow, setPopUpActive } from '../../../redux/reducers/secondary'
+import { setNewChannelName, setNewChannelDescription } from '../../../redux/reducers/settings'
+import { addChannel } from '../../../redux/reducers/channels'
 
 const ChannelCreator = () => {
   const dispatch = useDispatch()

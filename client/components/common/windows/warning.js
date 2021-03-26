@@ -1,12 +1,12 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { history } from '../../redux'
+import { history } from '../../../redux'
 
-import { openWindow, setPopUpActive } from '../../redux/reducers/secondary'
-import { removeMessage } from '../../redux/reducers/messages'
-import { setNewChannelName, setNewChannelDescription } from '../../redux/reducers/settings'
-import { removeChannel } from '../../redux/reducers/channels'
+import { openWindow, setPopUpActive } from '../../../redux/reducers/secondary'
+import { removeMessage } from '../../../redux/reducers/messages'
+import { setNewChannelName, setNewChannelDescription } from '../../../redux/reducers/settings'
+import { removeChannel } from '../../../redux/reducers/channels'
 
 const Warning = ({ message, channel }) => {
   const dispatch = useDispatch()
