@@ -34,25 +34,25 @@ const Rights = () => {
     return 'Rights set'
   }
   return (
-    <div className="flex flex-col p-4 justify-center max-h-full">
-      <div className="flex justify-center font-semibold text-lg select-none mb-2">{`Edit channel ${channelName}`}</div>
-      <div className="flex flex-col justify-center items-center mt-2">
-        <div className="text-xl font-semibold select-none">Access level</div>
-        <div className="flex flex-row">
+    <div className="flex flex-col p-2 h-full">
+      <div className="flex justify-center font-semibold text-lg select-none mb-1">{`Edit channel ${channelName}`}</div>
+      <div className="flex flex-col justify-center items-center mt-1">
+        <div className="text-xl font-semibold select-none mb-1">Access level</div>
+        <div className="flex flex-row m-1">
           <button id="access-all" type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={(e) => onClick(e.target.id)}>All</button>
           <button id="access-neither" type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={(e) => onClick(e.target.id)}>Neither</button>
           <button id="access-some-users" type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={(e) => onClick(e.target.id)}>Some users</button>
         </div>
       </div>
       {accessRights === 'Some users' && (
-        <div>
+        <div className="flex flex-col bg-gray-700 rounded p-2 max-h-max overflow-y-auto">
           {temporaryRights.length < 1 || (
             <div className="flex-1 flex flex-col mb-2 mt-2">
               <div className="flex flex-row justify-between align-center mb-2">
                 <div className="text-xl font-semibold select-none">Users with access</div>
                 <button
                   type="button"
-                  className="text-sm bg-gray-700 rounded px-2 py-0.5"
+                  className="text-sm bg-gray-600 rounded px-2 py-0.5"
                   onClick={() => temporaryRights.forEach((uid) => dispatch(setAccess(false, uid)))}
                 >
                   Deny everyone
@@ -63,11 +63,11 @@ const Rights = () => {
                   return (
                     <div
                       key={uid}
-                      className="flex-auto relative flex justify-center bg-gray-700 rounded px-1 py-0.5 m-1"
+                      className="flex-auto relative flex justify-center bg-gray-600 rounded px-1 py-0.5 m-1"
                     >
                       <button
                         type="button"
-                        className="flex justify-center items-center absolute -top-1 -right-1.5 focus:outline-none w-3.5 h-3.5 bg-red-900 rounded-full border-2 border-gray-600"
+                        className="flex justify-center items-center absolute -top-1 -right-1.5 focus:outline-none w-3.5 h-3.5 bg-red-900 rounded-full border-2 border-gray-700"
                         onClick={() => dispatch(setAccess(false, uid))}
                       >
                         -
@@ -86,7 +86,7 @@ const Rights = () => {
                 <div className="text-xl font-semibold select-none">Users without access</div>
                 <button
                   type="button"
-                  className="text-sm bg-gray-700 rounded px-2 py-0.5"
+                  className="text-sm bg-gray-600 rounded px-2 py-0.5"
                   onClick={() => usersWithoutAccess.forEach((uid) => dispatch(setAccess(true, uid)))}
                 >
                   Allow everyone
@@ -97,11 +97,11 @@ const Rights = () => {
                   return (
                     <div
                       key={uid}
-                      className="flex-auto relative flex justify-center bg-gray-700 rounded px-1 py-0.5 m-1"
+                      className="flex-auto relative flex justify-center bg-gray-600 rounded px-1 py-0.5 m-1"
                     >
                       <button
                         type="button"
-                        className="flex justify-center items-center absolute -top-1 -right-1.5 focus:outline-none w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-600 text-black"
+                        className="flex justify-center items-center absolute -top-1 -right-1.5 focus:outline-none w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-gray-700 text-black"
                         onClick={() => dispatch(setAccess(true, uid))}
                       >
                         +
