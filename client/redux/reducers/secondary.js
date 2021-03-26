@@ -10,14 +10,22 @@ const POP_UP = 'POP_UP'
 
 const initialState = {
   isAdmin: false,
-  channelCreatorToggle: false,
-  channelSettingsToggle: false,
-  updateEmailToggle: false,
-  updatePassowordToggle: false,
-  removeMessageToggle: false,
-  removeChannelToggle: false,
+  toggles: {
+    channelCreator: false,
+    channelSettings: false,
+    updateEmail: false,
+    updatePassoword: false,
+    removeMessage: false,
+    removeChannel: false,
+  },
   popUpActive: false,
   temp: {}
+}
+
+function closeAllWindows (toggles) {
+  return Object.keys(toggles).reduce((acc, toggle) => {
+    return { ...acc, [toggle]: false }
+  }, {})
 }
 
 export default (state = initialState, action) => {
@@ -25,38 +33,56 @@ export default (state = initialState, action) => {
     case CHANNEL_CREATOR_ON: {
       return {
         ...state,
-        channelCreatorToggle: action.toggle,
+        toggles: {
+          ...state.toggles,
+          channelCreator: action.toggle
+        }
       }
     }
     case CHANNEL_SETTINGS_ON: {
       return {
         ...state,
-        channelSettingsToggle: action.toggle
+        toggles: {
+          ...state.toggles,
+          channelSettings: action.toggle
+        }
       }
     }
     case UPDATE_EMAIL_ON: {
       return {
         ...state,
-        updateEmailToggle: action.toggle
+        toggles: {
+          ...state.toggles,
+          updateEmail: action.toggle
+        }
       }
     }
     case UPDATE_PASSWORD_ON: {
       return {
         ...state,
-        updatePassowordToggle: action.toggle
+        toggles: {
+          ...state.toggles,
+          updatePassoword: action.toggle
+        }
       }
     }
     case REMOVE_MESSAGE: {
       return {
         ...state,
-        removeMessageToggle: action.toggle,
+        toggles: {
+          ...state.toggles,
+          removeMessage: action.toggle
+        },
         temp: action.payload
       }
     }
     case REMOVE_CHANNEL: {
       return {
         ...state,
-        removeChannelToggle: action.toggle
+        toggles: {
+          ...state.toggles,
+          removeChannel: action.toggle
+        }
       }
     }
     case ADMIN_RIGHTS: {
@@ -74,10 +100,7 @@ export default (state = initialState, action) => {
     case CLOSE_WINDOWS: {
       return {
         ...state,
-        channelCreatorToggle: false,
-        channelSettingsToggle: false,
-        updateEmailToggle: false,
-        updatePassowordToggle: false,
+        toggles: closeAllWindows(state.toggles),
         temp: {}
       }
     }
