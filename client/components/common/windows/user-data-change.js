@@ -28,8 +28,6 @@ const UserDataChange = ({ email, password }) => {
   }
 
   return (
-    // <div className="fixed flex items-center justify-center text-white w-full h-screen z-10">
-    //   <div className="flex flex-col w-96 h-auto rounded-md bg-gray-800 z-20">
     <div className="flex flex-col p-4 justify-center">
       <div className="flex justify-center font-semibold text-lg mb-2">{`Update your ${email || password}`}</div>
       <div className="flex my-2">
@@ -57,8 +55,6 @@ const UserDataChange = ({ email, password }) => {
         <button id="save-btn" type="button" className="focus:outline-none hover:bg-gray-600 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={onClick}>Save</button>
       </div>
     </div>
-    //   </div>
-    // </div>
   )
 }
 

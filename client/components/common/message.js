@@ -2,12 +2,10 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { openWindow, setPopUpActive } from '../../redux/reducers/secondary'
-// import { removeMessage } from '../../redux/reducers/messages'
 
 const Message = ({ message, name, uid }) => {
   const dispatch = useDispatch()
   const userId = useSelector((s) => s.auth.user?._id)
-  // const channelId = useSelector((s) => s.channels?.activeChannel)
   const { isAdmin } = useSelector((s) => s.secondary)
   const TIME = `${new Date(message.time).toLocaleTimeString()}`
 
@@ -16,7 +14,6 @@ const Message = ({ message, name, uid }) => {
       return (
         <div className="flex flex-col">
           <button
-            // onClick={() => dispatch(removeMessage(channelId, message._id))}
             onClick={() => {
               dispatch(setPopUpActive(true))
               dispatch(openWindow(true, 'removeMessage', { message }))
