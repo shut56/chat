@@ -21,7 +21,7 @@ const MessageHistory = () => {
       behavior: 'auto',
       top: scrollPosition
     })
-    console.log('SCROLL POSITION:', channelId, scrollPosition)
+    // console.log('SCROLL POSITION:', channelId, scrollPosition)
     return () => {}
   }, [myRef, channelId, scrollPosition])
 
