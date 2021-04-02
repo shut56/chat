@@ -1,7 +1,7 @@
 # Environment
 .env
 
-# Modules for NODE JS 
+# Modules for NodeJS 
 node_modules
 
 # Production

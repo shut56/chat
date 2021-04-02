@@ -1,18 +1,19 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+// import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-import { changeActiveChannel } from '../../redux/reducers/channels'
+// import { changeActiveChannel } from '../../redux/reducers/channels'
 
 const DirectMessages = () => {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   const { activeChannel } = useSelector((s) => s.channels)
   const { userList, userStatus } = useSelector((s) => s.users)
   const { _id } = useSelector((s) => s.auth.user)
   const isActive = (bool) => bool && 'bg-gray-600'
 
   const onClick = (key) => {
-    // console.log('User Key: ', key)
-    dispatch(changeActiveChannel(key))
+    console.log('User Key: ', key)
+    // dispatch(changeActiveChannel(key))
   }
 
   const isOnline = (bool) => {
