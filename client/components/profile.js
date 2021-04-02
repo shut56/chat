@@ -1,9 +1,13 @@
 import React from 'react'
 
+import ProfileMenu from './common/profile-settings/profile-menu'
+import ProfileSettings from './common/profile-settings/profile-settings'
+
 const Profile = () => {
   return (
-    <div>
-      <div className="px-4 mb-3 font-sans font-bold">My Profile</div>
+    <div className="flex bg-gray-700 h-screen w-full">
+      <ProfileMenu />
+      <ProfileSettings />
     </div>
   )
 }

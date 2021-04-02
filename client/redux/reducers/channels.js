@@ -1,11 +1,16 @@
 export const SAVE_CHANNEL = 'SAVE_CHANNEL'
-export const ACTIVE_CHANNEL_CHANGED = 'ACTIVE_CHANNEL_CHANGED'
 export const GET_CHANNELS = 'GET_CHANNELS'
+const GET_DIRECT = 'GET_DIRECT'
+const ACTIVE_CHANNEL_ID = 'ACTIVE_CHANNEL_ID'
+const SETTINGS_CHANNEL_ID = 'SETTINGS_CHANNEL_ID'
+const CHANNEL_ACCESS = 'CHANNEL_ACCESS'
 
 const initialState = {
   channelList: {},
-  channels: [],
-  activeChannel: ''
+  directList: {},
+  activeChannel: '',
+  settingsForChannel: '',
+  temporaryRights: []
 }
 
 export default (state = initialState, action) => {
@@ -17,12 +22,34 @@ export default (state = initialState, action) => {
         activeChannel: action.channelId
       }
     }
-    case SAVE_CHANNEL:
-    case ACTIVE_CHANNEL_CHANGED: {
+    case GET_DIRECT: {
       return {
         ...state,
-        channelList: action.updatedChannelList,
+        directList: action.directList
+      }
+    }
+    case SAVE_CHANNEL: {
+      return {
+        ...state,
+        channelList: action.newActiveChannel
+      }
+    }
+    case ACTIVE_CHANNEL_ID: {
+      return {
+        ...state,
         activeChannel: action.channelId
+      }
+    }
+    case SETTINGS_CHANNEL_ID: {
+      return {
+        ...state,
+        settingsForChannel: action.payload.id
+      }
+    }
+    case CHANNEL_ACCESS: {
+      return {
+        ...state,
+        temporaryRights: action.payload
       }
     }
     default: {
@@ -31,16 +58,16 @@ export default (state = initialState, action) => {
   }
 }
 
-export function getChannels() {
+export function getChannels(uid) {
   return (dispatch) => {
     dispatch({
-      type: 'GET_CHANNELS_FROM_SERVER',
-      payload: 'get channels'
+      type: 'channels:get',
+      payload: { uid }
     })
   }
 }
 
-export function saveChannel(name, desc) {
+export function addChannel(name, desc, privateChannel) {
   const slicedName = name[name.length - 1] === '-' ? name.slice(0, name.length - 1) : name
   const newChannel = {
     name: slicedName || 'new-channel',
@@ -48,35 +75,84 @@ export function saveChannel(name, desc) {
     userList: [],
     channelMessages: []
   }
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const uid = getState().auth.user?._id
     dispatch({
-      type: 'ADD_NEW_CHANNEL',
-      payload: { ...newChannel }
+      type: 'channel:add',
+      payload: { channel: newChannel, uid, privateChannel }
     })
   }
 }
 
-export const updateListOfChannelsObj = (channelList, channelId) => {
-  return Object.keys(channelList).reduce((acc, rec) => {
-    return {
-      ...acc,
-      [rec]: { ...channelList[rec], active: channelList[rec].id === channelId }
-    }
-  }, {})
+export function removeChannel(channelId) {
+  return (dispatch, getState) => {
+    const uid = getState().auth.user?._id
+    dispatch({
+      type: 'channel:remove',
+      payload: { id: channelId, uid }
+    })
+  }
 }
 
-export function changeActiveChannel(channel) {
+export function editChannel(id, name, desc, rights) {
+  const slicedName = name[name.length - 1] === '-' ? name.slice(0, name.length - 1) : name
+  const newChannel = {
+    id,
+    name: slicedName || 'new-channel',
+    description: desc || '',
+    access: rights
+  }
   return (dispatch, getState) => {
-    const { channelList } = getState().channels
-    const updatedChannelList = updateListOfChannelsObj(channelList, channel)
+    const uid = getState().auth.user?._id
+    const { temporaryRights } = getState().channels
     dispatch({
-      type: 'GET_MESSAGE_HISTORY_FROM_CHANNEL',
-      payload: channel
+      type: 'channel:edit',
+      payload: { channel: { ...newChannel, userList: temporaryRights }, uid }
+    })
+  }
+}
+
+export function changeActiveChannel(channelId) {
+  return (dispatch) => {
+    dispatch({
+      type: ACTIVE_CHANNEL_ID,
+      channelId
     })
     dispatch({
-      type: ACTIVE_CHANNEL_CHANGED,
-      updatedChannelList,
-      channelId: channel
+      type: 'messages:get',
+      payload: { id: channelId }
+    })
+  }
+}
+
+export function settingsChannel(id) {
+  return ({
+    type: SETTINGS_CHANNEL_ID,
+    payload: { id }
+  })
+}
+
+export function setTempRights(chanId) {
+  return (dispatch, getState) => {
+    const userList = getState().channels.channelList[chanId]?.userList
+    if (userList) {
+      dispatch({
+        type: CHANNEL_ACCESS,
+        payload: [...userList]
+      })
+    }
+  }
+}
+
+export function setAccess(access, uid) {
+  return (dispatch, getState) => {
+    const { temporaryRights } = getState().channels
+    const accessList = access
+      ? [...temporaryRights, uid]
+      : temporaryRights.filter((user) => user !== uid)
+    dispatch({
+      type: CHANNEL_ACCESS,
+      payload: accessList
     })
   }
 }

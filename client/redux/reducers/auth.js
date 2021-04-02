@@ -2,21 +2,28 @@ import axios from 'axios'
 import Cookies from 'universal-cookie'
 import { history } from '..'
 
+import { ADMIN_RIGHTS } from './secondary'
+import { ALERT } from './userSettings'
+
 const UPDATE_LOGIN = 'UPDATE_LOGIN'
 const UPDATE_PASSWORD = 'UPDATE_PASSWORD'
+const UPDATE_NAME = 'UPDATE_NAME'
 const LOGIN = 'LOGIN'
 const REGISTER = 'REGISTER'
-const SERVER_RESPONSE = 'SERVER_RESPONSE'
+export const SAVE_NAME = 'SAVE_NAME'
+const SAVE_EMAIL = 'SAVE_EMAIL'
 
 const cookie = new Cookies()
 
 const initialState = {
   email: '',
   password: '',
+  name: '',
   token: cookie.get('token'),
-  user: {},
-  register: false,
-  response: ''
+  user: {
+    _id: cookie.get('id')
+  },
+  register: false
 }
 
 export default (state = initialState, action) => {
@@ -33,6 +40,12 @@ export default (state = initialState, action) => {
         password: action.pass
       }
     }
+    case UPDATE_NAME: {
+      return {
+        ...state,
+        name: action.name
+      }
+    }
     case LOGIN: {
       return {
         ...state,
@@ -44,13 +57,20 @@ export default (state = initialState, action) => {
     case REGISTER: {
       return {
         ...state,
-        register: action.toggle
+        register: action.toggle,
+        name: ''
       }
     }
-    case SERVER_RESPONSE: {
+    case SAVE_NAME: {
       return {
         ...state,
-        response: action.payload
+        user: { ...state.user, name: action.payload.name }
+      }
+    }
+    case SAVE_EMAIL: {
+      return {
+        ...state,
+        user: { ...state.user, email: action.payload.email }
       }
     }
     default: {
@@ -73,38 +93,47 @@ export function updatePassword(pass) {
   })
 }
 
+export function updateName(name) {
+  return ({
+    type: UPDATE_NAME,
+    name
+  })
+}
+
 export function signUp() {
   return (dispatch, getState) => {
-    const { email, password } = getState().auth
-    axios({
-      url: '/api/v1/register',
-      method: 'post',
-      data: {
-        email,
-        password
-      }
-    })
-      .then(({ data }) => {
-        if (data.status === 'ok') {
-          history.push('/login')
-          dispatch({
-            type: REGISTER,
-            toggle: false
-          })
-          dispatch({
-            type: SERVER_RESPONSE,
-            payload: 'Registration is complete!\nYou can now log into your account.'
-          })
-        } else {
-          dispatch({
-            type: SERVER_RESPONSE,
-            payload: 'This email has already been registered.'
-          })
+    const { email, password, name } = getState().auth
+
+    const emailChecker = (mail) => {
+      const emailLowCase = mail.toLowerCase()
+      const regExp = /^[a-z0-9.]+@[a-z0-9.]+$/gi
+      // ^[a-z0-9.]+@[a-z0-9.]+\.[a-z0-9.]+$
+      // /^\w+([ -](?=\w)|\w*)*([ -]{1}|\w*)$|^\w*$/gi
+      // Advandced RegExp for Email: ^[a-z0-9]+(\.(?=[a-z0-9])[a-z0-9]+)+@[a-z0-9]+(\.(?=[a-z0-9])[a-z0-9]+)+$
+      return regExp.test(emailLowCase)
+    }
+
+    if (emailChecker(email)) {
+      dispatch({
+        type: 'socket:open'
+      })
+      dispatch({
+        type: 'user:register',
+        payload: {
+          email,
+          password,
+          name
         }
       })
-      .catch((err) => {
-        throw new Error('Server unavailable', `${err}`)
+    } else {
+      dispatch({
+        type: ALERT,
+        payload: {
+          status: 'error',
+          text: 'Invalid email'
+        }
       })
+    }
   }
 }
 
@@ -125,6 +154,15 @@ export function signIn() {
           token: data.token,
           user: data.user
         })
+        if (data.user.role.includes('admin')) {
+          dispatch({
+            type: ADMIN_RIGHTS,
+            rights: true
+          })
+        }
+        dispatch({
+          type: 'socket:open'
+        })
         history.push('/channels')
       })
   }
@@ -133,10 +171,15 @@ export function signIn() {
 export function signOut() {
   document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT'
   history.push('/')
-  return {
-    type: LOGIN,
-    token: '',
-    user: ''
+  return (dispatch) => {
+    dispatch({
+      type: LOGIN,
+      token: '',
+      user: {}
+    })
+    dispatch({
+      type: 'socket:close'
+    })
   }
 }
 
@@ -149,6 +192,15 @@ export function trySignIn() {
           token: data.token,
           user: data.user
         })
+        dispatch({
+          type: 'socket:open'
+        })
+        if (data.user.role.includes('admin')) {
+          dispatch({
+            type: ADMIN_RIGHTS,
+            rights: true
+          })
+        }
       })
   }
 }
@@ -157,6 +209,7 @@ export function tryGetUserInfo() {
   return () => {
     axios('/api/v1/user-info')
       .then(({ data }) => {
+        // eslint-disable-next-line
         console.log(data)
       })
   }
@@ -166,12 +219,5 @@ export function doRegister(toggle) {
   return ({
     type: REGISTER,
     toggle
-  })
-}
-
-export function clearResponse() {
-  return ({
-    type: SERVER_RESPONSE,
-    payload: ''
   })
 }

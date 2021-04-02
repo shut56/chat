@@ -3,15 +3,22 @@ import { useSelector } from 'react-redux'
 
 const ChannelHeader = () => {
   const { activeChannel } = useSelector((s) => s.channels)
-  const { name, description } = useSelector((s) => s.channels.channelList[activeChannel])
+  const name = useSelector((s) => s.channels?.channelList[activeChannel]?.name)
+  const description = useSelector((s) => s.channels?.channelList[activeChannel]?.description)
   return (
-    <div className="border-b border-gray-700 shadow flex px-6 py-2 items-center">
-      <div className="flex flex-col">
-        <div className="text-lg mb-1 font-bold"># {name}</div>
-        <div className="text-gray-400 text-md">{description}</div>
+    <div className="flex items-center p-2 border-b border-gray-700 shadow h-14 w-full">
+      <div className="flex flex-1 min-w-0 items-center">
+        <div className="text-lg font-semibold pr-2 truncate"># {name}</div>
       </div>
-      <div className="ml-auto hidden md:block">
-        <input type="search" placeholder="Search" className="focus:outline-none rounded-lg p-2 bg-gray-800" />
+      <div className="flex flex-1 min-w-0">
+        {description && (
+          <div className="border-l-2 border-gray-500 items-center px-2 truncate">
+            {description}
+          </div>
+        )}
+      </div>
+      <div className="flex flex-shrink-0">
+        <input type="search" placeholder="Search" className="focus:outline-none rounded-lg bg-gray-800 p-2" />
       </div>
     </div>
   )

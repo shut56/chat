@@ -1,32 +1,80 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { fade } from '../../redux/reducers/secondary'
-import { getChannels, changeActiveChannel } from '../../redux/reducers/channels'
+import { history } from '../../redux'
+import { openWindow, setPopUpActive } from '../../redux/reducers/secondary'
+import {
+  getChannels, changeActiveChannel, settingsChannel
+} from '../../redux/reducers/channels'
 
 const ChannelsList = () => {
   const dispatch = useDispatch()
-  const { channelList } = useSelector((s) => s.channels)
+  const { channelList, activeChannel } = useSelector((s) => s.channels)
+  const { isAdmin } = useSelector((s) => s.secondary)
+  const uid = useSelector((s) => s.auth.user._id)
   const isActive = (bool) => bool && 'bg-gray-600'
 
-  const onClick = (dataset) => {
-    dispatch(changeActiveChannel(dataset.key))
+  const onClick = (key) => {
+    // console.log('key', key)
+    dispatch(changeActiveChannel(key))
+  }
+
+  const onClickEditButton = (id) => {
+    dispatch(settingsChannel(id))
+    history.push('/channel-settings')
+  }
+
+  const editButton = (id) => {
+    // console.log(id)
+    return (
+      <div className="flex flex-col">
+        <button
+          type="button"
+          className="text-xs font-bold mb-1 hover:text-white"
+          onClick={() => onClickEditButton(id)}
+        >
+          Edit
+        </button>
+        <div className="flex-auto" />
+      </div>
+    )
   }
 
   useEffect(() => {
-    dispatch(getChannels())
+    // console.log('GET CHANNELS')
+    dispatch(getChannels(uid))
     return () => {}
-  }, [dispatch])
+  }, [dispatch, uid])
   return (
-    <div>
-      <div className="flex flex-row px-4 items-center font-bold">
-        <div className="flex-grow">Channels</div>
-        <button type="button" className="text-xl font-bold mb-1 hover:text-white" onClick={() => dispatch(fade(true))}>+</button>
+    <div className="m-0">
+      <div className="flex flex-row px-4 items-center font-bold justify-between h-8">
+        <div>Channels</div>
+        {isAdmin && (
+          <button
+            type="button"
+            className="focus:outline-none text-xl font-bold mb-1 hover:text-white px-1"
+            onClick={() => {
+              dispatch(openWindow(true, 'create'))
+              dispatch(setPopUpActive(true))
+            }}
+          >
+            +
+          </button>
+        )}
       </div>
       <div className="flex flex-col w-full mb-6 text-gray-200 px-2">
         {Object.keys(channelList).map((chan) => {
           return (
-            <button type="button" onClick={(e) => onClick(e.target.dataset)} data-key={channelList[chan].id} className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full cursor-pointer text-left ${isActive(channelList[chan].active)}`} key={channelList[chan].id}># {channelList[chan].name}</button>
+            <div className="flex justify-between" key={chan}>
+              <button
+                type="button"
+                onClick={() => onClick(chan)}
+                className={`focus:outline-none py-1 my-0.5 px-2 rounded-md hover:bg-gray-600 w-full text-left select-none ${isActive(chan === activeChannel)}`}
+              >
+                # {channelList[chan].name}
+              </button>
+              {isAdmin && editButton(channelList[chan]._id)}
+            </div>
           )
         })}
       </div>

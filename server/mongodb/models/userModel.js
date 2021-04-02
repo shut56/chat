@@ -11,9 +11,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  name: {
+    type: String,
+    required: true
+  },
   role: {
     type: [String],
     default: ['user']
+  },
+  origin: {
+    type: String,
+    default: 'first'
   }
 }, {
   timestamps: true
@@ -58,6 +66,37 @@ userSchema.statics = {
     }
 
     return user
+  },
+  async findAndChangeUserData({ uid, password, newData }) {
+    // console.log('userModel.js', { uid, password, newData })
+    const user = await this.findOne({ _id: uid }).exec()
+
+    const isPassword = await user.passwordMatches(password)
+
+    if (!isPassword) {
+      throw new Error('Password incorrect')
+    }
+
+    if (newData.type === 'password') {
+      newData.data = bcrypt.hashSync(newData.data, 10)
+    }
+
+    const dbResponse = await this.findOneAndUpdate(
+      { _id: uid },
+      {
+        $set: { [newData.type]: newData.data }
+      },
+      {
+        'multi': false,
+        'upsert': false,
+        'new': true
+      }
+    )
+
+    // console.log('Data changed')
+    if (newData.type === 'email') {
+      return dbResponse.email
+    }
   }
 }
 

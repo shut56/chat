@@ -1,16 +1,46 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
-const Message = ({ message }) => {
+import { openWindow, setPopUpActive } from '../../redux/reducers/secondary'
+
+const Message = ({ message, name, uid }) => {
+  const dispatch = useDispatch()
+  const userId = useSelector((s) => s.auth.user?._id)
+  const { isAdmin } = useSelector((s) => s.secondary)
   const TIME = `${new Date(message.time).toLocaleTimeString()}`
-  return (
-    <div className="flex items-start mb-4">
-      <img src="/assets/images/default.gif" className="w-10 h-10 rounded-full mr-3" alt="User avatar" />
-      <div className="flex flex-col">
-        <div className="flex items-end">
-          <span className="font-bold mr-2">{message.name}</span>
-          <span className="text-gray-400 text-xs mb-2">{TIME}</span>
+
+  const removeButton = (bool) => {
+    if (bool) {
+      return (
+        <div className="flex flex-col">
+          <button
+            onClick={() => {
+              dispatch(setPopUpActive(true))
+              dispatch(openWindow(true, 'removeMessage', { message }))
+            }}
+            type="button"
+            className="flex-shrink-0 flex justify-center items-center bg-gray-900 rounded-full text-xs p-1 w-4 h-4"
+          >
+            X
+          </button>
+          <div className="flex-auto" />
         </div>
-        <p className="text-gray-300 pt-1">{message.text}</p>
+      )
+    }
+    return undefined
+  }
+
+  return (
+    <div className="flex items-start hover:bg-gray-700 rounded px-2 py-1">
+      {/* <img src="/assets/images/default.gif" className="w-10 h-10 rounded-full mr-3" alt="User avatar" /> */}
+      <div className="flex flex-col flex-grow">
+        <div className="flex flex-grow static">
+          <span className="flex-shrink-0 font-semibold mr-2">{name}</span>
+          <span className="flex-shrink-0 text-gray-400 text-xs mb-2">{TIME}</span>
+          <div className="flex-grow" />
+          {removeButton(userId === uid || isAdmin)}
+        </div>
+        <p className="text-gray-300 pl-2">{message.text}</p>
       </div>
     </div>
   )

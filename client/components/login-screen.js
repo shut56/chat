@@ -3,21 +3,22 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import SignIn from './common/signIn'
 import SignUp from './common/signUp'
-import ServerResponse from './common/server-response'
+import Alert from './common/windows/alert'
 
 import { doRegister } from '../redux/reducers/auth'
 
 const LoginScreen = ({ reg }) => {
   const dispatch = useDispatch()
-  const { register, response } = useSelector((s) => s.auth)
+  const { register } = useSelector((s) => s.auth)
+  const { response } = useSelector((s) => s.userSettings)
 
   useEffect(() => {
     dispatch(doRegister(reg))
-  }, [dispatch])
+  }, [dispatch, reg])
   return (
     <div className="flex flex-col justify-center bg-gray-800 text-gray-400 w-full h-screen">
       {
-        response && <ServerResponse />
+        response && <Alert />
       }
       <div className="bg-gray-700 shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col w-max self-center">
         { register ? <SignUp /> : <SignIn /> }

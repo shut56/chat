@@ -6,6 +6,8 @@ import channels from './channels'
 import messages from './messages'
 import secondary from './secondary'
 import settings from './settings'
+import users from './users'
+import userSettings from './userSettings'
 
 const createRootReducer = (history) => {
   return combineReducers({
@@ -14,7 +16,9 @@ const createRootReducer = (history) => {
     channels,
     messages,
     secondary,
-    settings
+    settings,
+    users,
+    userSettings
   })
 }
 

@@ -1,17 +1,37 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import Message from './message'
+import { saveScrollPoint } from '../../redux/reducers/settings'
 
 const MessageHistory = () => {
-  const { messageHistory } = useSelector((store) => store.messages)
+  const dispatch = useDispatch()
+  const channelId = useSelector((store) => store.channels.activeChannel)
+  const scrollPosition = useSelector((store) => store.settings.scrollPoints[channelId])
+  const channelMessageHistory = useSelector((store) => store.messages.messageHistory[channelId]) || []
+  const { userList } = useSelector((store) => store.users)
+  const myRef = useRef(null)
+
+  const onScroll = () => {
+    dispatch(saveScrollPoint(channelId, myRef.current.scrollTop))
+  }
+
+  useEffect(() => {
+    myRef.current.scrollTo({
+      behavior: 'auto',
+      top: scrollPosition
+    })
+    console.log('SCROLL POSITION:', channelId, scrollPosition)
+    return () => {}
+  }, [myRef, channelId, scrollPosition])
 
   return (
-    <div id="message-history" className="px-6 py-4 overflow-y-auto h-full">
-      {messageHistory.map((message, id) => {
+    <div onScroll={onScroll} id="message-history" className="p-2 overflow-y-auto h-full" ref={myRef}>
+      {channelMessageHistory.map((message) => {
+        const name = userList[message.uid]?.name || 'Some user'
         return (
-          <div key={`${message.name}${id}`}>
-            <Message message={message} />
+          <div key={`${message._id}`}>
+            <Message message={message} name={name} uid={message.uid} />
           </div>
         )
       })}
