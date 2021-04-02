@@ -13,7 +13,7 @@ const Warning = ({ message, channel }) => {
   const channelId = useSelector((s) => s.channels?.activeChannel)
   const temp = useSelector((s) => s.secondary.temp)
   const { settingsForChannel } = useSelector((s) => s.channels)
-  console.log('WARNING! ', { message, channel })
+  // console.log('WARNING! ', { message, channel })
 
   const removeButton = () => {
     if (message) dispatch(removeMessage(channelId, temp.message._id))

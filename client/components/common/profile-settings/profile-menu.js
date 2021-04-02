@@ -11,7 +11,7 @@ const ProfileMenu = () => {
   const isActive = (bool) => bool && 'bg-gray-600'
 
   const onClick = (key) => {
-    console.log('key', key)
+    // console.log('key', key)
     dispatch(changeActiveItem(key))
   }
 

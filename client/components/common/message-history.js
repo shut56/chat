@@ -23,7 +23,7 @@ const MessageHistory = () => {
     })
     console.log('SCROLL POSITION:', channelId, scrollPosition)
     return () => {}
-  }, [channelId])
+  }, [myRef, channelId, scrollPosition])
 
   return (
     <div onScroll={onScroll} id="message-history" className="p-2 overflow-y-auto h-full" ref={myRef}>

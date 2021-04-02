@@ -1,10 +1,8 @@
 import { io } from 'socket.io-client'
 
 import { history } from '..'
-// import messages from '../reducers/messages'
 
 const socketIOMiddleware = () => {
-  console.log('- - - socketIOMiddleware is online! - - -')
   let socket
 
   function settingAccessRights(channelList, uid, role) {
@@ -38,23 +36,23 @@ const socketIOMiddleware = () => {
     const { dispatch, getState } = store
 
     socket.on('SOCKET_IO', (message) => {
-      console.log('Message from server', message)
-      console.log('ID: ', socket.id)
+      // console.log('Message from server', message)
+      // console.log('ID: ', socket.id)
       const { _id: uid, role } = getState().auth.user
-      console.log('User ID and Role: ', uid, role)
+      // console.log('User ID and Role: ', uid, role)
 
       switch (message.type) {
         case 'channel:list': {
-          console.log('Get channels from socket.io', message)
+          // console.log('Get channels from socket.io', message)
           const channelList = settingAccessRights(message.payload.channels, uid, role)
 
-          console.log('COMPARE: ', message.payload?.trigger, getState().channels.activeChannel)
-          console.log('FIRST ID: ', checkUserChannel(channelList, uid))
+          // console.log('COMPARE: ', message.payload?.trigger, getState().channels.activeChannel)
+          // console.log('FIRST ID: ', checkUserChannel(channelList, uid))
 
           let activeId = checkUserChannel(channelList, uid)
 
           if (message.payload?.id) {
-            console.log('NEW CHAN ID: ', message.payload?.id)
+            // console.log('NEW CHAN ID: ', message.payload?.id)
             activeId = message.payload.id
           } else if (getState().channels.activeChannel !== '') {
             activeId = getState().channels.activeChannel
@@ -105,7 +103,7 @@ const socketIOMiddleware = () => {
           break
         }
         case 'server:response': {
-          console.log('This is Server Response', message.payload)
+          // console.log('This is Server Response', message.payload)
           dispatch({
             type: 'ALERT',
             payload: message.payload
@@ -128,7 +126,7 @@ const socketIOMiddleware = () => {
           break
         }
         default: {
-          console.log('Server Message Received')
+          // console.log('Server Message Received')
         }
       }
     })

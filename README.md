@@ -24,5 +24,5 @@ yarn run watch:client
 
 Build a project
 ```
-yarn run build:client
+yarn run build:prod
 ```

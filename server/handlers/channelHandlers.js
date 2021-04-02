@@ -9,8 +9,8 @@ const arrayToObject = (arr) => {
 }
 
 module.exports = (io, socket) => {
-  const getChannels = async ({ uid }) => {
-    console.log('Channels for ', uid)
+  const getChannels = async () => {
+    // console.log('Channels for ', uid)
     try {
       const channelList = await channelModel.find({})
 
@@ -19,14 +19,14 @@ module.exports = (io, socket) => {
         payload: { channels: arrayToObject(channelList) }
       })
 
-      console.log('Сhannel list & sent', socket.id)
+      // console.log('Сhannel list & sent', socket.id)
     } catch (err) {
       console.log(`${err}`)
     }
   }
 
-  const addChannel = async ({ channel, uid, privateChannel }) => {
-    console.log('Add Channel: ', { channel, uid, privateChannel })
+  const addChannel = async ({ channel, privateChannel }) => {
+    // console.log('Add Channel: ', { channel, uid, privateChannel })
     try {
       let access = 'All'
 
@@ -56,14 +56,14 @@ module.exports = (io, socket) => {
         payload: { channels: arrayToObject(channelList) }
       })
 
-      console.log('Сhannel list sent', socket.id)
+      // console.log('Сhannel list sent', socket.id)
     } catch (err) {
       console.log(`${err}`)
     }
   }
 
-  const removeChannel = async ({ id: channel, uid }) => {
-    console.log('REMOVE: ', { id: channel, uid })
+  const removeChannel = async ({ id: channel }) => {
+    // console.log('REMOVE: ', { id: channel, uid })
     try {
       await channelModel.deleteOne({ _id: channel })
       const channelList = await channelModel.find({})
@@ -79,14 +79,14 @@ module.exports = (io, socket) => {
         payload: { channels: arrayToObject(channelList), trigger: channel }
       })
 
-      console.log('Сhannel removed', socket.id)
+      // console.log('Сhannel removed', socket.id)
     } catch (err) {
       console.log(`${err}`)
     }
   }
 
-  const editChannel = async ({ channel, uid }) => {
-    console.log('Edit Channel: ', { channel, uid })
+  const editChannel = async ({ channel }) => {
+    // console.log('Edit Channel: ', { channel, uid })
     try {
       await channelModel.updateOne(
         { _id: channel.id },
@@ -106,7 +106,7 @@ module.exports = (io, socket) => {
         payload: { channels: arrayToObject(channelList) }
       })
 
-      console.log(`Сhannel ${channel} edited`, socket.id)
+      // console.log(`Сhannel ${channel} edited`, socket.id)
     } catch (err) {
       console.log(`${err}`)
     }

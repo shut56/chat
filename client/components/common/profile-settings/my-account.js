@@ -21,7 +21,7 @@ const MyAccount = () => {
     if (typeof name !== 'undefined') {
       dispatch(updateName(name))
     }
-  }, [name])
+  }, [dispatch, name])
   return (
     <div className="flex flex-col px-2">
       <div className="flex flex-row py-2 font-bold">My Account</div>

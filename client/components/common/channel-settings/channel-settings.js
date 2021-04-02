@@ -35,7 +35,7 @@ const ChannelSettings = () => {
     dispatch(setNewChannelDescription(channelDesc))
     dispatch(setTempRights(settingsForChannel))
     return () => {}
-  }, [settingsForChannel])
+  }, [dispatch, channelName, channelDesc, settingsForChannel])
   return (
     <div className="flex flex-col bg-gray-600 text-gray-100 w-full">
       {activeSettingsItem(activeMenuItem)}

@@ -10,7 +10,7 @@ module.exports = (io, socket) => {
         type: 'message:history',
         payload: { channelId: payload.id, history: messageHistory.history }
       })
-      console.log('History for channel sent', socket.id)
+      // console.log('History for channel sent', socket.id)
     } catch (err) {
       console.log(`${err}`)
     }
@@ -37,7 +37,7 @@ module.exports = (io, socket) => {
         type: 'message:history',
         payload: { channelId: payload.id, history: updatedHistory.history }
       })
-      console.log('History sent by', socket.id)
+      // console.log('History sent by', socket.id)
     } catch (err) {
       console.log(`${err}`)
     }
@@ -61,7 +61,7 @@ module.exports = (io, socket) => {
         type: 'message:history',
         payload: { channelId: payload.channelId, history: updatedHistory.history }
       })
-      console.log('History sent by', socket.id)
+      // console.log('History sent by', socket.id)
     } catch (err) {
       console.log(`${err}`)
     }

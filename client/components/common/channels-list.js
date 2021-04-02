@@ -15,7 +15,7 @@ const ChannelsList = () => {
   const isActive = (bool) => bool && 'bg-gray-600'
 
   const onClick = (key) => {
-    console.log('key', key)
+    // console.log('key', key)
     dispatch(changeActiveChannel(key))
   }
 
@@ -25,7 +25,7 @@ const ChannelsList = () => {
   }
 
   const editButton = (id) => {
-    console.log(id)
+    // console.log(id)
     return (
       <div className="flex flex-col">
         <button
@@ -41,7 +41,7 @@ const ChannelsList = () => {
   }
 
   useEffect(() => {
-    console.log('GET CHANNELS')
+    // console.log('GET CHANNELS')
     dispatch(getChannels(uid))
     return () => {}
   }, [dispatch, uid])

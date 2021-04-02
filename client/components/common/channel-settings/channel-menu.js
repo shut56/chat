@@ -17,7 +17,7 @@ const ChannelMenu = () => {
   const isActive = (bool) => bool && 'bg-gray-600'
 
   const menuButton = (key) => {
-    console.log('key', key)
+    // console.log('key', key)
     dispatch(changeActiveItem(key))
   }
 

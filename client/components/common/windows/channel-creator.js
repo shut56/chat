@@ -42,7 +42,7 @@ const ChannelCreator = () => {
             checked={privateChannel}
             onChange={() => {
               setPrivateChannel(!privateChannel)
-              console.log('privateChannel', privateChannel)
+              // console.log('privateChannel', privateChannel)
             }}
           />
           <label htmlFor="toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer">&#8194;</label>

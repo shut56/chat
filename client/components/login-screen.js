@@ -14,7 +14,7 @@ const LoginScreen = ({ reg }) => {
 
   useEffect(() => {
     dispatch(doRegister(reg))
-  }, [dispatch])
+  }, [dispatch, reg])
   return (
     <div className="flex flex-col justify-center bg-gray-800 text-gray-400 w-full h-screen">
       {

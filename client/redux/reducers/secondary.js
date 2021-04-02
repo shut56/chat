@@ -150,7 +150,6 @@ export function openWindow(toggle, type, payload) {
       })
     }
     default: {
-      console.log('Close')
       return ({
         type: CLOSE_WINDOWS
       })

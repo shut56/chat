@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import PopUp from '../components/common/windows/popUp'
 import Alert from '../components/common/windows/alert'
 
-import { trySignIn, tryGetUserInfo } from '../redux/reducers/auth'
+// import { trySignIn, tryGetUserInfo } from '../redux/reducers/auth'
+import { trySignIn } from '../redux/reducers/auth'
 import { getSocketId } from '../redux/reducers/users'
 
 const Startup = (props) => {
@@ -14,13 +15,13 @@ const Startup = (props) => {
   const token = useSelector((s) => s.auth.token)
 
   dispatch(getSocketId())
-  console.log('Check Startup.js', tryGetUserInfo)
+
   useEffect(() => {
     if (token) {
       dispatch(trySignIn())
       // dispatch(tryGetUserInfo())
     }
-  }, [dispatch])
+  }, [dispatch, token])
 
   return (
     <div>

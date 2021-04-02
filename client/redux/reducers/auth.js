@@ -209,6 +209,7 @@ export function tryGetUserInfo() {
   return () => {
     axios('/api/v1/user-info')
       .then(({ data }) => {
+        // eslint-disable-next-line
         console.log(data)
       })
   }

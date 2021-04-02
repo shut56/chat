@@ -1,6 +1,9 @@
+const { resolve } = require('path')
+
 import express from 'express'
 import http from 'http'
 import cookieParser from 'cookie-parser'
+import favicon from 'serve-favicon'
 import io from 'socket.io'
 import passport from 'passport'
 
@@ -13,35 +16,26 @@ import messageHandlers from './handlers/messageHandlers'
 import mongoRequests from './mongodb/requests'
 import userModel from './mongodb/models/userModel'
 
+import Html from '../client/html'
+
 const server = express()
 const httpServer = http.createServer(server)
 
 const PORT = config.port
 
 const middleware = [
-  express.json({ limit: '50kb' }),
   cookieParser(),
+  express.json({ limit: '50kb' }),
+  express.static(resolve(__dirname, '../dist')),
+  favicon(`${__dirname}/public/favicon.ico`),
   passport.initialize()
 ]
 
 middleware.forEach((it) => server.use(it))
 
-server.use('/static', express.static(`${__dirname}/public`))
 passport.use('jwt', passportJWT.jwt)
 
-server.get('/', (req, res) => {
-  res.send('Express server')
-})
-
-server.get('/api/history', (req, res) => {
-  res.json(msgHist)
-})
-
-server.get('/api/channels', (req, res) => {
-  res.json(channels)
-})
-
-server.get('/api/users', (req, res) => {
+server.get('/api/v1/users', (req, res) => {
   res.json(connectedUsers.users())
 })
 
@@ -51,7 +45,7 @@ const originAdmin = async () => {
   const admins = await userModel.find({ role: ['admin'] })
   const res = admins.find((admin) => admin.origin === 'first' )
   if (typeof res === 'undefined') {
-    console.log('No one origin admin...')
+    // console.log('No one origin admin...')
     const firstAdmin = await userModel.create({
       name: 'Admin',
       email: 'admin2@admin',
@@ -59,13 +53,13 @@ const originAdmin = async () => {
       role: ['admin'],
       origin: 'first'
     })
-    console.log('Admin created')
+    // console.log('Admin created')
     adminList = [firstAdmin._id.toString()]
   } else {
-    console.log('Admin is here!')
+    // console.log('Admin is here!')
   }
   adminList = [...adminList, ...admins.map((admin) => admin._id.toString())]
-  console.log('Admins: ', adminList)
+  // console.log('Admins: ', adminList)
 }
 
 if (config.mongoEnabled) {
@@ -77,9 +71,7 @@ if (config.mongoEnabled) {
 }
 
 function isOnline() {
-  let users = {
-    'test-user-socket-id': 'test-user-id'
-  }
+  let users = {}
   return {
     add(socketId, uid) {
       users[socketId] = uid
@@ -106,14 +98,13 @@ if (config.socketsEnabled) {
   })
 
   socketIO.on('connection', (socket) => {
-    console.log(`Hello ${socket.id}`)
+    console.log(`${socket.id} login`)
 
     userHandlers(socketIO, socket, connectedUsers)
     channelHandlers(socketIO, socket)
     messageHandlers(socketIO, socket)
 
     socket.on('user:online', ({ id }) => {
-      console.log('server.js - user:online', { id })
       connectedUsers.add(socket.id, id)
 
       socketIO.emit('SOCKET_IO', {
@@ -123,7 +114,7 @@ if (config.socketsEnabled) {
     })
 
     socket.on('disconnect', () => {
-      console.log(`Bye-bye ${socket.id}`)
+      console.log(`${socket.id} logout`)
       connectedUsers.remove(socket.id)
 
       socketIO.emit('SOCKET_IO', {
@@ -133,6 +124,19 @@ if (config.socketsEnabled) {
     })
   })
 }
+
+server.get('/*', (req, res) => {
+  const initialState = {
+    location: req.url
+  }
+
+  return res.send(
+    Html({
+      body: '',
+      initialState
+    })
+  )
+})
 
 server.use('/api/', (req, res) => {
   res.status(404)

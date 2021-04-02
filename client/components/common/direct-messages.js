@@ -11,7 +11,7 @@ const DirectMessages = () => {
   const isActive = (bool) => bool && 'bg-gray-600'
 
   const onClick = (key) => {
-    console.log('User Key: ', key)
+    // console.log('User Key: ', key)
     dispatch(changeActiveChannel(key))
   }
 

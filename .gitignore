@@ -10,5 +10,5 @@ dist
 # Yarn
 yarn-error.log
 
-# Public
-server/public
+# Other files
+preview

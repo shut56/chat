@@ -24,7 +24,7 @@ const errorHandler = (type, err) => {
 
 module.exports = (io, socket, connectedUsers) => {
   const getUsers = async () => {
-    console.log('User Handler')
+    // console.log('User Handler')
     try {
       const userList = await userModel.find({})
 
@@ -38,7 +38,7 @@ module.exports = (io, socket, connectedUsers) => {
   }
 
   const setUser = async (body) => {
-    console.log('New user: ', body)
+    // console.log('New user: ', body)
     try {
       await userModel.create(body)
       const userList = await userModel.find({})
@@ -60,7 +60,7 @@ module.exports = (io, socket, connectedUsers) => {
         payload: arrayToObject(userList)
       })
     } catch (err) {
-      console.log(`User ${socket.id} - ${err}`)
+      // console.log(`User ${socket.id} - ${err}`)
       const errorText = errorHandler('email', err)
       socket.emit('SOCKET_IO', {
         type: 'server:response',
@@ -100,7 +100,7 @@ module.exports = (io, socket, connectedUsers) => {
     try {
       const newEmail = await userModel.findAndChangeUserData({ uid, password, newData })
 
-      console.log('User data changed')
+      // console.log('User data changed')
 
       socket.emit('SOCKET_IO', {
         type: 'server:response',
@@ -113,7 +113,7 @@ module.exports = (io, socket, connectedUsers) => {
         }
       })
     } catch (err) {
-      console.log(`User ${socket.id} - ${err}`)
+      // console.log(`User ${socket.id} - ${err}`)
       const errorText = errorHandler(newData.type, err)
       socket.emit('SOCKET_IO', {
         type: 'server:response',

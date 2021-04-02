@@ -6,7 +6,7 @@ import auth from '../middleware/auth'
 
 module.exports = (server) => {
   server.post('/api/v1/register', async (req, res) => {
-    console.log('New user: ', req.body)
+    // console.log('New user: ', req.body)
     const { password, email, name } = req.body
     try {
       await userModel.create({ password, email, name })
@@ -17,13 +17,13 @@ module.exports = (server) => {
   })
 
   server.post('/api/v1/auth', async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     try {
       const user = await userModel.findAndValidateUser(req.body)
       const payload = { uid: user.id }
       const token = jwt.sign(payload, config.secret, { expiresIn: '48h' })
       user.password = undefined
-      console.log(`${user.email} logged`)
+      // console.log(`${user.email} logged`)
       res
         .cookie('token', token, { maxAge: 1000 * 60 * 60 * 48 })
         .cookie('id', user.id, { maxAge: 1000 * 60 * 60 * 48 })

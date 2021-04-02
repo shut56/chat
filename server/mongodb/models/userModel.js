@@ -68,7 +68,7 @@ userSchema.statics = {
     return user
   },
   async findAndChangeUserData({ uid, password, newData }) {
-    console.log('userModel.js', { uid, password, newData })
+    // console.log('userModel.js', { uid, password, newData })
     const user = await this.findOne({ _id: uid }).exec()
 
     const isPassword = await user.passwordMatches(password)
@@ -93,7 +93,7 @@ userSchema.statics = {
       }
     )
 
-    console.log('Data changed')
+    // console.log('Data changed')
     if (newData.type === 'email') {
       return dbResponse.email
     }
