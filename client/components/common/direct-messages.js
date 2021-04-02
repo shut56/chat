@@ -12,6 +12,7 @@ const DirectMessages = () => {
   const isActive = (bool) => bool && 'bg-gray-600'
 
   const onClick = (key) => {
+    // eslint-disable-next-line
     console.log('User Key: ', key)
     // dispatch(changeActiveChannel(key))
   }
