@@ -12,7 +12,7 @@ const ChannelHeader = () => {
       </div>
       <div className="flex flex-1 min-w-0">
         {description && (
-          <div className="border-l-2 border-gray-500 items-center px-2 truncate">
+          <div className="border-l-2 border-gray-500 items-center px-2 truncate mr-2">
             {description}
           </div>
         )}

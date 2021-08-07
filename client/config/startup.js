@@ -24,11 +24,11 @@ const Startup = (props) => {
   }, [dispatch, token])
 
   return (
-    <div>
+    <>
       {popUpActive && <PopUp />}
       {response?.text && <Alert />}
       {props.children}
-    </div>
+    </>
   )
 }
 
