@@ -32,11 +32,11 @@ const Warning = ({ message, channel }) => {
     dispatch(setPopUpActive(false))
   }
   return (
-    <div className="flex flex-col p-4 justify-center text-sm">
-      <div className="flex justify-center font-semibold text-lg mb-2">{`Remove ${message || channel}?`}</div>
+    <div className="flex flex-col p-4 justify-center">
+      <div className="flex justify-center font-semibold text-lg select-none pb-4">{`Remove ${message || channel}?`}</div>
       <div className="flex justify-around">
-        <button type="button" onClick={closeWindow}>Cancel</button>
-        <button type="button" onClick={removeButton}>Remove</button>
+        <button type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={closeWindow}>Cancel</button>
+        <button type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={removeButton}>Remove</button>
       </div>
     </div>
   )
