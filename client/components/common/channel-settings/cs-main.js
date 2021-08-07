@@ -17,7 +17,9 @@ const Main = () => {
   }
   return (
     <div className="flex flex-col p-4 justify-center max-h-full">
-      <div className="flex justify-center font-semibold text-lg select-none mb-2">{`Edit channel ${channelName}`}</div>
+      <div className="flex justify-center font-semibold text-lg select-none mb-1">
+        Edit channel <span className="font-bold">{channelName}</span>
+      </div>
       <div className="flex flex-1 my-2">
         <div className="mr-2 select-none">Name:</div>
         <input type="text" className="flex-grow p-1 rounded bg-gray-800 pl-2 truncate" placeholder={channelName} onChange={(e) => dispatch(setNewChannelName(e.target.value))} value={newChannelName} />

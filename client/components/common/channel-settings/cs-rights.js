@@ -9,6 +9,7 @@ const Rights = () => {
   const { settingsForChannel, temporaryRights } = useSelector((s) => s.channels)
   const { accessRights } = useSelector((s) => s.settings)
   const channelName = useSelector((s) => s.channels.channelList[settingsForChannel]?.name)
+  const channelAccess = useSelector((s) => s.channels.channelList[settingsForChannel]?.access)
   const allUsers = useSelector((s) => s.users.userList)
 
   const usersWithoutAccess = Object.keys(allUsers).filter((uid) => !temporaryRights.includes(uid) && !allUsers[uid]?.role.includes('admin'))
@@ -33,16 +34,21 @@ const Rights = () => {
     }
     return 'Rights set'
   }
+
   return (
-    <div className="flex flex-col p-2 h-full">
-      <div className="flex justify-center font-semibold text-lg select-none mb-1">{`Edit channel ${channelName}`}</div>
-      <div className="flex flex-col justify-center items-center mt-1">
-        <div className="text-xl font-semibold select-none mb-1">Access level</div>
-        <div className="flex flex-row m-1">
-          <button id="access-all" type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={(e) => onClick(e.target.id)}>All</button>
-          <button id="access-neither" type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={(e) => onClick(e.target.id)}>Neither</button>
-          <button id="access-some-users" type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={(e) => onClick(e.target.id)}>Some users</button>
-        </div>
+    <div className="flex flex-col p-2 h-full w-full">
+      <div className="flex justify-center font-semibold text-lg select-none mb-1">
+        Edit channel <span className="font-bold">{channelName}</span>
+      </div>
+      <div className="flex flex-row justify-center text-xl font-semibold select-none mb-1">Access level</div>
+      <div className="flex flex-row my-2">
+        <span className="font-semibold mr-2">Access:</span>{channelAccess}
+      </div>
+      <div className="flex flex-row my-2">
+        <span>Choose new rights:</span>
+        <button id="access-all" data-rights="All" type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={(e) => onClick(e.target.id)}>All</button>
+        <button id="access-neither" data-rights="Neither" type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={(e) => onClick(e.target.id)}>Neither</button>
+        <button id="access-some-users" data-rights="Some users" type="button" className="focus:outline-none hover:bg-gray-700 mx-4 py-1 px-4 rounded-md bg-gray-900" onClick={(e) => onClick(e.target.id)}>Some users</button>
       </div>
       {accessRights === 'Some users' && (
         <div className="flex flex-col bg-gray-700 rounded p-2 max-h-max overflow-y-auto">

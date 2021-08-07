@@ -6,7 +6,7 @@ import { history } from '../../../redux'
 import Main from './cs-main'
 import Rights from './cs-rights'
 
-import { setNewChannelName, setNewChannelDescription } from '../../../redux/reducers/settings'
+import { setNewChannelName, setNewChannelDescription, setAccessRights } from '../../../redux/reducers/settings'
 import { setTempRights } from '../../../redux/reducers/channels'
 
 const ChannelSettings = () => {
@@ -15,6 +15,7 @@ const ChannelSettings = () => {
   const settingsForChannel = useSelector((s) => s.channels.settingsForChannel)
   const channelName = useSelector((s) => s.channels.channelList[settingsForChannel]?.name)
   const channelDesc = useSelector((s) => s.channels.channelList[settingsForChannel]?.description)
+  const channelAccess = useSelector((s) => s.channels.channelList[settingsForChannel]?.access)
 
   const activeSettingsItem = (id) => {
     switch (id) {
@@ -34,8 +35,10 @@ const ChannelSettings = () => {
     dispatch(setNewChannelName(channelName))
     dispatch(setNewChannelDescription(channelDesc))
     dispatch(setTempRights(settingsForChannel))
+    dispatch(setAccessRights(channelAccess))
     return () => {}
   }, [dispatch, channelName, channelDesc, settingsForChannel])
+
   return (
     <div className="flex flex-col bg-gray-600 text-gray-100 w-full">
       {activeSettingsItem(activeMenuItem)}
